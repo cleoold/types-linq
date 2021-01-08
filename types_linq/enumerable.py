@@ -1,31 +1,51 @@
 from __future__ import annotations
-from typing import Any, Callable, Iterable, Iterator, List, NoReturn, Type, TypeVar, Generic, Union
+from typing import Any, Callable, Container, Iterable, Iterator, List, NoReturn, Sized, Type, TypeVar, Generic, Union
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TResult = TypeVar('TResult')
+TDefault = TypeVar('TDefault')
 
 
 class Enumerable(Generic[TSource_co]):
 
-    _iter_factory: Callable[[], Iterator[TSource_co]]
+    _iter_factory: Callable[[], Iterable[TSource_co]]
 
     def __init__(self,
         it: Union[Iterable[TSource_co], Callable[[], Iterable[TSource_co]]]
     ):
         if callable(it):
-            self._iter_factory = lambda it_=it: iter(it_())
+            self._iter_factory = lambda it_=it: it_()
         else:
-            self._iter_factory = lambda it_=it: iter(it_)
+            self._iter_factory = lambda it_=it: it_
+
+    def __contains__(self, value: object) -> bool:
+        iterable = self._iter_factory()
+        # prefer calling __contains__(), otherwise fallback to for loop
+        if isinstance(iterable, Container):
+            return value in iterable
+        for elem in iterable:
+            if elem == value:
+                return True
+        return False
 
     def __iter__(self) -> Iterator[TSource_co]:
-        return self._iter_factory()
+        return iter(self._iter_factory())
+
+    def __len__(self) -> int:
+        iterable = self._iter_factory()
+        # prefer calling __len__(), otherwise fallback to for loop
+        if isinstance(iterable, Sized):
+            return len(iterable)
+        count = 0
+        for _ in self: count += 1
+        return count
 
     @staticmethod
     def _raise_empty_sequence() -> NoReturn:
         raise TypeError('Sequence is empty')
 
-    def aggregate(self, *args):
+    def aggregate(self, *args) -> Any:
         if len(args) == 3:
             seed, func, result_selector = args
             for elem in self:
@@ -113,6 +133,42 @@ class Enumerable(Generic[TSource_co]):
             yield from second
         return Enumerable(inner)
 
+    def contains(self, *args):
+        if len(args) == 1:
+            value = args[0]
+            return value in self
+
+        else:  # len(args) == 2
+            value, comparer = args
+            for elem in self:
+                if comparer(elem, value):
+                    return True
+            return False
+
+    def count(self, *args: Callable[[TSource_co], bool]) -> int:
+        if len(args) == 0:
+            return len(self)
+
+        else:  # len(args) == 1
+            predicate = args[0]
+            count = 0
+            for elem in self:
+                if predicate(elem):
+                    count += 1
+            return count
+
+    def default_if_empty(self,
+        default: TDefault,
+    ) -> Union[Enumerable[TSource_co], Enumerable[TDefault]]:
+        def inner():
+            iterator = iter(self)
+            try:
+                yield next(iterator)
+            except StopIteration:
+                yield default
+                return
+            yield from iterator
+        return Enumerable(inner)
+
     def to_list(self) -> List[TSource_co]:
         return list(iter(self))
-

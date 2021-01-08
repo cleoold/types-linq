@@ -5,6 +5,7 @@ TSource_co = TypeVar('TSource_co', covariant=True)
 TAccumulate = TypeVar('TAccumulate')
 TResult = TypeVar('TResult')
 TDefault = TypeVar('TDefault')
+TOther = TypeVar('TOther')
 
 
 class Enumerable(Generic[TSource_co]):
@@ -15,7 +16,11 @@ class Enumerable(Generic[TSource_co]):
     @overload
     def __init__(self, iterable_factory: Callable[[], Iterable[TSource_co]]): ...
 
+    def __contains__(self, value: object) -> bool: ...
+
     def __iter__(self) -> Iterator[TSource_co]: ...
+
+    def __len__(self) -> int: ...
 
     @overload
     def aggregate(self,
@@ -122,6 +127,38 @@ class Enumerable(Generic[TSource_co]):
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         '''
         Concatenates two sequences.
+        '''
+
+    @overload
+    def contains(self, value: object) -> bool:
+        '''
+        Tests whether the sequence contains the specified element using `==`.
+        '''
+
+    @overload
+    def contains(self, value: TOther, comparer: Callable[[TSource_co, TOther], bool]) -> bool:
+        '''
+        Tests whether the sequence contains the specified element using the provided comparer.
+        '''
+
+    @overload
+    def count(self) -> int:
+        '''
+        Returns the number of elements in the sequence.
+        '''
+
+    @overload
+    def count(self, predicate: Callable[[TSource_co], bool]) -> int:
+        '''
+        Returns the number of elements that satisfy the condition.
+        '''
+
+    def default_if_empty(self,
+        default: TDefault,
+    ) -> Union[Enumerable[TSource_co], Enumerable[TDefault]]:
+        '''
+        Returns the elements of the sequence or the provided value in a singleton collection if
+        the sequence is empty.
         '''
 
     def to_list(self) -> List[TSource_co]:

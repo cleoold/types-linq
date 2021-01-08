@@ -1,5 +1,5 @@
 import sys, os
-from typing import List, cast
+from typing import Generic, Iterable, List, TypeVar, cast
 
 import pytest
 
@@ -7,6 +7,16 @@ import pytest
 sys.path.append(os.path.abspath('..'))  # run in tests folder
 sys.path.append(os.path.abspath('.'))  # run in root folder
 from types_linq import Enumerable
+
+
+TSource_co = TypeVar('TSource_co', covariant=True)
+
+
+class BasicIterable(Generic[TSource_co]):
+    def __init__(self, it: Iterable[TSource_co]):
+        self._it = it
+    def __iter__(self):
+        yield from self._it
 
 
 class TestIterMethod:
@@ -180,6 +190,7 @@ class TestAverageMethod:
         avg = en.average2(lambda e: e[0], 44)
         assert avg == 5.8
 
+
 class TestConcatMethod:
     def test_concat(self):
         en1 = Enumerable([1, 2, 3])
@@ -188,3 +199,67 @@ class TestConcatMethod:
         assert en3.to_list() == [1, 2, 3, 1, 2, 4]
         en4 = en1.concat(en1).concat(en2).concat([]).concat([16])
         assert en4.to_list() == [1, 2, 3, 1, 2, 3, 1, 2, 4, 16]
+
+
+class TestContainsMethod:
+    def test_overload1(self):
+        lst = BasicIterable(['x', 'y', 'z'])
+        en = Enumerable(lst)
+        assert en.contains('x') is en.contains('y') is en.contains('z') is True
+        assert en.contains('t') is False
+        assert en.contains(object()) is False
+
+    def test_overload1_empty(self):
+        lst: List[str] = []
+        en = Enumerable(lst)
+        assert en.contains('x') is False
+
+    def test_overload2(self):
+        lst = ['x', 'y', 'z']
+        en = Enumerable(lst)
+        assert en.contains(120, lambda lhs, rhs: lhs == chr(rhs)) is True
+        assert en.contains(123, lambda lhs, rhs: lhs == chr(rhs)) is False
+
+    def test_call_in(self):
+        class OnlyHasIn(BasicIterable[TSource_co]):
+            def __contains__(self, _: object):
+                return True
+        en = Enumerable(OnlyHasIn([]))
+        assert en.contains(1) is en.contains(89) is en.contains('') is True
+
+
+class TestCountMethod:
+    def test_overload1(self):
+        lst = BasicIterable(['x', 'y', 'z'])
+        en = Enumerable(lst)
+        assert en.count() == 3
+
+    def test_overload2(self):
+        lst = ('x', 'y', 120, 'z')
+        en = Enumerable(lst)
+        assert en.count(lambda e: isinstance(e, str)) == 3
+        assert en.count(lambda e: isinstance(e, float)) == 0
+
+    def test_call_len(self):
+        class OnlyHasLen(BasicIterable[TSource_co]):
+            def __len__(self):
+                return 179
+        en = Enumerable(OnlyHasLen([]))
+        assert en.count() == 179
+
+
+class TestDefaultIfEmptyMethod:
+    def test_non_empty(self):
+        lst = [44]
+        en = Enumerable(lst)
+        assert en.default_if_empty(17).to_list() == [44]
+
+    def test_non_empty2(self):
+        lst = [44, 45, 56]
+        en = Enumerable(lst)
+        assert en.default_if_empty(17).to_list() == [44, 45, 56]
+
+    def test_empty(self):
+        lst: List[int] = []
+        en = Enumerable(lst)
+        assert en.default_if_empty(17).to_list() == [17]
