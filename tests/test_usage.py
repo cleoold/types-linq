@@ -140,3 +140,51 @@ class TestAppendMethod:
         assert ints == []
         assert en.to_list() == []
         assert en2.to_list() == [7, 8]
+
+
+class TestAverageMethod:
+    def test_average_overload1(self):
+        ints = [1, 3, 5, 9, 11]
+        avg = Enumerable(ints).average()
+        assert avg == 5.8
+
+    def test_average_overload1_1(self):
+        ints = [44]
+        avg = Enumerable(ints).average()
+        assert avg == 44
+
+    def test_average_overload1_empty(self):
+        ints: List[int] = []
+        with pytest.raises(TypeError):
+            Enumerable(ints).average()
+
+    def test_average_overload2(self):
+        lst = [[1], [3], [5], [9], [11]]
+        en = Enumerable(lst)
+        avg = en.average(lambda e: e[0])
+        assert avg == 5.8
+
+    def test_average2_overload1(self):
+        ints = [1, 3, 5, 9, 11]
+        avg = Enumerable(ints).average2(69)
+        assert avg == 5.8
+
+    def test_average2_overload1_empty(self):
+        ints: List[int] = []
+        avg = Enumerable(ints).average2(False)
+        assert avg == False
+
+    def test_average2_overload2(self):
+        lst = [[1], [3], [5], [9], [11]]
+        en = Enumerable(lst)
+        avg = en.average2(lambda e: e[0], 44)
+        assert avg == 5.8
+
+class TestConcatMethod:
+    def test_concat(self):
+        en1 = Enumerable([1, 2, 3])
+        en2 = Enumerable([1, 2, 4])
+        en3 = en1.concat(en2)
+        assert en3.to_list() == [1, 2, 3, 1, 2, 4]
+        en4 = en1.concat(en1).concat(en2).concat([]).concat([16])
+        assert en4.to_list() == [1, 2, 3, 1, 2, 3, 1, 2, 4, 16]
