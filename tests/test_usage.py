@@ -49,6 +49,25 @@ class TestIterMethod:
         assert en.to_list() == ['x', 'y', 'z']
 
 
+class TestIterMethod2:
+    def test_to_set(self):
+        gen = (i % 5 if i != 77 else i for i in range(0, 100))
+        en = Enumerable(gen)
+        assert en.to_set() == {0, 1, 2, 3, 4, 77}
+
+    def test_to_dict_overload1(self):
+        gen = ((i, chr(i)) for i in range(120, 123))
+        en = Enumerable(gen)
+        dict_ = en.to_dict(lambda e: e[0], lambda e: e[1])
+        assert dict_ == {120: 'x', 121: 'y', 122: 'z'}
+
+    def test_to_dict_overload2(self):
+        gen = ((i, chr(i)) for i in range(120, 121))
+        en = Enumerable(gen)
+        dict_ = en.to_dict(lambda e: e[0])
+        assert dict_ == {120: (120, 'x')}
+
+
 class TestAggregateMethod:
     def test_overload1(self):
         fruits = ['apple', 'mango', 'orange', 'passionfruit', 'grape']
@@ -263,3 +282,102 @@ class TestDefaultIfEmptyMethod:
         lst: List[int] = []
         en = Enumerable(lst)
         assert en.default_if_empty(17).to_list() == [17]
+
+
+class TestSelectMethod:
+    def test_select(self):
+        gen_func = lambda: (i for i in range(4))
+        en = Enumerable(gen_func)
+        doubled = en.select(lambda e: e * 2)
+        assert doubled.to_list() == [0, 2, 4, 6]
+
+    def test_select2(self):
+        gen_func = lambda: (i for i in range(4))
+        en = Enumerable(gen_func)
+        doubled = en.select2(lambda e, i: e * i)
+        assert doubled.to_list() == [0, 1, 4, 9]
+
+
+class TestSelectManyMethod:
+    def test_selectmany_overload1(self):
+        pet_owners = [
+            {'name': 'Higa', 'pets': ['Scruffy', 'Sam']},
+            {'name': 'Ashkenazi', 'pets': ['Walker', 'Sugar']},
+            {'name': 'Hines',  'pets': ['Dusty']},
+        ]
+        en = Enumerable(pet_owners)
+        pets = en.select_many(
+            lambda owner: owner['pets'],
+            lambda owner, name: (name, owner['name']),
+        )
+        assert pets.to_list() == [
+            ('Scruffy', 'Higa'), ('Sam', 'Higa'),
+            ('Walker', 'Ashkenazi'), ('Sugar', 'Ashkenazi'),
+            ('Dusty', 'Hines'),
+        ]
+
+    def test_selectmany_overload2(self):
+        dinner = ['ramen', 'pork']
+        en = Enumerable(dinner)
+        letters = en.select_many(lambda e: e)
+        assert letters.to_list() == ['r', 'a', 'm', 'e', 'n', 'p', 'o', 'r', 'k']
+
+    def test_selectmany2_overload1(self):
+        'test case does not make sense practically.. but i cannot think of any more.'
+        dinner = [(533, ['ramen', 'rice']), (16, ['pork'])]
+        en = Enumerable(dinner)
+        q = en.select_many2(
+            lambda tup, i: [i] + tup[1],
+            lambda src, c: f'{src[0]}.{c}',
+        )
+        assert q.to_list() == ['533.0', '533.ramen', '533.rice', '16.1', '16.pork']
+
+    def test_selectmany2_overload2(self):
+        dinner = ['Ramen with Egg and Beef', 'Gyoza', 'Fried Chicken']
+        en = Enumerable(dinner)
+        q = en.select_many2(
+            lambda e, i: Enumerable(e.split(' '))
+                .where(lambda w: w[0] == w[0].upper())
+                .select(lambda w: f'{i}.{w}')
+        )
+        assert q.to_list() == [
+            '0.Ramen', '0.Egg', '0.Beef', '1.Gyoza', '2.Fried', '2.Chicken',
+        ]
+
+
+class TestWhereMethod:
+    def test_where(self):
+        gen_func = lambda: (i for i in range(0, 10))
+        en = Enumerable(gen_func)
+        evens = en.where(lambda e: e % 2 == 0)
+        assert evens.to_list() == [0, 2, 4, 6, 8]
+
+    def test_where2(self):
+        gen_func = lambda: (i for i in range(0, 10))
+        en = Enumerable(gen_func)
+        wholes = en.where2(lambda e, i: e % 2 == i % 3 == 0)
+        assert wholes.to_list() == [0, 6]
+
+
+class TestZipMethod:
+    def test_overload1(self):
+        lst = [1, 2, 3, 4]
+        other_lst = ['x', 'y', 'z', 't']
+        en = Enumerable(lst)
+        zipped = en.zip(other_lst, lambda x, y: f'{x}{y}')
+        assert zipped.to_list() == ['1x', '2y', '3z', '4t']
+
+    def test_overload2(self):
+        lst = [1, 2, 3, 4]
+        other_lst = ['x', 'y', 'z', 't']
+        en = Enumerable(lst)
+        zipped = en.zip(Enumerable(other_lst))
+        assert zipped.to_list() == [(1, 'x'), (2, 'y'), (3, 'z'), (4, 't')]
+
+    def test_different_len(self):
+        'take shorter'
+        lst = [1, 2, 3, 4]
+        other_lst = ['x', 'y', 'z', 't']
+        en = Enumerable(lst).append(5)
+        zipped = en.zip(Enumerable(other_lst).append('u').append('v'))
+        assert zipped.to_list() == [(1, 'x'), (2, 'y'), (3, 'z'), (4, 't'), (5, 'u')]

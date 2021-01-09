@@ -1,4 +1,4 @@
-from typing import Any, Callable, Generic, Iterable, Iterator, List, Type, TypeVar, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Set, Tuple, Type, TypeVar, Union, overload
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -6,6 +6,9 @@ TAccumulate = TypeVar('TAccumulate')
 TResult = TypeVar('TResult')
 TDefault = TypeVar('TDefault')
 TOther = TypeVar('TOther')
+TKey = TypeVar('TKey')
+TValue = TypeVar('TValue')
+TCollection = TypeVar('TCollection')
 
 
 class Enumerable(Generic[TSource_co]):
@@ -161,7 +164,114 @@ class Enumerable(Generic[TSource_co]):
         the sequence is empty.
         '''
 
+    # @@@ TODO
+
+    def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence into a new form.
+        '''
+
+    def select2(self, selector: Callable[[TSource_co, int], TResult]) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence into a new form by incorporating the indices.
+        '''
+
+    @overload
+    def select_many(self,
+        collection_selector: Callable[[TSource_co], Iterable[TCollection]],
+        result_selector: Callable[[TSource_co, TCollection], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence into an iterable, flattens the resulting sequence
+        into one sequence, then calls result_selector on each element therein.
+        '''
+
+    @overload
+    def select_many(self,
+        selector: Callable[[TSource_co], Iterable[TResult]],
+    ) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence to an iterable and flattens the resultant sequences.
+        '''
+
+    @overload
+    def select_many2(self,
+        collection_selector: Callable[[TSource_co, int], Iterable[TCollection]],
+        result_selector: Callable[[TSource_co, TCollection], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence into an iterable, flattens the resulting sequence
+        into one sequence, then calls result_selector on each element therein. The indices of
+        source elements are used.
+        '''
+
+    @overload
+    def select_many2(self,
+        selector: Callable[[TSource_co, int], Iterable[TResult]],
+    ) -> Enumerable[TResult]:
+        '''
+        Projects each element of the sequence to an iterable and flattens the resultant sequences.
+        The indices of source elements are used.
+        '''
+
+    # @@@ TODO
+
+    @overload
+    def to_dict(self,
+        key_selector: Callable[[TSource_co], TKey],
+        value_selector: Callable[[TSource_co], TValue],
+    ) -> Dict[TKey, TValue]:
+        '''
+        Enumerates all values and returns a dict containing them. key_selector and value_selector
+        are used to select keys and values.
+        '''
+
+    @overload
+    def to_dict(self,
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Dict[TKey, TSource_co]:
+        '''
+        Enumerates all values and returns a dict containing them. key_selector is used to select
+        keys.
+        '''
+
+    def to_set(self) -> Set[TSource_co]:
+        '''
+        Enumerates all values and returns a set containing them.
+        '''
+
     def to_list(self) -> List[TSource_co]:
         '''
         Enumerates all values and returns a list containing them.
+        '''
+
+    # @@@ TODO
+
+    def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        '''
+        Filters the sequence of values based on a predicate.
+        '''
+
+    def where2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        '''
+        Filters the sequence of values based on a predicate. Each element's index is used in the
+        predicate logic.
+        '''
+
+    @overload
+    def zip(self,
+        second: Iterable[TOther],
+        result_selector: Callable[[TSource_co, TOther], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Applies a specified function to the corresponding elements of two sequences, producing a
+        sequence of the results.
+        '''
+
+    @overload
+    def zip(self,
+        second: Iterable[TOther],
+    ) -> Enumerable[Tuple[TSource_co, TOther]]:
+        '''
+        Produces a sequence of 2-element tuples from the two sequences.
         '''

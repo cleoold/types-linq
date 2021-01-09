@@ -1,10 +1,14 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Iterable, Iterator, List, NoReturn, Sized, Type, TypeVar, Generic, Union
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Set, Sized, Tuple, Type, TypeVar, Generic, Union
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TResult = TypeVar('TResult')
 TDefault = TypeVar('TDefault')
+TOther = TypeVar('TOther')
+TKey = TypeVar('TKey')
+TValue = TypeVar('TValue')
+TCollection = TypeVar('TCollection')
 
 
 class Enumerable(Generic[TSource_co]):
@@ -133,13 +137,12 @@ class Enumerable(Generic[TSource_co]):
             yield from second
         return Enumerable(inner)
 
-    def contains(self, *args):
-        if len(args) == 1:
-            value = args[0]
+    def contains(self, value: object, *args: Callable[..., bool]):
+        if len(args) == 0:
             return value in self
 
-        else:  # len(args) == 2
-            value, comparer = args
+        else:  # len(args) == 1
+            comparer = args[0]
             for elem in self:
                 if comparer(elem, value):
                     return True
@@ -170,5 +173,85 @@ class Enumerable(Generic[TSource_co]):
             yield from iterator
         return Enumerable(inner)
 
+    def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
+        def inner():
+            for elem in self:
+                yield selector(elem)
+        return Enumerable(inner)
+
+    def select2(self, selector: Callable[[TSource_co, int], TResult]) -> Enumerable[TResult]:
+        def inner():
+            for i, elem in enumerate(self):
+                yield selector(elem, i)
+        return Enumerable(inner)
+
+    def select_many(self,
+        collection_selector: Callable[[TSource_co], Iterable[TCollection]],
+        *args: Callable[[TSource_co, TCollection], TResult],
+    ) -> Union[Enumerable[TCollection], Enumerable[TResult]]:
+        if len(args) == 0:
+            result_selector: Any = lambda _, x: x
+        else:  # len(args) == 1
+            result_selector = args[0]
+        def inner():
+            for elem in self:
+                for sub in collection_selector(elem):
+                    yield result_selector(elem, sub)
+        return Enumerable(inner)
+
+    def select_many2(self,
+        collection_selector: Callable[[TSource_co, int], Iterable[TCollection]],
+        *args: Callable[[TSource_co, TCollection], TResult],
+    ) -> Union[Enumerable[TCollection], Enumerable[TResult]]:
+        if len(args) == 0:
+            result_selector: Any = lambda _, x: x
+        else:  # len(args) == 1
+            result_selector = args[0]
+        def inner():
+            for i, elem in enumerate(self):
+                for sub in collection_selector(elem, i):
+                    yield result_selector(elem, sub)
+        return Enumerable(inner)
+
+    def to_dict(self,
+        key_selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TSource_co], TValue],
+    ) -> Union[Dict[TKey, TValue], Dict[TKey, TSource_co]]:
+        if len(args) == 0:
+            value_selector: Any = lambda x: x
+        else:  # len(args) == 1
+            value_selector = args[0]
+        return dict((key_selector(e), value_selector(e)) for e in self)
+
+    def to_set(self) -> Set[TSource_co]:
+        return {e for e in self}
+
     def to_list(self) -> List[TSource_co]:
-        return list(iter(self))
+        return [e for e in self]
+
+    def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            for elem in self:
+                if predicate(elem):
+                    yield elem
+        return Enumerable(inner)
+
+    def where2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            for i, elem in enumerate(self):
+                if predicate(elem, i):
+                    yield elem
+        return Enumerable(inner)
+
+    def zip(self,
+        second: Iterable[TOther],
+        *args: Callable[[TSource_co, TOther], TResult],
+    ) -> Union[Enumerable[TResult], Enumerable[Tuple[TSource_co, TOther]]]:
+        if len(args) == 0:
+            result_selector: Any = lambda x, y: (x, y)
+        else:  # len(args) == 1
+            result_selector = args[0]
+        def inner():
+            for x, y in zip(self, second):
+                yield result_selector(x, y)
+        return Enumerable(inner)
