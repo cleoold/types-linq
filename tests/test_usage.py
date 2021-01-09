@@ -345,6 +345,51 @@ class TestSelectManyMethod:
         ]
 
 
+class TestSkipMethod:
+    def test_some(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.skip(1).to_list() == [4, 6, 9, 10]
+        assert en.skip(3).to_list() == [9, 10]
+        assert en.skip(5).to_list() == []
+
+    def test_elems_fewer(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.skip(6).to_list() == []
+        assert en.skip(6).skip(2).to_list() == []
+
+    def test_count_zero_or_negative(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.skip(0).to_list() == lst
+        assert en.skip(-1).to_list() == lst
+
+
+class TestTakeMethod:
+    def test_some(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.take(3).to_list() == [1, 4, 6]
+        assert en.take(5).to_list() == lst
+
+    def test_more(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.take(6).to_list() == lst
+
+    def test_count_zero_or_negative(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.take(0).to_list() == []
+        assert en.take(-1).to_list() == []
+
+    def test_id(self):
+        lst = [1, 4, 6, 9, 10]
+        en = Enumerable(lst)
+        assert en.take(4).concat(en.skip(4)).to_list() == lst
+
+
 class TestWhereMethod:
     def test_where(self):
         gen_func = lambda: (i for i in range(0, 10))

@@ -213,6 +213,27 @@ class Enumerable(Generic[TSource_co]):
                     yield result_selector(elem, sub)
         return Enumerable(inner)
 
+    def skip(self, count: int) -> Enumerable[TSource_co]:
+        def inner():
+            iterator = iter(self)
+            try:
+                for _ in range(count):
+                    next(iterator)
+            except StopIteration:
+                return
+            yield from iterator
+        return Enumerable(inner)
+
+    def take(self, count: int) -> Enumerable[TSource_co]:
+        def inner():
+            iterator = iter(self)
+            try:
+                for _ in range(count):
+                    yield next(iterator)
+            except StopIteration:
+                return
+        return Enumerable(inner)
+
     def to_dict(self,
         key_selector: Callable[[TSource_co], TKey],
         *args: Callable[[TSource_co], TValue],

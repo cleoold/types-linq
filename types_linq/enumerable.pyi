@@ -216,6 +216,20 @@ class Enumerable(Generic[TSource_co]):
 
     # @@@ TODO
 
+    def skip(self, count: int) -> Enumerable[TSource_co]:
+        '''
+        Bypasses a specified number of elements in the sequence and then returns the remaining.
+        '''
+
+    # @@@ TODO
+
+    def take(self, count: int) -> Enumerable[TSource_co]:
+        '''
+        Returns a specified number of contiguous elements from the start of the sequence.
+        '''
+
+    # @@@ TODO
+
     @overload
     def to_dict(self,
         key_selector: Callable[[TSource_co], TKey],
