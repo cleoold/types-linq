@@ -25,6 +25,8 @@ class Enumerable(Generic[TSource_co]):
 
     def __len__(self) -> int: ...
 
+    def __reversed__(self) -> Iterator[TSource_co]: ...
+
     @overload
     def aggregate(self,
         seed: TAccumulate,
@@ -164,7 +166,17 @@ class Enumerable(Generic[TSource_co]):
         the sequence is empty.
         '''
 
+    def distinct(self) -> Enumerable[TSource_co]:
+        '''
+        Returns distinct elements from the sequence.
+        '''
+
     # @@@ TODO
+
+    def reverse(self) -> Enumerable[TSource_co]:
+        '''
+        Inverts the order of the elements in a sequence.
+        '''
 
     def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
         '''

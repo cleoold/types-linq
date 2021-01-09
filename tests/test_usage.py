@@ -284,6 +284,30 @@ class TestDefaultIfEmptyMethod:
         assert en.default_if_empty(17).to_list() == [17]
 
 
+class TestDistinctMethod:
+    def test_distinct(self):
+        lst = [1, 4, 5, 6, 4, 3, 1, 99]
+        en = Enumerable(lst)
+        distinct = en.distinct().to_list()
+        assert distinct == [1, 4, 5, 6, 3, 99]
+
+
+class TestReverseMethod:
+    def test_delayed(self):
+        gen = (i for i in range(5))
+        en = Enumerable(gen).reverse()
+        assert gen.gi_frame is not None
+        assert en.to_list() == [4, 3, 2, 1, 0]
+        assert gen.gi_frame is None
+
+    def test_call_reversed(self):
+        class OnlyHasReversed(BasicIterable[TSource_co]):
+            def __reversed__(self):
+                yield from [5, 9]
+        en = Enumerable(OnlyHasReversed([]))
+        assert en.reverse().to_list() == [5, 9]
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))

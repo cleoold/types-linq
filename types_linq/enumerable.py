@@ -1,6 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Set, Sized, Tuple, Type, TypeVar, Generic, Union
-
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Reversible, Sequence, Set, Sized, Tuple, Type, TypeVar, Generic, Union
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TResult = TypeVar('TResult')
@@ -44,6 +43,14 @@ class Enumerable(Generic[TSource_co]):
         count = 0
         for _ in self: count += 1
         return count
+
+    def __reversed__(self) -> Iterator[TSource_co]:
+        iterable = self._iter_factory()
+        # prefer calling __reversed__(), otherwise enumerate all items
+        # Sequence is an abstract base class without @runtime_checkable
+        if isinstance(iterable, (Sequence, Reversible)):
+            return reversed(iterable)
+        return reversed([elem for elem in iterable])
 
     @staticmethod
     def _raise_empty_sequence() -> NoReturn:
@@ -172,6 +179,19 @@ class Enumerable(Generic[TSource_co]):
                 return
             yield from iterator
         return Enumerable(inner)
+
+    def distinct(self) -> Enumerable[TSource_co]:
+        def inner():
+            s = set()
+            for elem in self:
+                if elem in s:
+                    continue
+                s.add(elem)
+                yield elem
+        return Enumerable(inner)
+
+    def reverse(self) -> Enumerable[TSource_co]:
+        return Enumerable(lambda: reversed(self))
 
     def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
         def inner():
