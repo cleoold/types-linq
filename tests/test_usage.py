@@ -4,7 +4,7 @@ from typing import Generic, Iterable, List, TypeVar, cast
 import pytest
 
 
-sys.path.append(os.path.abspath('..'))  # run in tests folder
+sys.path = [os.path.abspath('..')]  # run in tests folder
 sys.path.append(os.path.abspath('.'))  # run in root folder
 from types_linq import Enumerable
 
