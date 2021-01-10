@@ -1,5 +1,5 @@
 import sys, os
-from typing import Generic, Iterable, List, TypeVar, cast
+from typing import Generic, Iterable, List, Sequence, TypeVar, cast
 
 import pytest
 
@@ -306,6 +306,159 @@ class TestReverseMethod:
                 yield from [5, 9]
         en = Enumerable(OnlyHasReversed([]))
         assert en.reverse().to_list() == [5, 9]
+
+
+class TestElementAtMethod:
+    def test_overload1_0(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        assert en.element_at(0) == 7
+
+    def test_overload1_end(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        assert en.element_at(4) == 11
+
+    def test_overload1_out(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        with pytest.raises(IndexError):
+            en.element_at(5)
+
+    def test_overload2_out(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        assert en.element_at(5, float) == float
+
+    def test_call_getitem(self):
+        en = Enumerable(self.OnlyHasGetItem([]))
+        assert en.element_at(142512) == 'haha'
+
+    class OnlyHasGetItem(Sequence[TSource_co], BasicIterable[TSource_co]):
+        def __len__(self):
+            return 0
+        def __getitem__(self, _):
+            return 'haha'
+
+    class TestGetItem:
+        'element_at() does not cover all of the __getitem__() content. do them here.'
+        def test_no_arg(self):
+            gen = lambda: (i for i in range(5))
+            q = Enumerable(gen)[:]
+            assert q.to_list() == [0, 1, 2, 3, 4]
+
+        @pytest.mark.parametrize('slicing,expected', [
+            (slice(None, None, 1), [*range(15)][::1]),
+            (slice(None, None, 2), [*range(15)][::2]),
+            (slice(None, None, 3), [*range(15)][::3]),
+            (slice(None, None, 4), [*range(15)][::4]),
+            (slice(None, None, 5), [*range(15)][::5]),
+            (slice(None, None, 6), [*range(15)][::6]),
+            (slice(None, None, 14), [*range(15)][::14]),
+            (slice(None, None, 15), [*range(15)][::15]),  # [0]
+            (slice(None, None, 16), [*range(15)][::16]),  # [0]
+            (slice(None, None, 17), [*range(15)][::17]),  # [0]
+            (slice(None, None, -1), [*range(15)][::-1]),
+            (slice(None, None, -2), [*range(15)][::-2]),
+            (slice(None, None, -3), [*range(15)][::-3]),
+            (slice(None, None, -4), [*range(15)][::-4]),
+            (slice(None, None, -5), [*range(15)][::-5]),
+            (slice(None, None, -14), [*range(15)][::-14]),
+            (slice(None, None, -15), [*range(15)][::-15]),  # [14]
+            (slice(None, None, -16), [*range(15)][::-16]),  # [14]
+        ])
+        def test_steps(self, slicing: slice, expected: List[int]):
+            gen = lambda: (i for i in range(15))
+            q = Enumerable(gen)[slicing]
+            assert q.to_list() == expected
+
+        @pytest.mark.parametrize('slicing,expected', [
+            (slice(None, 7), list(range(0, 7))),
+            (slice(0, 0), []),
+            (slice(1, 1), []),
+            (slice(0, 7), list(range(0, 7))),
+            (slice(1, 7), list(range(1, 7))),
+            (slice(2, 7), list(range(2, 7))),
+            (slice(7, 7), list(range(7, 7))),  # []
+            (slice(8, 7), list(range(8, 7))),  # []
+            (slice(2, 8), list(range(2, 8))),
+            (slice(2, 7, 1), list(range(2, 7))),
+            (slice(2, 7, 2), list(range(2, 7, 2))),
+            (slice(2, 7, 3), list(range(2, 7, 3))),
+            (slice(3, 23, 2), list(range(3, 23, 2))),
+            (slice(3, 23, 3), list(range(3, 23, 3))),
+            (slice(7, 2, -1), list(range(7, 2, -1))),
+            (slice(7, 2, -2), list(range(7, 2, -2))),
+            (slice(7, 2, -3), list(range(7, 2, -3))),
+            (slice(23, 3, -2), list(range(23, 3, -2))),
+            (slice(23, 3, -3), list(range(23, 3, -3))),
+        ])
+        def test_within_inf_generator(self, slicing: slice, expected: List[int]):
+            def gen():
+                i = 0
+                while True:
+                    yield i
+                    i += 1
+            q = Enumerable(gen)[slicing]
+            assert q.to_list() == expected
+
+        @pytest.mark.parametrize('slicing,expected', [
+            (slice(None, 15, 1), [*range(30)][:15:1]),
+            (slice(None, 15, 2), [*range(30)][:15:2]),
+            (slice(None, 15, 3), [*range(30)][:15:3]),
+            (slice(None, 15, -1), [*range(30)][:15:-1]),
+            (slice(None, 15, -2), [*range(30)][:15:-2]),
+            (slice(None, 15, -3), [*range(30)][:15:-3]),
+        ])
+        def test_missing_start(self, slicing: slice, expected: List[int]):
+            gen = lambda: (i for i in range(30))
+            q = Enumerable(gen)[slicing]
+            assert q.to_list() == expected
+
+        @pytest.mark.parametrize('slicing,expected', [
+            (slice(23, None, 1), [*range(30)][23::1]),
+            (slice(23, None, 2), [*range(30)][23::2]),
+            (slice(23, None, 3), [*range(30)][23::3]),
+            (slice(23, None, -2), [*range(30)][23::-2]),
+            (slice(23, None, -3), [*range(30)][23::-3]),
+        ])
+        def test_missing_stop(self, slicing: slice, expected: List[int]):
+            gen = lambda: (i for i in range(30))
+            q = Enumerable(gen)[slicing]
+            assert q.to_list() == expected
+
+        @pytest.mark.parametrize('slicing,expected', [
+            (slice(-3, 23, -1),[*range(30)][-3:23:-1]),
+            (slice(23, -23, 1), [*range(30)][23:-23:1]),
+        ])
+        def test_negative_idx(self, slicing: slice, expected: List[int]):
+            gen = lambda: (i for i in range(30))
+            q = Enumerable(gen)[slicing]
+            assert q.to_list() == expected
+
+        def test_call_getitem(self):
+            en = Enumerable(TestElementAtMethod.OnlyHasGetItem([]))
+            assert en[slice(None)].to_list() == ['h', 'a', 'h', 'a']
+
+
+
+class TestEmptyMethod:
+    def test_empty(self):
+        assert Enumerable.empty().to_list() == []
+
+
+class TestExceptMethod:
+    def test_except1(self):
+        ints = [4, 88, 21, -5, 25, 12, 77, 79, 0, 0]
+        en = Enumerable(ints)
+        exc = en.except1([88, 77, 21, 79, 77])
+        assert exc.to_list() == [4, -5, 25, 12, 0]
+
+    def test_remove_nothing(self):
+        ints = [4, -5, 25, 12, 0]
+        en = Enumerable(ints)
+        exc = en.except1(Enumerable.empty().cast(int))
+        assert exc.to_list() == ints
 
 
 class TestSelectMethod:

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Reversible, Sequence, Set, Sized, Tuple, Type, TypeVar, Generic, Union
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, Tuple, Type, TypeVar, Generic, Union
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TResult = TypeVar('TResult')
@@ -10,7 +10,7 @@ TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
 
 
-class Enumerable(Generic[TSource_co]):
+class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     _iter_factory: Callable[[], Iterable[TSource_co]]
 
@@ -32,6 +32,65 @@ class Enumerable(Generic[TSource_co]):
                 return True
         return False
 
+    def _every(self, step: int) -> Enumerable[TSource_co]:
+        return self.where2(lambda _, i: i % step == 0)
+
+    def __getitem__(self,
+        index: Union[int, slice],
+    ) -> Union[TSource_co, Enumerable[TSource_co]]:
+        iterable = self._iter_factory()
+        if isinstance(index, int):
+            # prefer calling __getitem__(), otherwise fallback to for loop
+            # Sequence is an abstract base class without @runtime_checkable
+            if isinstance(iterable, Sequence):
+                # an appropriate implementation should raise IndexError
+                return iterable[index]
+            iterator = iter(iterable)
+            try:
+                for _ in range(index):
+                    next(iterator)
+                return next(iterator)
+            except StopIteration:
+                raise IndexError('Not enough elements in the sequence')
+
+        else:  # isinstance(index, slice)
+            # prefer calling __getitem__(), otherwise fallback
+            if isinstance(iterable, Sequence):
+                res = iterable[index]
+                return res if isinstance(res, Enumerable) else Enumerable(res)
+            # we do not enumerate all values if the begin and the end only involve
+            # nonnegative indices since in which case the sliced part can be obtained
+            # without reversing.
+            # otherwise have to enumerate all with using list's slice operator.
+            # (don't enumerate right away in this function, of course)
+            def inner(s: slice = index):
+                en = iterable if isinstance(iterable, Enumerable) else Enumerable(iterable)
+                start_is_none = s.start is None
+                stop_is_none = s.stop is None
+                step = s.step if s.step is not None else 1
+                if (start_is_none and stop_is_none) or (not start_is_none and s.start < 0) \
+                    or (not stop_is_none and s.stop < 0) or (stop_is_none):
+                    yield from en.to_list()[s]
+                    return
+                elif start_is_none:
+                    if s.stop >= 0:
+                        if step > 0:
+                            yield from en.take(s.stop)._every(step)
+                        else:
+                            yield from en.skip(s.stop + 1).reverse()._every(-step)
+                        return
+                    yield from en.to_list()[s]
+                elif s.start <= s.stop:
+                    en = en.skip(s.start).take(s.stop - s.start)
+                    if step > 0:
+                        yield from en._every(step)
+                    else:
+                        yield from en.reverse()._every(-step)
+                elif step <= 0:
+                    yield from en.skip(s.stop + 1).take(s.start - s.stop) \
+                        .reverse()._every(-step)
+            return Enumerable(inner)
+
     def __iter__(self) -> Iterator[TSource_co]:
         return iter(self._iter_factory())
 
@@ -41,7 +100,7 @@ class Enumerable(Generic[TSource_co]):
         if isinstance(iterable, Sized):
             return len(iterable)
         count = 0
-        for _ in self: count += 1
+        for _ in iterable: count += 1
         return count
 
     def __reversed__(self) -> Iterator[TSource_co]:
@@ -183,6 +242,30 @@ class Enumerable(Generic[TSource_co]):
     def distinct(self) -> Enumerable[TSource_co]:
         def inner():
             s = set()
+            for elem in self:
+                if elem in s:
+                    continue
+                s.add(elem)
+                yield elem
+        return Enumerable(inner)
+
+    def element_at(self, index: int, *args: TDefault) -> Union[TSource_co, TDefault]:
+        if len(args) == 0:
+            return self[index]  # type: ignore
+        else:  # len(args) == 1
+            default = args[0]
+            try:
+                return self[index]  # type: ignore
+            except IndexError:
+                return default
+
+    @staticmethod
+    def empty() -> Enumerable[TSource_co]:
+        return Enumerable(())
+
+    def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        def inner():
+            s = {*second}
             for elem in self:
                 if elem in s:
                     continue

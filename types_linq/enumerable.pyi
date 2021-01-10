@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Set, Tuple, Type, TypeVar, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -11,7 +11,7 @@ TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
 
 
-class Enumerable(Generic[TSource_co]):
+class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def __init__(self, iterable: Iterable[TSource_co]): ...
@@ -20,6 +20,12 @@ class Enumerable(Generic[TSource_co]):
     def __init__(self, iterable_factory: Callable[[], Iterable[TSource_co]]): ...
 
     def __contains__(self, value: object) -> bool: ...
+
+    @overload
+    def __getitem__(self, index: int) -> TSource_co: ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Enumerable[TSource_co]: ...
 
     def __iter__(self) -> Iterator[TSource_co]: ...
 
@@ -171,11 +177,36 @@ class Enumerable(Generic[TSource_co]):
         Returns distinct elements from the sequence.
         '''
 
+    @overload
+    def element_at(self, index: int) -> TSource_co:
+        '''
+        Returns the element at specified index in the sequence. `IndexError` is raised if it is
+        empty.
+        '''
+
+    @overload
+    def element_at(self, index: int, default: TDefault) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the element at specified index in the sequence. Default value is returned if it
+        is empty.
+        '''
+
+    @staticmethod
+    def empty() -> Enumerable[TSource_co]:
+        '''
+        Returns an empty enumerable.
+        '''
+
+    def except1(self, second: Enumerable[TSource_co]) -> Enumerable[TSource_co]:
+        '''
+        Produces the set difference of two sequences: self - second.
+        '''
+
     # @@@ TODO
 
     def reverse(self) -> Enumerable[TSource_co]:
         '''
-        Inverts the order of the elements in a sequence.
+        Inverts the order of the elements in the sequence.
         '''
 
     def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
