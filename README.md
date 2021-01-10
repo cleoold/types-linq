@@ -4,6 +4,12 @@
 
 This is an attempt to implement linq methods seen in .NET ([link](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=net-5.0)). Currently WIP.
 
+Goal:
+* Incorporates Enumerable method specs as precise as possible
+* Handles infinite streams (generators) smoothly like in _SICP_
+* Detailed typing support
+* Honours collections.abc interfaces
+
 To run the test cases, install `pytest`, and then invoke it under the current directory:
 ```sh
 $ pytest

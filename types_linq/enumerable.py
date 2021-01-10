@@ -273,6 +273,35 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 yield elem
         return Enumerable(inner)
 
+    def first(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
+        if len(args) == 0:
+            try:
+                return self[0]  # type: ignore
+            except IndexError as e:
+                raise ValueError(*e.args)
+
+        else:  # len(args) == 1
+            predicate = args[0]
+            for elem in self:
+                if predicate(elem):
+                    return elem
+            raise ValueError('No element satisfying condition')
+
+    def first2(self, *args):
+        if len(args) == 1:
+            default = args[0]
+            try:
+                return self[0]
+            except IndexError:
+                return default
+
+        else:  # len(args) == 2
+            predicate, default = args
+            for elem in self:
+                if predicate(elem):
+                    return elem
+            return default
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: reversed(self))
 

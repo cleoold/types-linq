@@ -180,15 +180,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def element_at(self, index: int) -> TSource_co:
         '''
-        Returns the element at specified index in the sequence. `IndexError` is raised if it is
-        empty.
+        Returns the element at specified index in the sequence. `IndexError` is raised if no such
+        element exists.
         '''
 
     @overload
     def element_at(self, index: int, default: TDefault) -> Union[TSource_co, TDefault]:
         '''
-        Returns the element at specified index in the sequence. Default value is returned if it
-        is empty.
+        Returns the element at specified index in the sequence. Default value is returned if no
+        such element exists.
         '''
 
     @staticmethod
@@ -197,9 +197,40 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Returns an empty enumerable.
         '''
 
-    def except1(self, second: Enumerable[TSource_co]) -> Enumerable[TSource_co]:
+    def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         '''
         Produces the set difference of two sequences: self - second.
+        '''
+
+    @overload
+    def first(self) -> TSource_co:
+        '''
+        Returns the first element of the sequence. Raises `ValueError` if there is no first
+        element.
+        '''
+
+    @overload
+    def first(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+        '''
+        Returns the first element of the sequence that satisfies the condition. Raises `ValueError`
+        if no such element exists.
+        '''
+
+    @overload
+    def first2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the first element of the sequence or a default value if there is no such
+        element.
+        '''
+
+    @overload
+    def first2(self,
+        predicate: Callable[[TSource_co], bool],
+        default: TDefault,
+    ) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the first element of the sequence that satisfies the condition or a default value if
+        no such element exists.
         '''
 
     # @@@ TODO

@@ -461,6 +461,46 @@ class TestExceptMethod:
         assert exc.to_list() == ints
 
 
+class TestFirstMethod:
+    def test_first_overload1_yes(self):
+        lst = ('a', 'b', 5, 'c')
+        en = Enumerable(lst)
+        assert en.first() is 'a'
+
+    def test_first_overload1_no(self):
+        with pytest.raises(ValueError):
+            Enumerable({}).first()
+
+    def test_first_overload2_yes(self):
+        lst = ('a', 'b', 5, 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.first(lambda e: isinstance(e, int)) == 5
+
+    def test_first_overload2_no(self):
+        lst = ('a', 'b', 5, 'c', 6, 'd')
+        en = Enumerable(lst)
+        with pytest.raises(ValueError):
+            assert en.first(lambda e: isinstance(e, tuple))
+
+    def test_first2_overload1_yes(self):
+        lst = ('a', 'b', 5, 'c')
+        en = Enumerable(lst)
+        assert en.first2(set) is 'a'
+
+    def test_first2_overload1_no(self):
+        assert Enumerable({}).first2(set) == set
+
+    def test_first2_overload2_yes(self):
+        lst = ('a', 'b', 5, 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.first2(lambda e: isinstance(e, int), 'A') == 5
+
+    def test_first2_overload2_no(self):
+        lst = ('a', 'b', 5, 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.first2(lambda e: isinstance(e, tuple), 'A') == 'A'
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
