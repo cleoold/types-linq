@@ -1,10 +1,18 @@
 import sys, os
 from collections.abc import Container, Iterable, Reversible, Sequence, Sized
 
+import pytest
 
 sys.path = [os.path.abspath('..')]  # run in tests folder
 sys.path.append(os.path.abspath('.'))  # run in root folder
 from types_linq import Enumerable
+
+
+def naturals():
+    i = 0
+    while True:
+        yield i
+        i += 1
 
 
 class TestAbc:
@@ -25,14 +33,41 @@ class TestIterMethod:
 
 class TestInfinite:
     def test_take(self):
-        def gen():
-            i = 0
-            while True:
-                yield i
-                i += 1
-        en = Enumerable(gen()).select(lambda i: i * 2)
+        en = Enumerable(naturals()).select(lambda i: i * 2)
         assert en.take(2).to_list() == [0, 2]
         assert en.take(3).to_list() == [4, 6, 8]
-        en2 = Enumerable(gen).select(lambda i: i * 2)
+        en2 = Enumerable(naturals).select(lambda i: i * 2)
         assert en2.take(2).to_list() == [0, 2]
         assert en2.take(2).to_list() == [0, 2]
+
+
+class TestConfigureRepeatableMethod:
+    def test_enumerate_same_generator(self):
+        gen = (i for i in range(6))
+        en = Enumerable(gen).configure_repeatable()
+        assert en.to_list() == [0, 1, 2, 3, 4, 5]
+        assert en.count() == 6
+        assert en.to_list() == [0, 1, 2, 3, 4, 5]
+
+    def test_generator_empty(self):
+        gen = (i for i in range(0))
+        en = Enumerable(gen).configure_repeatable()
+        assert en.to_list() == []
+        assert en.to_list() == []
+
+    def test_multiple_query_race(self):
+        en = Enumerable(naturals()).configure_repeatable()
+        assert en.take(1).to_list() == [0]
+        assert en.take(1).to_list() == [0]
+        assert en.take(3).to_list() == [0, 1, 2]
+        assert en.take(1).to_list() == [0]
+        assert en.take(3).to_list() == [0, 1, 2]
+        assert en.take(5).to_list() == [0, 1, 2, 3, 4]
+        assert en.take(7).to_list() == [0, 1, 2, 3, 4, 5, 6]
+        assert en.take(2).to_list() == [0, 1]
+
+    def test_dont_configure_twice(self):
+        gen = (i for i in range(0))
+        en = Enumerable(gen).configure_repeatable()
+        with pytest.raises(TypeError):
+            en.configure_repeatable()

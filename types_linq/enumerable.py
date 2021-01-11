@@ -17,6 +17,7 @@ TCollection = TypeVar('TCollection')
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     _iter_factory: Callable[[], Iterable[TSource_co]]
+    _configured_repeatable: bool = False
 
     def __init__(self,
         it: Union[Iterable[TSource_co], Callable[[], Iterable[TSource_co]]]
@@ -206,6 +207,31 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             yield from self
             yield from second
         return Enumerable(inner)
+
+    def configure_repeatable(self) -> Enumerable[TSource_co]:
+        if self._configured_repeatable:
+            raise TypeError('Already configured')
+
+        iterator = iter(self)
+        enumerated_values: List[TSource_co] = []
+        def closure():
+            i = 0
+            while True:
+                while i < len(enumerated_values):
+                    res = enumerated_values[i]
+                    i += 1
+                    yield res
+                try:
+                    res = next(iterator)
+                    enumerated_values.append(res)
+                    i += 1
+                    yield res
+                except StopIteration:
+                    break
+
+        self._iter_factory = closure
+        self._configured_repeatable = True
+        return self
 
     def contains(self, value: object, *args: Callable[..., bool]):
         if len(args) == 0:
