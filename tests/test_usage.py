@@ -1,12 +1,12 @@
 import sys, os
-from typing import Generic, Iterable, List, Sequence, TypeVar, cast
+from typing import Generic, Iterable, List, Sequence, Tuple, TypeVar, cast
 
 import pytest
 
 
 sys.path = [os.path.abspath('..')]  # run in tests folder
 sys.path.append(os.path.abspath('.'))  # run in root folder
-from types_linq import Enumerable
+from types_linq import Enumerable, lookup
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -619,6 +619,43 @@ class TestWhereMethod:
         en = Enumerable(gen_func)
         wholes = en.where2(lambda e, i: e % 2 == i % 3 == 0)
         assert wholes.to_list() == [0, 6]
+
+
+class TestToLookupMethod:
+    food: List[Tuple[str, str]] = [
+        ('main', 'ramen'), ('main', 'noodles'), ('side', 'chicken'),
+        ('main', 'spaghetti'), ('snack', 'popcorns'), ('side', 'apples'),
+        ('side', 'orange'), ('drink', 'coke'), ('main', 'birthdaycake'),
+    ]
+
+    def test_overload1_and_basic_lookup_usage(self):
+        en = Enumerable(self.food)
+        lookup = en.to_lookup(lambda e: e[0], lambda e: e[1])
+        assert lookup.count == 4
+        assert lookup.contains('side') and not lookup.contains('ramen')
+        assert lookup['main'].to_list() == [
+            'ramen', 'noodles', 'spaghetti', 'birthdaycake'
+        ]
+        assert lookup['side'].to_list() == ['chicken', 'apples', 'orange']
+        assert lookup['snack'].to_list() == ['popcorns']
+        assert lookup['drink'].to_list() == ['coke']
+        assert lookup['wtf'].to_list() == []
+
+    def test_id(self):
+        flat1 = Enumerable(self.food) \
+            .to_lookup(lambda e: e[0], lambda e: e[1]) \
+            .select_many(lambda e: e.to_list()) \
+            .to_set()
+        target = Enumerable(self.food).select(lambda e: e[1]).to_set()
+        assert flat1 == target
+
+    def test_overload2(self):
+        en = Enumerable(self.food)
+        lookup = en.to_lookup(lambda e: e[0])
+        assert lookup['snack'].to_list() == [('snack', 'popcorns')]
+
+    def test_empty(self):
+        assert Enumerable.empty().to_lookup(lambda e: e).count == 0
 
 
 class TestZipMethod:

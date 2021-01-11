@@ -1,5 +1,7 @@
 from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
 
+from .lookup import Lookup
+
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TAccumulate = TypeVar('TAccumulate')
@@ -331,6 +333,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def to_list(self) -> List[TSource_co]:
         '''
         Enumerates all values and returns a list containing them.
+        '''
+
+    @overload
+    def to_lookup(self,
+        key_selector: Callable[[TSource_co], TKey],
+        value_selector: Callable[[TSource_co], TValue],
+    ) -> Lookup[TKey, TValue]:
+        '''
+        Enumerates all values and returns a lookup containing them according to specified key
+        selector and value selector.
+        '''
+
+    @overload
+    def to_lookup(self,
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Lookup[TKey, TSource_co]:
+        '''
+        Enumerates all values and returns a lookup containing them according to the specified
+        key selector.
         '''
 
     # @@@ TODO

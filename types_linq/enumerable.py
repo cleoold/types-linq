@@ -1,5 +1,9 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, Tuple, Type, TypeVar, Generic, Union
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, TypeVar, Generic, Union
+
+if TYPE_CHECKING:
+    from .lookup import Lookup
+
 
 TSource_co = TypeVar('TSource_co', covariant=True)
 TResult = TypeVar('TResult')
@@ -381,6 +385,18 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def to_list(self) -> List[TSource_co]:
         return [e for e in self]
+
+    def to_lookup(self,
+        key_selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TSource_co], TValue],
+    ) -> Union[Lookup[TKey, TValue], Lookup[TKey, TSource_co]]:
+        from .lookup import Lookup
+        if len(args) == 0:
+            value_selector: Any = lambda x: x
+        else:  # len(args) == 1
+            value_selector = args[0]
+        res = Lookup(self, key_selector, value_selector)
+        return res
 
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
         def inner():
