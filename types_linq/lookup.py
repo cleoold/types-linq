@@ -30,6 +30,7 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
             key = key_selector(src)
             elem = value_selector(src)
             if key not in self._groupings:
+                # ordered dict keys
                 self._groupings[key] = Grouping(key)
             self._groupings[key]._append(elem)
 
@@ -51,7 +52,7 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
         return Enumerable.empty()  # type: ignore
 
     def apply_result_selector(self,
-        result_selector: Callable[[TKey_co, Iterable[TValue_co]], TResult],
+        result_selector: Callable[[TKey_co, Enumerable[TValue_co]], TResult],
     ) -> Enumerable[TResult]:
         '''
         Applies a transform function to each key and its associated values, then returns the

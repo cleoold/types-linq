@@ -1,4 +1,5 @@
 import sys, os
+import math
 from typing import Generic, Iterable, List, Sequence, Tuple, TypeVar, cast
 
 import pytest
@@ -499,6 +500,67 @@ class TestFirstMethod:
         lst = ('a', 'b', 5, 'c', 6, 'd')
         en = Enumerable(lst)
         assert en.first2(lambda e: isinstance(e, tuple), 'A') == 'A'
+
+
+class TestGroupByMethod:
+    pets_list: List[Tuple[str, float]] = [
+        ('Barley', 8.3), ('Boots', 4.9), ('Whiskers', 1.5), ('Daisy', 4.3),
+        ('Roman', 8.6), ('Fangus', 8.6), ('Roam', 2.2), ('Roll', 1.4),
+    ]
+
+    def test_group_by_overload1(self):
+        en = Enumerable(TestGroupByMethod.pets_list)
+        q = en.group_by(
+            lambda pet: math.floor(pet[1]),
+            lambda pet: pet[0],
+            lambda age_floored, names: (age_floored, names.to_list()),
+        )
+        assert q.to_list() == [
+            (8, ['Barley', 'Roman', 'Fangus']),
+            (4, ['Boots', 'Daisy']),
+            (1, ['Whiskers', 'Roll']),
+            (2, ['Roam']),
+        ]
+
+    def test_group_by_overload2(self):
+        en = Enumerable(TestGroupByMethod.pets_list)
+        q = en.group_by(
+            lambda pet: math.floor(pet[1]),
+            lambda pet: pet[0],
+        )
+        # simulate for loop
+        it = iter(q)
+        g1 = next(it)
+        assert g1.key == 8
+        assert g1.to_list() == ['Barley', 'Roman', 'Fangus']
+        next(it); next(it); next(it)
+        with pytest.raises(StopIteration):
+            next(it)
+
+    def test_group_by2_overload1(self):
+        en = Enumerable(TestGroupByMethod.pets_list)
+        q = en.group_by2(
+            lambda pet: math.floor(pet[1]),
+            lambda age_floored, names: (age_floored, names.to_list()),
+        )
+        assert q.to_list() == [
+            (8, [('Barley', 8.3), ('Roman', 8.6), ('Fangus', 8.6)]),
+            (4, [('Boots', 4.9), ('Daisy', 4.3)]),
+            (1, [('Whiskers', 1.5), ('Roll', 1.4)]),
+            (2, [('Roam', 2.2)]),
+        ]
+
+    def test_group_by2_overload2(self):
+        en = Enumerable(TestGroupByMethod.pets_list)
+        q = en.group_by2(lambda pet: math.floor(pet[1]))
+        # simulate for loop
+        it = iter(q)
+        g1 = next(it)
+        assert g1.key == 8
+        assert g1.to_list() == [('Barley', 8.3), ('Roman', 8.6), ('Fangus', 8.6)]
+        next(it); next(it); next(it)
+        with pytest.raises(StopIteration):
+            next(it)
 
 
 class TestSelectMethod:

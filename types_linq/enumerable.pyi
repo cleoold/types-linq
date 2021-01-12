@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
 
 from .lookup import Lookup
+from .grouping import Grouping
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -233,6 +234,44 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Returns the first element of the sequence that satisfies the condition or a default value if
         no such element exists.
+        '''
+
+    @overload
+    def group_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        value_selector: Callable[[TSource_co], TValue],
+        result_selector: Callable[[TKey, Enumerable[TValue]], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Groups the elements of the sequence according to specified key selector and value selector. Then
+        it returns the result value using each grouping and its key.
+        '''
+
+    @overload
+    def group_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        value_selector: Callable[[TSource_co], TValue],
+    ) -> Enumerable[Grouping[TKey, TValue]]:
+        '''
+        Groups the elements of the sequence according to specified key selector and value selector.
+        '''
+
+    @overload
+    def group_by2(self,
+        key_selector: Callable[[TSource_co], TKey],
+        result_selector: Callable[[TKey, Enumerable[TSource_co]], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Groups the elements of the sequence according to a specified key selector function and creates a
+        result value using each grouping and its key.
+        '''
+
+    @overload
+    def group_by2(self,
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[Grouping[TKey, TSource_co]]:
+        '''
+        Groups the elements of the sequence according to a specified key selector function.
         '''
 
     # @@@ TODO

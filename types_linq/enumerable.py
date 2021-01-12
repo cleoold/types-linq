@@ -3,6 +3,7 @@ from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoR
 
 if TYPE_CHECKING:
     from .lookup import Lookup
+    from .grouping import Grouping
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -305,6 +306,33 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 if predicate(elem):
                     return elem
             return default
+
+    def group_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        value_selector: Callable[[TSource_co], TValue],
+        *args: Callable[[TKey, Enumerable[TValue]], TResult],
+    ) -> Union[Enumerable[TResult], Enumerable[Grouping[TKey, TValue]]]:
+        from .lookup import Lookup
+        if len(args) == 1:
+            result_selector = args[0]
+            inner = lambda: Lookup(self, key_selector, value_selector) \
+                .apply_result_selector(result_selector)  # type: ignore
+        else:  # len(args) == 0:
+            inner = lambda: Lookup(self, key_selector, value_selector)
+        return Enumerable(inner)
+
+    def group_by2(self,
+        key_selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TKey, Enumerable[TSource_co]], TResult],
+    ) -> Union[Enumerable[TResult], Enumerable[Grouping[TKey, TSource_co]]]:
+        from .lookup import Lookup
+        if len(args) == 1:
+            result_selector = args[0]
+            inner = lambda: Lookup(self, key_selector, lambda x: x) \
+                .apply_result_selector(result_selector)  # type: ignore
+        else:  # len(args) == 0:
+            inner = lambda: Lookup(self, key_selector, lambda x: x)
+        return Enumerable(inner)
 
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: reversed(self))
