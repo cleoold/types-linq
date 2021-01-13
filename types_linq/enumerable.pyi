@@ -12,6 +12,7 @@ TOther = TypeVar('TOther')
 TKey = TypeVar('TKey')
 TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
+TInner = TypeVar('TInner')
 
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
@@ -272,6 +273,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Enumerable[Grouping[TKey, TSource_co]]:
         '''
         Groups the elements of the sequence according to a specified key selector function.
+        '''
+
+    def group_join(self,
+        inner: Iterable[TInner],
+        outer_key_selector: Callable[[TSource_co], TKey],
+        inner_key_selector: Callable[[TInner], TKey],
+        result_selector: Callable[[TSource_co, Enumerable[TInner]], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Correlates the elements of two sequences based on equality of keys and groups the results using the
+        selector.
         '''
 
     # @@@ TODO

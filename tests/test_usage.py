@@ -1,6 +1,6 @@
 import sys, os
 import math
-from typing import Generic, Iterable, List, Sequence, Tuple, TypeVar, cast
+from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
 
 import pytest
 
@@ -561,6 +561,70 @@ class TestGroupByMethod:
         next(it); next(it); next(it)
         with pytest.raises(StopIteration):
             next(it)
+
+
+class TestGroupJoinMethod:
+    def test_group_join(self):
+        class Person(NamedTuple):
+            name: str
+        class Pet(NamedTuple):
+            name: str
+            owner: Person
+        magnus = Person('Hedlund, Magnus')
+        terry = Person('Adams, Terry')
+        charlotte = Person('Weiss, Charlotte')
+        poor = Person('Animal, No')
+        barley = Pet('Barley', owner=terry)
+        boots = Pet('Boots', owner=terry)
+        whiskers = Pet('Whiskers', owner=charlotte)
+        daisy = Pet('Daisy', owner=magnus)
+        roman = Pet('Roman', owner=terry)
+        people = [magnus, terry, charlotte, poor]
+        pets = [barley, boots, whiskers, daisy, roman]
+        en = Enumerable(people)
+        q = en.group_join(
+            pets,
+            lambda person: person,
+            lambda pet: pet.owner,
+            lambda person, pet_collection: (
+                person.name,
+                pet_collection.select(lambda pet: pet.name).to_list(),
+            ),
+        )
+        assert q.to_list() == [
+            ('Hedlund, Magnus', ['Daisy']),
+            ('Adams, Terry', ['Barley', 'Boots', 'Roman']),
+            ('Weiss, Charlotte', ['Whiskers']),
+            ('Animal, No', []),  # empty match still shown
+        ]
+
+    def test_outer_same_key_twice(self):
+        outer: List[Tuple[str, int]] = [
+            ('Tim', 1234), ('Bob', 9865), ('Robert', 9865)
+        ]
+        inner: List[Tuple[int, int, int]] = [
+            (98765, 1234, 9865), (34390, 9865, 19),
+        ]
+        en = Enumerable(outer)
+        q = en.group_join(
+            inner,
+            lambda e: e[1],
+            lambda e: e[1],
+            lambda o, ic: (
+                o[0],
+                ic.select(lambda c: c[0]).to_list(),
+                ic.select(lambda c: c[2]).to_list()
+            ),
+        )
+        assert q.to_list() == [
+            ('Tim', [98765], [9865]), ('Bob', [34390], [19]), ('Robert', [34390], [19]),
+        ]
+
+    def test_inner_empty(self):
+        outer = [16, 17, 15]
+        en = Enumerable(outer)
+        q = en.group_join([], lambda e: e, lambda e: e, lambda o, ic: (o, ic.to_list()))
+        assert q.to_list() == [(16, []), (17, []), (15, [])]
 
 
 class TestSelectMethod:

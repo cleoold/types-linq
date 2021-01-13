@@ -13,6 +13,7 @@ TOther = TypeVar('TOther')
 TKey = TypeVar('TKey')
 TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
+TInner = TypeVar('TInner')
 
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
@@ -333,6 +334,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         else:  # len(args) == 0:
             inner = lambda: Lookup(self, key_selector, lambda x: x)
         return Enumerable(inner)
+
+    def group_join(self,
+        inner: Iterable[TInner],
+        outer_key_selector: Callable[[TSource_co], TKey],
+        inner_key_selector: Callable[[TInner], TKey],
+        result_selector: Callable[[TSource_co, Enumerable[TInner]], TResult],
+    ) -> Enumerable[TResult]:
+        from .lookup import Lookup
+        def inner_gen():
+            lookup = Lookup(inner, inner_key_selector, lambda x: x)
+            for outer_item in self:
+                group = lookup[outer_key_selector(outer_item)]
+                yield result_selector(outer_item, group)  # type: ignore
+        return Enumerable(inner_gen)
 
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: reversed(self))
