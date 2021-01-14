@@ -286,6 +286,21 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         selector.
         '''
 
+    def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        '''
+        Produces the set intersection of two sequences: self * second.
+        '''
+
+    def join(self,
+        inner: Iterable[TInner],
+        outer_key_selector: Callable[[TSource_co], TKey],
+        inner_key_selector: Callable[[TInner], TKey],
+        result_selector: Callable[[TSource_co, TInner], TResult],
+    ) -> Enumerable[TResult]:
+        '''
+        Correlates the elements of two sequences based on matching keys.
+        '''
+
     # @@@ TODO
 
     def reverse(self) -> Enumerable[TSource_co]:

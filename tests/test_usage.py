@@ -452,7 +452,7 @@ class TestExceptMethod:
     def test_except1(self):
         ints = [4, 88, 21, -5, 25, 12, 77, 79, 0, 0]
         en = Enumerable(ints)
-        exc = en.except1([88, 77, 21, 79, 77])
+        exc = en.except1([88, 77, 21, 66, 79, 77])
         assert exc.to_list() == [4, -5, 25, 12, 0]
 
     def test_remove_nothing(self):
@@ -625,6 +625,66 @@ class TestGroupJoinMethod:
         en = Enumerable(outer)
         q = en.group_join([], lambda e: e, lambda e: e, lambda o, ic: (o, ic.to_list()))
         assert q.to_list() == [(16, []), (17, []), (15, [])]
+
+
+class TestIntersectMethod:
+    def test_intersect(self):
+        ints = [4, 88, 21, -5, 25, 12, 77, 77, 79, 77, 0, 0]
+        en = Enumerable(ints)
+        intersect = en.intersect([88, 34, 21, 66, 79, 77])
+        assert intersect.to_list() == [88, 21, 77, 79]
+
+    def test_showup_multiple(self):
+        ints = [6, 6, 6, 6]
+        en = Enumerable(ints)
+        intersect = en.intersect([6, 6, 6])
+        assert intersect.to_list() == [6]
+
+    def test_keep_nothing(self):
+        ints = [4, -5, 25, 12, 0]
+        en = Enumerable(ints)
+        intersect = en.intersect(Enumerable.empty().cast(int))
+        assert intersect.to_list() == []
+
+
+class TestJoinMethod:
+    def test_join(self):
+        class Person(NamedTuple):
+            name: str
+        class Pet(NamedTuple):
+            name: str
+            owner: Person
+        magnus = Person('Hedlund, Magnus')
+        terry = Person('Adams, Terry')
+        charlotte = Person('Weiss, Charlotte')
+        poor = Person('Animal, No')
+        barley = Pet('Barley', owner=terry)
+        boots = Pet('Boots', owner=terry)
+        whiskers = Pet('Whiskers', owner=charlotte)
+        daisy = Pet('Daisy', owner=magnus)
+        roman = Pet('Roman', owner=terry)
+        people = [magnus, terry, charlotte, poor]
+        pets = [barley, boots, whiskers, daisy, roman]
+        en = Enumerable(people)
+        q = en.join(
+            pets,
+            lambda person: person,
+            lambda pet: pet.owner,
+            lambda person, pet: (person.name, pet.name),
+        )
+        assert q.to_list() == [
+            ('Hedlund, Magnus', 'Daisy'),
+            ('Adams, Terry', 'Barley'),
+            ('Adams, Terry', 'Boots'),
+            ('Adams, Terry', 'Roman'),
+            ('Weiss, Charlotte', 'Whiskers'),
+        ]
+
+    def test_inner_empty(self):
+        outer = [16, 17, 15]
+        en = Enumerable(outer)
+        q = en.join([], lambda e: e, lambda e: e, lambda o, ic: (o, ic.to_list()))
+        assert q.to_list() == []
 
 
 class TestSelectMethod:

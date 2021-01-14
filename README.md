@@ -7,6 +7,7 @@ This is an attempt to implement linq methods seen in .NET ([link](https://docs.m
 Goal:
 * Incorporates Enumerable method specs as precise as possible
 * Handles infinite streams (generators) smoothly like in _SICP_
+  * Deferred evaluations
 * Detailed typing support
 * Honours collections.abc interfaces
 

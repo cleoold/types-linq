@@ -349,6 +349,30 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 yield result_selector(outer_item, group)  # type: ignore
         return Enumerable(inner_gen)
 
+    def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        def inner():
+            s = {*second}
+            for elem in self:
+                if elem not in s:
+                    continue
+                s.remove(elem)
+                yield elem
+        return Enumerable(inner)
+
+    def join(self,
+        inner: Iterable[TInner],
+        outer_key_selector: Callable[[TSource_co], TKey],
+        inner_key_selector: Callable[[TInner], TKey],
+        result_selector: Callable[[TSource_co, TInner], TResult],
+    ) -> Enumerable[TResult]:
+        from .lookup import Lookup
+        def inner_gen():
+            lookup = Lookup(inner, inner_key_selector, lambda x: x)
+            for outer_item in self:
+                for inner_item in lookup[outer_key_selector(outer_item)]:
+                    yield result_selector(outer_item, inner_item)
+        return Enumerable(inner_gen)
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: reversed(self))
 
