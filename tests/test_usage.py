@@ -240,12 +240,16 @@ class TestContainsMethod:
         assert en.contains(120, lambda lhs, rhs: lhs == chr(rhs)) is True
         assert en.contains(123, lambda lhs, rhs: lhs == chr(rhs)) is False
 
-    def test_call_in(self):
+    def test_fallingback(self):
         class OnlyHasIn(BasicIterable[TSource_co]):
             def __contains__(self, _: object):
                 return True
         en = Enumerable(OnlyHasIn([]))
-        assert en.contains(1) is en.contains(89) is en.contains('') is True
+        assert en.contains(1) is en.contains(89) is en.contains('') is False
+        assert (1 in en) is (89 in en) is ('' in en) is True
+        en2 = Enumerable(BasicIterable([]))
+        assert en2.contains(1) is en2.contains(89) is en2.contains('') is False
+        assert (1 in en2) is (89 in en2) is ('' in en2) is False
 
 
 class TestCountMethod:
@@ -260,12 +264,16 @@ class TestCountMethod:
         assert en.count(lambda e: isinstance(e, str)) == 3
         assert en.count(lambda e: isinstance(e, float)) == 0
 
-    def test_call_len(self):
+    def test_fallback(self):
         class OnlyHasLen(BasicIterable[TSource_co]):
             def __len__(self):
                 return 179
         en = Enumerable(OnlyHasLen([]))
-        assert en.count() == 179
+        assert en.count() == 0
+        assert len(en) == 179
+        en2 = Enumerable(BasicIterable([]))
+        assert en2.count() == 0
+        assert len(en2) == 0
 
 
 class TestDefaultIfEmptyMethod:
@@ -301,12 +309,16 @@ class TestReverseMethod:
         assert en.to_list() == [4, 3, 2, 1, 0]
         assert gen.gi_frame is None
 
-    def test_call_reversed(self):
+    def test_fallback(self):
         class OnlyHasReversed(BasicIterable[TSource_co]):
             def __reversed__(self):
                 yield from [5, 9]
-        en = Enumerable(OnlyHasReversed([]))
-        assert en.reverse().to_list() == [5, 9]
+        en = Enumerable(OnlyHasReversed([1, 2]))
+        assert en.reverse().to_list() == [2, 1]
+        assert [i for i in reversed(en)] == [5, 9]
+        en2 = Enumerable(BasicIterable([1, 2]))
+        assert en2.reverse().to_list() == [2, 1]
+        assert [i for i in reversed(en2)] == [2, 1]
 
 
 class TestElementAtMethod:
@@ -331,11 +343,20 @@ class TestElementAtMethod:
         en = Enumerable(gen)
         assert en.element_at(5, float) == float
 
-    def test_call_getitem(self):
+    def test_fallback(self):
         en = Enumerable(self.OnlyHasGetItem([]))
-        assert en.element_at(142512) == 'haha'
+        with pytest.raises(IndexError):
+            en.element_at(142512)
+        assert en[142512] == 'haha'
+        en2 = Enumerable(BasicIterable([]))
+        with pytest.raises(IndexError):
+            en2.element_at(142512)
+        with pytest.raises(IndexError):
+            en2[142512]
 
-    class OnlyHasGetItem(Sequence[TSource_co], BasicIterable[TSource_co]):
+    class OnlyHasGetItem(BasicIterable[TSource_co], Sequence[TSource_co]):
+        # note: we get into troubles if Sequence is the first superclass
+        # since its __iter__ method would be chosen over that of BasicIterable
         def __len__(self):
             return 0
         def __getitem__(self, _):

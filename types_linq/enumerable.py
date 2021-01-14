@@ -28,27 +28,32 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         else:
             self._iter_factory = lambda it_=it: it_
 
-    def __contains__(self, value: object) -> bool:
+    # 'fallback = F' -> calls dunder methods if available
+    #                  -> otherwise calls own implementation
+    # 'fallback = T'-> calls own implementation
+    def _contains_impl(self, value: object, fallback: bool) -> bool:
         iterable = self._iter_factory()
-        # prefer calling __contains__(), otherwise fallback to for loop
-        if isinstance(iterable, Container):
+        if not fallback and isinstance(iterable, Container):
             return value in iterable
         for elem in iterable:
             if elem == value:
                 return True
         return False
 
+    def __contains__(self, value: object) -> bool:
+        return self._contains_impl(value, fallback=False)
+
     def _every(self, step: int) -> Enumerable[TSource_co]:
         return self.where2(lambda _, i: i % step == 0)
 
-    def __getitem__(self,
+    def _getitem_impl(self,
         index: Union[int, slice],
+        fallback: bool,
     ) -> Union[TSource_co, Enumerable[TSource_co]]:
         iterable = self._iter_factory()
         if isinstance(index, int):
-            # prefer calling __getitem__(), otherwise fallback to for loop
             # Sequence is an abstract base class without @runtime_checkable
-            if isinstance(iterable, Sequence):
+            if not fallback and isinstance(iterable, Sequence):
                 # an appropriate implementation should raise IndexError
                 return iterable[index]
             iterator = iter(iterable)
@@ -60,8 +65,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 raise IndexError('Not enough elements in the sequence')
 
         else:  # isinstance(index, slice)
-            # prefer calling __getitem__(), otherwise fallback
-            if isinstance(iterable, Sequence):
+            if not fallback and isinstance(iterable, Sequence):
                 res = iterable[index]
                 return res if isinstance(res, Enumerable) else Enumerable(res)
             # we do not enumerate all values if the begin and the end only involve
@@ -97,25 +101,34 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                         .reverse()._every(-step)
             return Enumerable(inner)
 
+    def __getitem__(self,
+        index: Union[int, slice],
+    ) -> Union[TSource_co, Enumerable[TSource_co]]:
+        return self._getitem_impl(index, fallback=False)
+
     def __iter__(self) -> Iterator[TSource_co]:
         return iter(self._iter_factory())
 
-    def __len__(self) -> int:
+    def _len_impl(self, fallback: bool) -> int:
         iterable = self._iter_factory()
-        # prefer calling __len__(), otherwise fallback to for loop
-        if isinstance(iterable, Sized):
+        if not fallback and isinstance(iterable, Sized):
             return len(iterable)
         count = 0
         for _ in iterable: count += 1
         return count
 
-    def __reversed__(self) -> Iterator[TSource_co]:
+    def __len__(self) -> int:
+        return self._len_impl(fallback=False)
+
+    def _reversed_impl(self, fallback: bool) -> Iterator[TSource_co]:
         iterable = self._iter_factory()
-        # prefer calling __reversed__(), otherwise enumerate all items
         # Sequence is an abstract base class without @runtime_checkable
-        if isinstance(iterable, (Sequence, Reversible)):
+        if not fallback and isinstance(iterable, (Sequence, Reversible)):
             return reversed(iterable)
         return reversed([elem for elem in iterable])
+
+    def __reversed__(self) -> Iterator[TSource_co]:
+        return self._reversed_impl(fallback=False)
 
     @staticmethod
     def _raise_empty_sequence() -> NoReturn:
@@ -211,7 +224,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def contains(self, value: object, *args: Callable[..., bool]):
         if len(args) == 0:
-            return value in self
+            return self._contains_impl(value, fallback=True)
 
         else:  # len(args) == 1
             comparer = args[0]
@@ -222,7 +235,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def count(self, *args: Callable[[TSource_co], bool]) -> int:
         if len(args) == 0:
-            return len(self)
+            return self._len_impl(fallback=True)
 
         else:  # len(args) == 1
             predicate = args[0]
@@ -257,11 +270,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def element_at(self, index: int, *args: TDefault) -> Union[TSource_co, TDefault]:
         if len(args) == 0:
-            return self[index]  # type: ignore
+            return self._getitem_impl(index, fallback=True)  # type: ignore
         else:  # len(args) == 1
             default = args[0]
             try:
-                return self[index]  # type: ignore
+                return self._getitem_impl(index, fallback=True)  # type: ignore
             except IndexError:
                 return default
 
@@ -282,7 +295,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def first(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
         if len(args) == 0:
             try:
-                return self[0]  # type: ignore
+                return self.element_at(0)  # type: ignore
             except IndexError as e:
                 raise ValueError(*e.args)
 
@@ -297,7 +310,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if len(args) == 1:
             default = args[0]
             try:
-                return self[0]
+                return self.element_at(0)  # type: ignore
             except IndexError:
                 return default
 
@@ -374,7 +387,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(inner_gen)
 
     def reverse(self) -> Enumerable[TSource_co]:
-        return Enumerable(lambda: reversed(self))
+        return Enumerable(lambda: self._reversed_impl(fallback=True))
 
     def select(self, selector: Callable[[TSource_co], TResult]) -> Enumerable[TResult]:
         def inner():

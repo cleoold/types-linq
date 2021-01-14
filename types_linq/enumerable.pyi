@@ -18,24 +18,50 @@ TInner = TypeVar('TInner')
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
-    def __init__(self, iterable: Iterable[TSource_co]): ...
+    def __init__(self, iterable: Iterable[TSource_co]):
+        '''
+        Wraps an iterable.
+        '''
 
     @overload
-    def __init__(self, iterable_factory: Callable[[], Iterable[TSource_co]]): ...
+    def __init__(self, iterable_factory: Callable[[], Iterable[TSource_co]]):
+        '''
+        Wraps an iterable returned from the iterable factory. The factory will be called whenever
+        an enumerating operation is performed.
+        '''
 
-    def __contains__(self, value: object) -> bool: ...
+    def __contains__(self, value: object) -> bool:
+        '''
+        Tests whether the sequence contains the specified element. Prefers calling `__contains__()`
+        on the wrapped iterable if available, otherwise, calls `self.contains()`.
+        '''
 
     @overload
-    def __getitem__(self, index: int) -> TSource_co: ...
+    def __getitem__(self, index: int) -> TSource_co:
+        '''
+        Returns the element at specified index in the sequence. Prefers calling `__getitem__()` on the
+        wrapped iterable if available, otherwise, calls `self.element_at()`.
+        '''
 
     @overload
     def __getitem__(self, index: slice) -> Enumerable[TSource_co]: ...
 
-    def __iter__(self) -> Iterator[TSource_co]: ...
+    def __iter__(self) -> Iterator[TSource_co]:
+        '''
+        Returns an iterator the enumerates the values in the sequence.
+        '''
 
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        '''
+        Returns the number of elements in the sequence. Prefers calling `__len__()` on the wrapped iterable
+        if available, otherwise, calls `self.count()`.
+        '''
 
-    def __reversed__(self) -> Iterator[TSource_co]: ...
+    def __reversed__(self) -> Iterator[TSource_co]:
+        '''
+        Inverts the order of the elements in the sequence. Prefers calling `__reversed__()` on the wrapped
+        iterable if available, otherwise, calls `self.reverse()`.
+        '''
 
     @overload
     def aggregate(self,
