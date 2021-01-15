@@ -504,3 +504,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             for x, y in zip(self, second):
                 yield result_selector(x, y)
         return Enumerable(inner)
+
+    def elements_in(self, *args) -> Enumerable[TSource_co]:
+        if len(args) == 1:
+            index = args[0]
+            return self._getitem_impl(index, fallback=True)  # type: ignore
+        elif len(args) == 2:
+            start, stop = args
+            return self.elements_in(start, stop, 1)
+        else:  # len(args) == 3
+            return self.elements_in(slice(*args))

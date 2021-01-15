@@ -44,7 +44,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def __getitem__(self, index: slice) -> Enumerable[TSource_co]: ...
+    def __getitem__(self, index: slice) -> Enumerable[TSource_co]:
+        '''
+        Produces a subsequence defined by the given slice notation. Prefers calling `__getitem__()` on the
+        wrapped iterable if available, otherwise, calls `self.elements_in()`.
+        '''
 
     def __iter__(self) -> Iterator[TSource_co]:
         '''
@@ -475,4 +479,19 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Enumerable[Tuple[TSource_co, TOther]]:
         '''
         Produces a sequence of 2-element tuples from the two sequences.
+        '''
+
+    # Methods below are non-standard. They do not have .NET builtin equivalence and are here just
+    # for convenience.
+
+    @overload
+    def elements_in(self, index: slice) -> Enumerable[TSource_co]:
+        '''
+        Produces a subsequence defined by the given slice notation.
+        '''
+
+    @overload
+    def elements_in(self, start: int, stop: int, step: int = 1) -> Enumerable[TSource_co]:
+        '''
+        Produces a subsequence with indices that define a slice.
         '''
