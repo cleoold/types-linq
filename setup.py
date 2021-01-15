@@ -18,6 +18,7 @@ setup(
     },
     zip_safe=False,
     python_requires='>=3.7',
+    extras_require={':python_version<"3.8"': ['typing_extensions']},
     platforms='any',
     classifiers=[
         'Topic :: Utilities',
