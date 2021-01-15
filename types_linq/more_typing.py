@@ -2,7 +2,7 @@ import sys
 from typing import Any
 
 if sys.version_info >= (3, 8, 0):
-    from typing import Protocol
+    from typing import Protocol, runtime_checkable
 else:
     from typing_extensions import Protocol, runtime_checkable
 
