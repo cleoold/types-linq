@@ -15,6 +15,9 @@ TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
 TInner = TypeVar('TInner')
 
+# do not use this value!!!
+_signal: Any = object()
+
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
@@ -385,6 +388,36 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 for inner_item in lookup[outer_key_selector(outer_item)]:
                     yield result_selector(outer_item, inner_item)
         return Enumerable(inner_gen)
+
+    def last(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
+        ret: Any = _signal
+        if len(args) == 0:
+            for elem in self:
+                ret = elem
+            if ret is _signal:
+                raise ValueError('Not enough elements in the sequence')
+
+        else:  # len(args) == 1
+            predicate = args[0]
+            for elem in self:
+                if predicate(elem):
+                    ret = elem
+            if ret is _signal:
+                raise ValueError('No element satisfying condition')
+        return ret
+
+    def last2(self, *args):
+        if len(args) == 1:
+            default = args[0]
+            for elem in self:
+                default = elem
+
+        else:  # len(args) == 2
+            predicate, default = args
+            for elem in self:
+                if predicate(elem):
+                    default = elem
+        return default
 
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))

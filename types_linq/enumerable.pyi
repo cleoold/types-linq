@@ -331,6 +331,37 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Correlates the elements of two sequences based on matching keys.
         '''
 
+    @overload
+    def last(self) -> TSource_co:
+        '''
+        Returns the last element of the sequence. Raises `ValueError` if there is no first
+        element.
+        '''
+
+    @overload
+    def last(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+        '''
+        Returns the last element of the sequence that satisfies the condition. Raises `ValueError`
+        if no such element exists.
+        '''
+
+    @overload
+    def last2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the last element of the sequence or a default value if there is no such
+        element.
+        '''
+
+    @overload
+    def last2(self,
+        predicate: Callable[[TSource_co], bool],
+        default: TDefault,
+    ) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the last element of the sequence that satisfies the condition or a default value if
+        no such element exists.
+        '''
+
     # @@@ TODO
 
     def reverse(self) -> Enumerable[TSource_co]:

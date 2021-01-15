@@ -607,6 +607,46 @@ class TestJoinMethod:
         assert q.to_list() == []
 
 
+class TestLastMethod:
+    def test_last_overload1_yes(self):
+        lst = ('a', object(), 'b', 5, 'c')
+        en = Enumerable(lst)
+        assert en.last() == 'c'
+
+    def test_last_overload1_no(self):
+        with pytest.raises(ValueError):
+            Enumerable({}).last()
+
+    def test_last_overload2_yes(self):
+        lst = ('a', 'b', 5, object(), 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.last(lambda e: isinstance(e, int)) == 6
+
+    def test_last_overload2_no(self):
+        lst = ('a', 'b', 5, object(), 'c', 6, 'd')
+        en = Enumerable(lst)
+        with pytest.raises(ValueError):
+            assert en.last(lambda e: isinstance(e, tuple))
+
+    def test_last2_overload1_yes(self):
+        lst = ('a', 'b', object(), 5, 'c')
+        en = Enumerable(lst)
+        assert en.last2(set) == 'c'
+
+    def test_last2_overload1_no(self):
+        assert Enumerable({}).last2(set) == set
+
+    def test_last2_overload2_yes(self):
+        lst = ('a', 'b', 5, object(), 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.last2(lambda e: isinstance(e, int), 'A') == 6
+
+    def test_last2_overload2_no(self):
+        lst = ('a', 'b', 5, object(), 'c', 6, 'd')
+        en = Enumerable(lst)
+        assert en.last2(lambda e: isinstance(e, tuple), 'A') == 'A'
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
