@@ -37,9 +37,15 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
         super().__init__(self._groupings.values())
 
     def __contains__(self, value: object) -> bool:
+        '''
+        Tests whether key is in the lookup.
+        '''
         return value in self._groupings
 
     def __len__(self) -> int:
+        '''
+        Gets the number of key-collection pairs.
+        '''
         return len(self._groupings)
 
     def __getitem__(self, key: TKey_co) -> Enumerable[TValue_co]:  # type: ignore

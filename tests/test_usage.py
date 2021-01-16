@@ -7,7 +7,7 @@ import pytest
 
 sys.path = [os.path.abspath('..')]  # run in tests folder
 sys.path.append(os.path.abspath('.'))  # run in root folder
-from types_linq import Enumerable, lookup
+from types_linq import Enumerable
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)

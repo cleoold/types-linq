@@ -1,6 +1,6 @@
 import sys
 from abc import ABCMeta, abstractmethod
-from typing import Any
+from typing import Any, TypeVar
 
 if sys.version_info >= (3, 8, 0):
     from typing import Protocol, runtime_checkable
@@ -8,12 +8,16 @@ else:
     from typing_extensions import Protocol, runtime_checkable  # type: ignore
 
 
+TSelf = TypeVar('TSelf')
+TAverage_co = TypeVar('TAverage_co', covariant=True)
+
+
 @runtime_checkable
-class SupportsAddAndDiv(Protocol, metaclass=ABCMeta):
+class SupportsAverage(Protocol[TAverage_co]):
     @abstractmethod
-    def __add__(self, __o: Any) -> Any: ...
+    def __add__(self: TSelf, __o: TSelf) -> TSelf: ...
     @abstractmethod
-    def __truediv__(self, __o: Any) -> Any: ...
+    def __truediv__(self, __o: int) -> TAverage_co: ...
 
 
 @runtime_checkable

@@ -1,9 +1,8 @@
-from decimal import Decimal
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
+from typing import Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
-from .more_typing import SupportsAddAndDiv, SupportsLessThan
+from .more_typing import SupportsAverage, SupportsLessThan
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -122,135 +121,48 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Appends a value to the end of the sequence.
         '''
 
-    # note: also applicable to Enumerable[int] !
     @overload
-    def average(self: Enumerable[float]) -> float:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    # note: also applicable to Enumerable[complex | float | int] !
-    @overload
-    def average(self: Enumerable[complex]) -> complex:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    @overload
-    def average(self: Enumerable[Decimal]) -> Decimal:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    @overload
-    def average(self: Enumerable[SupportsAddAndDiv]) -> Any:
+    def average(self: Enumerable[SupportsAverage[TResult]]) -> TResult:
         '''
         Computes the average value of the sequence. Raises `TypeError` if there is no value.
 
-        Not type-safe. The returned type is the type of the expression
-        `(elem1 + elem2 + ...) / cast(int, ...)`. Runtime errors are raised if the expression
-        is unsupported.
+        The returned type is the type of the expression
+        `(elem1 + elem2 + ...) / cast(int, ...)`.
         '''
 
     @overload
-    def average(self, selector: Callable[[TSource_co], float]) -> float:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    @overload
-    def average(self, selector: Callable[[TSource_co], complex]) -> complex:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    @overload
-    def average(self, selector: Callable[[TSource_co], Decimal]) -> Decimal:
-        '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
-        '''
-
-    @overload
-    def average(self, selector: Callable[[TSource_co], SupportsAddAndDiv]) -> Any:
+    def average(self, selector: Callable[[TSource_co], SupportsAverage[TResult]]) -> TResult:
         '''
         Computes the average value of the sequence using the selector. Raises `TypeError`
         if there is no value.
 
-        Not type-safe. The returned type is the type of the expression
-        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)`. Runtime errors are raised
-        if the expression is unsupported.
+        The returned type is the type of the expression
+        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)`.
         '''
 
     @overload
-    def average2(self: Enumerable[float], default: TDefault) -> Union[TDefault, float]:
-        '''
-        Computes the average value of the sequence. Returns `default` if there is no value.
-        '''
-
-    @overload
-    def average2(self: Enumerable[complex], default: TDefault) -> Union[TDefault, complex]:
-        '''
-        Computes the average value of the sequence. Returns `default` if there is no value.
-        '''
-
-    @overload
-    def average2(self: Enumerable[Decimal], default: TDefault) -> Union[TDefault, Decimal]:
-        '''
-        Computes the average value of the sequence. Returns `default` if there is no value.
-        '''
-
-    @overload
-    def average2(self: Enumerable[SupportsAddAndDiv], default: TDefault) -> Union[TDefault, Any]:
-        '''
-        Computes the average value of the sequence. Returns `default` if there is no value.
-
-        Not type-safe. The returned type is the type of the expression
-        `(elem1 + elem2 + ...) / cast(int, ...)` or `TDefault`. Runtime errors are raised if the
-        expression is unsupported.
-        '''
-
-    @overload
-    def average2(self: Enumerable[SupportsAddAndDiv],
-        selector: Callable[[TSource_co], float],
+    def average2(
+        self: Enumerable[SupportsAverage[TResult]],
         default: TDefault,
-    ) -> Union[float, TDefault]:
+    ) -> Union[TResult, TDefault]:
         '''
-        Computes the average value of the sequence using the selector. Returns `default` if there
-        is no value.
+        Computes the average value of the sequence. Returns `default` if there is no value.
+
+        The returned type is the type of the expression
+        `(elem1 + elem2 + ...) / cast(int, ...)` or `TDefault`.
         '''
 
     @overload
     def average2(self,
-        selector: Callable[[TSource_co], complex],
+        selector: Callable[[TSource_co], SupportsAverage[TResult]],
         default: TDefault,
-    ) -> Union[complex, TDefault]:
-        '''
-        Computes the average value of the sequence using the selector. Returns `default` if there
-        is no value.
-        '''
-
-    @overload
-    def average2(self,
-        selector: Callable[[TSource_co], Decimal],
-        default: TDefault,
-    ) -> Union[Decimal, TDefault]:
-        '''
-        Computes the average value of the sequence using the selector. Returns `default` if there
-        is no value.
-        '''
-
-    @overload
-    def average2(self,
-        selector: Callable[[TSource_co], Any],
-        default: TDefault,
-    ) -> Union[Any, TDefault]:
+    ) -> Union[TResult, TDefault]:
         '''
         Computes the average value of the sequence using the selector. Returns `default` if there
         is no value.
 
-        Not type-safe. The returned type is the type of the expression
-        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)` or `TDefault`. Runtime errors
-        are raised if the expression is unsupported.
+        The returned type is the type of the expression
+        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)` or `TDefault`.
         '''
 
     def cast(self, t_result: Type[TResult]) -> Enumerable[TResult]:
