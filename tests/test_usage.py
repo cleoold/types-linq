@@ -844,6 +844,20 @@ class TestTakeMethod:
         assert en.take(4).concat(en.skip(4)).to_list() == lst
 
 
+class TestUnionMethod:
+    def test_union(self):
+        gen = (i for i in range(5))
+        en = Enumerable(gen)
+        q = en.union([15, 16, 17, 15, 18])
+        assert q.to_list() == [0, 1, 2, 3, 4, 15, 16, 17, 18]
+
+    def test_dedup(self):
+        lst = [1, 2, 2, 7, -1, 8, -1]
+        en = Enumerable(lst)
+        q = en.union([])
+        assert q.to_list() == [1, 2, 7, -1, 8]
+
+
 class TestWhereMethod:
     def test_where(self):
         gen_func = lambda: (i for i in range(0, 10))

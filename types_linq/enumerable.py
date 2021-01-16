@@ -566,6 +566,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         res = Lookup(self, key_selector, value_selector)
         return res
 
+    def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        def inner():
+            # TODO: optimise chained .union() call to reuse s
+            s = set()
+            for elem in self.concat(second):
+                if elem in s:
+                    continue
+                s.add(elem)
+                yield elem
+        return Enumerable(inner)
+
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
         def inner():
             for elem in self:

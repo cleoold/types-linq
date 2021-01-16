@@ -628,7 +628,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         key selector.
         '''
 
-    # @@@ TODO
+    def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        '''
+        Produces the set union of two sequences: self + second.
+        '''
 
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
         '''
