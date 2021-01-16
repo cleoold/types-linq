@@ -419,6 +419,61 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     default = elem
         return default
 
+    def _minmax_helper(self, result_selector, op, when_empty) -> Any:
+        iterator = iter(self)
+        try:
+            curr = result_selector(next(iterator))
+        except StopIteration:
+            return when_empty()
+        for elem in iterator:
+            mapped = result_selector(elem)
+            curr = mapped if op(curr, mapped) else curr
+        return curr
+
+    def max(self, *args: Callable[[TSource_co], Any]) -> Any:
+        if len(args) == 0:
+            result_selector: Any = lambda x: x
+        else:  # len(args) == 1
+            result_selector = args[0]
+        return self._minmax_helper(
+            result_selector,
+            lambda l, r: l < r,
+            self._raise_empty_sequence,
+        )
+
+    def max2(self, *args) -> Any:
+        if len(args) == 1:
+            result_selector, default = lambda x: x, args[0]
+        else:  # len(args) == 2
+            result_selector, default = args
+        return self._minmax_helper(
+            result_selector,
+            lambda l, r: l < r,
+            lambda: default,
+        )
+
+    def min(self, *args: Callable[[TSource_co], Any]) -> Any:
+        if len(args) == 0:
+            result_selector: Any = lambda x: x
+        else:  # len(args) == 1
+            result_selector = args[0]
+        return self._minmax_helper(
+            result_selector,
+            lambda l, r: r < l,
+            self._raise_empty_sequence,
+        )
+
+    def min2(self, *args) -> Any:
+        if len(args) == 1:
+            result_selector, default = lambda x: x, args[0]
+        else:  # len(args) == 2
+            result_selector, default = args
+        return self._minmax_helper(
+            result_selector,
+            lambda l, r: r < l,
+            lambda: default,
+        )
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))
 

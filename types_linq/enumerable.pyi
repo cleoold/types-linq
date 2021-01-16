@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Seque
 
 from .lookup import Lookup
 from .grouping import Grouping
-from .more_typing import SupportsAddAndDiv
+from .more_typing import SupportsAddAndDiv, SupportsLessThan
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -15,6 +15,7 @@ TKey = TypeVar('TKey')
 TValue = TypeVar('TValue')
 TCollection = TypeVar('TCollection')
 TInner = TypeVar('TInner')
+TSupportsLessThan = TypeVar('TSupportsLessThan', bound=SupportsLessThan)
 
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
@@ -448,6 +449,64 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Returns the last element of the sequence that satisfies the condition or a default value if
         no such element exists.
+        '''
+
+    @overload
+    def max(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
+        '''
+        Returns the maximum value in the sequence. Raises `TypeError` if there is no value.
+        '''
+
+    @overload
+    def max(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
+        '''
+        Invokes a transform function on each element of the sequence and returns the maximum of the
+        resulting values. Raises `TypeError` if there is no value.
+        '''
+
+    @overload
+    def max2(self: Enumerable[TSupportsLessThan], default: TDefault) -> Union[TSupportsLessThan, TDefault]:
+        '''
+        Returns the maximum value in the sequence, or the default one if there is no value.
+        '''
+
+    @overload
+    def max2(self,
+        result_selector: Callable[[TSource_co], TSupportsLessThan],
+        default: TDefault,
+    ) -> Union[TSupportsLessThan, TDefault]:
+        '''
+        Invokes a transform function on each element of the sequence and returns the maximum of the
+        resulting values. Returns the default one if there is no value.
+        '''
+
+    @overload
+    def min(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
+        '''
+        Returns the minimum value in the sequence. Raises `TypeError` if there is no value.
+        '''
+
+    @overload
+    def min(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
+        '''
+        Invokes a transform function on each element of the sequence and returns the minimum of the
+        resulting values. Raises `TypeError` if there is no value.
+        '''
+
+    @overload
+    def min2(self: Enumerable[TSupportsLessThan], default: TDefault) -> Union[TSupportsLessThan, TDefault]:
+        '''
+        Returns the minimum value in the sequence, or the default one if there is no value.
+        '''
+
+    @overload
+    def min2(self,
+        result_selector: Callable[[TSource_co], TSupportsLessThan],
+        default: TDefault,
+    ) -> Union[TSupportsLessThan, TDefault]:
+        '''
+        Invokes a transform function on each element of the sequence and returns the minimum of the
+        resulting values. Returns the default one if there is no value.
         '''
 
     # @@@ TODO

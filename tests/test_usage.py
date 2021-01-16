@@ -647,6 +647,97 @@ class TestLastMethod:
         assert en.last2(lambda e: isinstance(e, tuple), 'A') == 'A'
 
 
+class TestMaxMethod:
+    def test_max_overload1(self):
+        nums = (1, 5, 2.2, 5, 1, 2)
+        en = Enumerable(nums)
+        assert en.max() == 5
+
+    def test_max_overload1_empty(self):
+        nums: List[int] = []
+        en = Enumerable(nums)
+        with pytest.raises(TypeError):
+            en.max()
+
+    def test_max_1(self):
+        nums = [8]
+        en = Enumerable(nums)
+        assert en.max() == 8
+
+    def test_max_first_one(self):
+        nums = (100, 5, 2.2, 5, 1, 2, 2)
+        en = Enumerable(nums)
+        assert en.max() == 100
+
+    def test_max_overload2(self):
+        # ok. list objects have __lt__() so use another type.
+        # hover mouse over 'max' to see that first overload is missing
+        class MyType:
+            def __init__(self, x: int): self.x = x
+        lst = [MyType(2), MyType(7), MyType(-1), MyType(9), MyType(1)]
+        en = Enumerable(lst)
+        assert en.max(lambda x: x.x) == 9
+
+    def test_max2_overload1(self):
+        nums = (1, 5, 2.2, 5, 1, 2, 2)
+        en = Enumerable(nums)
+        assert en.max2(tuple) == 5
+
+    def test_max2_overload1_empty(self):
+        nums: List[int] = []
+        en = Enumerable(nums)
+        assert en.max2(tuple) == tuple
+
+    def test_max2_overload2(self):
+        lst = [[0], [1], [-9], [4], [4], [4]]
+        en = Enumerable(lst)
+        assert en.max2(lambda x: x[0], object) == 4
+
+class TestMinMethod:
+    def test_min_overload1(self):
+        nums = (1, 0.4, 2.2, 5, 1, 2)
+        en = Enumerable(nums)
+        assert en.min() == 0.4
+
+    def test_min_overload1_empty(self):
+        nums: List[int] = []
+        en = Enumerable(nums)
+        with pytest.raises(TypeError):
+            en.min()
+
+    def test_min_1(self):
+        nums = [8]
+        en = Enumerable(nums)
+        assert en.min() == 8
+
+    def test_min_first_one(self):
+        nums = (0.9, 5, 2.2, 5, 1, 2, 2)
+        en = Enumerable(nums)
+        assert en.min() == 0.9
+
+    def test_min_overload2(self):
+        class MyType:
+            def __init__(self, x: int): self.x = x
+        lst = [MyType(2), MyType(7), MyType(19), MyType(1), MyType(9)]
+        en = Enumerable(lst)
+        assert en.min(lambda x: x.x) == 1
+
+    def test_min2_overload1(self):
+        nums = (1, 0.4, 2.2, 5, 1, 2, 2)
+        en = Enumerable(nums)
+        assert en.min2(tuple) == 0.4
+
+    def test_min2_overload1_empty(self):
+        nums: List[int] = []
+        en = Enumerable(nums)
+        assert en.min2(tuple) == tuple
+
+    def test_min2_overload2(self):
+        lst = [[0], [1], [-9], [4], [4], [-11]]
+        en = Enumerable(lst)
+        assert en.min2(lambda x: x[0], object) == -11
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
