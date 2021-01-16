@@ -474,6 +474,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             lambda: default,
         )
 
+    def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
+        return self.where(lambda e: isinstance(e, t_result)).cast(t_result)
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))
 

@@ -421,6 +421,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         resulting values. Returns the default one if there is no value.
         '''
 
+    def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
+        '''
+        Filters elements based on the specified type.
+
+        Builtin `isinstance()` is used.
+        '''
+
     # @@@ TODO
 
     def reverse(self) -> Enumerable[TSource_co]:

@@ -738,6 +738,21 @@ class TestMinMethod:
         assert en.min2(lambda x: x[0], object) == -11
 
 
+class TestOfTypeMethod:
+    def test_of_type(self):
+        lst = [1, 5, 4.4, object(), 5.6, -12.2, [], 2.2, False]
+        en = Enumerable(lst)
+        assert en.of_type(float).to_list() == [4.4, 5.6, -12.2, 2.2]
+
+    def test_inheritance(self):
+        class A: pass
+        class B(A): pass
+        lst = [A(), A(), B()]
+        en = Enumerable(lst)
+        assert en.of_type(A).count() == 3
+        assert en.of_type(B).count() == 1
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
