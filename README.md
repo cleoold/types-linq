@@ -24,31 +24,41 @@ $ python setup.py install
 ```
 Or install from pypi.
 
-The usage is simple if you know about the interfaces in .NET as this library provides almost the exact methods:
+## Examples
+
+The usage is simple if you know about the interfaces in .NET as this library provides almost the exact methods.
+
+### [Grouping](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.groupjoin) & Transforming lists
 ```py
-from dataclasses import dataclass
-from types_linq import Enumerable as en
+from typing import NamedTuple
+from types_linq import Enumerable as En
 
-@dataclass
-class PetOwner:
+
+class AnswerSheet(NamedTuple):
+    subject: str
+    score: int
     name: str
-    pets: List[str]
 
-pet_owners = [
-    PetOwner(name='Higa', pets=['Scruffy', 'Sam']),
-    PetOwner(name='Ashkenazi', pets=['Walker', 'Sugar']),
-    PetOwner(name='Price', pets=['Scratches', 'Diesel']),
-    PetOwner(name='Hines', pets=['Dusty']),
+students = ['Jacque', 'Franklin', 'Romeo']
+papers = [
+    AnswerSheet(subject='calculus', score=78, name='Jacque'),
+    AnswerSheet(subject='calculus', score=98, name='Romeo'),
+    AnswerSheet(subject='Algorithms', score=59, name='Romeo'),
+    AnswerSheet(subject='Mechanics', score=93, name='Jacque'),
+    AnswerSheet(subject='E & M', score=87, name='Jacque'),
 ]
 
-query = en(pet_owners)                                             \
-    .select_many(
-        lambda pet_owner: pet_owner.pets,
-        lambda pet_owner, pet_name: (pet_owner, pet_name),
-    )                                                              \
-    .where(lambda owner_and_pet: owner_and_pet[1].startswith('S')) \
-    .select(lambda owner_and_pet: {
-        'owner': owner_and_pet[0].name, 'pet': owner_and_pet[1],
+query = En(students) \
+    .group_join(papers,
+        lambda student: student,
+        lambda paper: paper.name,
+        lambda student, papers: {
+            'student': student,
+            'papers': papers.select(lambda paper: {
+                'subject': paper.subject,
+                'score': paper.score,
+            }).to_list(),
+            'gpa': papers.average2(lambda paper: paper.score, None),
         }
     )
 
@@ -56,9 +66,44 @@ for obj in query:
     print(obj)
 
 # output:
-# {'owner': 'Higa', 'pet': 'Scruffy'}
-# {'owner': 'Higa', 'pet': 'Sam'}
-# {'owner': 'Ashkenazi', 'pet': 'Sugar'}
-# {'owner': 'Price', 'pet': 'Scratches'}
+# {'student': 'Jacque', 'papers': [{'subject': 'calculus', 'score': 78}, {'subject': 'Mechanics', 'score': 93}, {'subject': 'E & M', 'score': 87}], 'gpa': 86.0}
+# {'student': 'Franklin', 'papers': [], 'gpa': None}
+# {'student': 'Romeo', 'papers': [{'subject': 'calculus', 'score': 98}, {'subject': 'Algorithms', 'score': 59}], 'gpa': 78.5}
 ```
-This example is taken from the .NET doc.
+
+### Working with generators
+```py
+import random
+from types_linq import Enumerable as En
+
+def toss_coins():
+    while True:
+        yield random.choice(('Head', 'Tail'))
+
+times_head = En(toss_coins()).take(5) \  # [:5] also works
+    .count(lambda r: r == 'Head')
+
+print(f'You tossed 5 times with {times_head} HEADs!')
+
+# possible output:
+# You tossed 5 times with 2 HEADs!
+```
+
+### Also querying stream output
+Mixing with builtin iterable type objects.
+```py
+import sys, subprocess
+from types_linq import Enumerable as En
+
+proc = subprocess.Popen('kubectl logs -f my-pod', shell=True, stdout=subprocess.PIPE)
+stdout = iter(proc.stdout.readline, b'')
+
+query = En(stdout).where(lambda line: line.startswith(b'CRITICAL: ')) \
+    .select(lambda line: line[10:].decode())
+
+for line in query:
+    sys.stdout.write(line)
+    sys.stdout.flush()
+
+# whatever.
+```
