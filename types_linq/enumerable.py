@@ -1,20 +1,22 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, TypeVar, Generic, Union
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
     from .grouping import Grouping
     from .ordered_enumerable import OrderedEnumerable
 
+from .more_typing import (
+    TCollection,
+    TDefault,
+    TInner,
+    TKey,
+    TOther,
+    TResult,
+    TSource_co,
+    TValue,
+)
 
-TSource_co = TypeVar('TSource_co', covariant=True)
-TResult = TypeVar('TResult')
-TDefault = TypeVar('TDefault')
-TOther = TypeVar('TOther')
-TKey = TypeVar('TKey')
-TValue = TypeVar('TValue')
-TCollection = TypeVar('TCollection')
-TInner = TypeVar('TInner')
 
 # do not use this value!!!
 _signal: Any = object()

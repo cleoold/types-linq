@@ -1,14 +1,13 @@
 from __future__ import annotations
-from typing import Callable, Generic, Iterator, Optional, TypeVar, overload
+from typing import Callable, Generic, Iterator, Optional, overload
 
 from .enumerable import Enumerable
-from .more_typing import SupportsLessThan
-
-
-TSource_co = TypeVar('TSource_co', covariant=True)
-TKey = TypeVar('TKey')
-TKey2 = TypeVar('TKey2')
-TSupportsLessThan = TypeVar('TSupportsLessThan', bound=SupportsLessThan)
+from .more_typing import (
+    TSource_co,
+    TKey,
+    TKey2,
+    TSupportsLessThan,
+)
 
 
 class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):

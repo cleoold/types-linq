@@ -1,10 +1,12 @@
-from typing import Generic, List, TypeVar
+from __future__ import annotations
+from typing import Generic, List
 
 from .enumerable import Enumerable
 
-
-TKey_co = TypeVar('TKey_co', covariant=True)
-TValue_co = TypeVar('TValue_co', covariant=True)
+from .more_typing import (
+    TKey_co,
+    TValue_co,
+)
 
 
 # kind of respect IGrouping's covariant type parameters if the method _append()

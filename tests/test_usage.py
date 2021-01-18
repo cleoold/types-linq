@@ -1,12 +1,9 @@
-import sys, os
 import math
 from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
 
 import pytest
 
 
-sys.path = [os.path.abspath('..')]  # run in tests folder
-sys.path.append(os.path.abspath('.'))  # run in root folder
 from types_linq import Enumerable
 
 

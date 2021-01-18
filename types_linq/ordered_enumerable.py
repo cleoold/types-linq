@@ -1,12 +1,13 @@
 from __future__ import annotations
-from typing import Any, Callable, Generic, Iterable, Iterator, Optional, TypeVar
+from typing import Any, Callable, Generic, Iterable, Iterator, Optional
 
 from .enumerable import Enumerable
 
-
-TSource_co = TypeVar('TSource_co', covariant=True)
-TKey = TypeVar('TKey')
-TKey2 = TypeVar('TKey2')
+from .more_typing import (
+    TSource_co,
+    TKey,
+    TKey2,
+)
 
 
 class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):

@@ -1,13 +1,15 @@
-from typing import Callable, Dict, Iterable, TypeVar
+from __future__ import annotations
+from typing import Callable, Dict, Iterable
 
 from .enumerable import Enumerable
 from .grouping import Grouping
 
-
-TSource = TypeVar('TSource')
-TKey_co = TypeVar('TKey_co', covariant=True)
-TValue_co = TypeVar('TValue_co', covariant=True)
-TResult = TypeVar('TResult')
+from .more_typing import (
+    TSource,
+    TKey_co,
+    TValue_co,
+    TResult,
+)
 
 
 # TODO: Wish to support Mapping[TKey, TValue], but its default mixin methods are doing something

@@ -1,21 +1,21 @@
-from typing import Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, TypeVar, Union, overload
+from typing import Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
-from .more_typing import SupportsAverage, SupportsLessThan
-
-
-TSource_co = TypeVar('TSource_co', covariant=True)
-TAccumulate = TypeVar('TAccumulate')
-TResult = TypeVar('TResult')
-TDefault = TypeVar('TDefault')
-TOther = TypeVar('TOther')
-TKey = TypeVar('TKey')
-TValue = TypeVar('TValue')
-TCollection = TypeVar('TCollection')
-TInner = TypeVar('TInner')
-TSupportsLessThan = TypeVar('TSupportsLessThan', bound=SupportsLessThan)
+from .more_typing import SupportsAverage
+from .more_typing import (
+    TAccumulate,
+    TCollection,
+    TDefault,
+    TInner,
+    TKey,
+    TOther,
+    TResult,
+    TSource_co,
+    TSupportsLessThan,
+    TValue,
+)
 
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):

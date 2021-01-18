@@ -1,6 +1,6 @@
 # types-linq
 
-![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg) [![pypi](https://img.shields.io/pypi/v/types-linq)](https://pypi.org/project/types-linq/)
+![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg) [![pypi](https://img.shields.io/pypi/v/types-linq)](https://pypi.org/project/types-linq/) ![pytest](https://github.com/cleoold/types-linq/workflows/pytest/badge.svg)
 
 This is an attempt to implement linq methods seen in .NET ([link](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=net-5.0)). Currently WIP.
 
@@ -11,18 +11,30 @@ Goal:
 * Detailed typing support
 * Honours collections.abc interfaces
 
-To run the test cases, install `pytest`, and then invoke it under the current directory:
-```sh
-$ pytest
-```
+## Install
 
-To install it on the computer, do
+To install this library on your computer, do:
 ```sh
+$ git clone https://github.com/cleoold/types-linq && cd types-linq
 $ pip install .
 # or
 $ python setup.py install
 ```
-Or install from pypi.
+Or install from pypi:
+```sh
+$ pip install types-linq -U
+```
+
+## Dev
+Execute the following commands (or something similar) to run the test cases:
+```sh
+# optionally set up venv
+$ python -m venv
+$ ./scripts/activate
+
+$ pip install pytest
+$ python -m pytest
+```
 
 ## Examples
 

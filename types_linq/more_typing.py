@@ -8,8 +8,21 @@ else:
     from typing_extensions import Protocol, runtime_checkable  # type: ignore
 
 
-TSelf = TypeVar('TSelf')
+TAccumulate = TypeVar('TAccumulate')
 TAverage_co = TypeVar('TAverage_co', covariant=True)
+TCollection = TypeVar('TCollection')
+TDefault = TypeVar('TDefault')
+TInner = TypeVar('TInner')
+TKey = TypeVar('TKey')
+TKey2 = TypeVar('TKey2')
+TKey_co = TypeVar('TKey_co', covariant=True)
+TOther = TypeVar('TOther')
+TResult = TypeVar('TResult')
+TSelf = TypeVar('TSelf')
+TSource = TypeVar('TSource')
+TSource_co = TypeVar('TSource_co', covariant=True)
+TValue = TypeVar('TValue')
+TValue_co = TypeVar('TValue_co', covariant=True)
 
 
 @runtime_checkable
@@ -28,3 +41,5 @@ class SupportsLessThan(Protocol, metaclass=ABCMeta):
 
 # a type like 'Hashable' is rn useless because a subclass of a hashable class may not
 # be hashable (object -> list)
+
+TSupportsLessThan = TypeVar('TSupportsLessThan', bound=SupportsLessThan)
