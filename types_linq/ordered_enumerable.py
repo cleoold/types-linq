@@ -51,7 +51,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
     def create_ordered_enumerable(self,
         key_selector: Callable[[TSource_co], TKey2],
-        comparer: Optional[[Callable[[TKey2, TKey2], int]]],
+        comparer: Optional[Callable[[TKey2, TKey2], int]],
         descending: bool,
     ) -> OrderedEnumerable[TSource_co, TKey2]:
         return OrderedEnumerable(
@@ -78,7 +78,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
     def then_by_descending(self,
         key_selector: Callable[[TSource_co], TKey2],
-        *args: Callable[[TKey2], int],
+        *args: Callable[[TKey2, TKey2], int],
     ) -> OrderedEnumerable[TSource_co, TKey2]:
         if len(args) == 1:
             comparer = args[0]

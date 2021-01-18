@@ -19,9 +19,9 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
     def create_ordered_enumerable(self,
         key_selector: Callable[[TSource_co], TKey2],
-        comparer: Optional[[Callable[[TKey2], int]]],
+        comparer: Optional[Callable[[TKey2], int]],
         descending: bool,
-    ) -> OrderedEnumerable[TSource_co]:
+    ) -> OrderedEnumerable[TSource_co, TKey2]:
         '''
         Performs a subsequent ordering on the elements of the sequence according to a key.
         '''
