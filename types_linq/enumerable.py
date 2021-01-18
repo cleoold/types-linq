@@ -512,6 +512,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             True,
         )
 
+    def prepend(self, element: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
+        # see self.append()
+        def inner():
+            yield element
+            yield from self
+        return Enumerable(inner)
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))
 

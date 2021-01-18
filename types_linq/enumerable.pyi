@@ -463,6 +463,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Sorts the elements of the sequence in descending order by using a specified comparer.
         '''
 
+    def prepend(self, value: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
+        '''
+        Adds a value to the beginning of the sequence.
+        '''
+
     # @@@ TODO
 
     def reverse(self) -> Enumerable[TSource_co]:

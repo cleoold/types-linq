@@ -808,6 +808,16 @@ class TestOrderByMethod:
         ]
 
 
+class TestPrependMethod:
+    def test_no_mutate(self):
+        ints = [10]
+        en = Enumerable(ints)
+        en2 = en.prepend(7).prepend(8)
+        assert ints == [10]
+        assert en.to_list() == [10]
+        assert en2.to_list() == [8, 7, 10]
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
