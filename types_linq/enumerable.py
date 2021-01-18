@@ -4,6 +4,7 @@ from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoR
 if TYPE_CHECKING:
     from .lookup import Lookup
     from .grouping import Grouping
+    from .ordered_enumerable import OrderedEnumerable
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -476,6 +477,40 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
         return self.where(lambda e: isinstance(e, t_result)).cast(t_result)
+
+    def order_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TKey, TKey], int],
+    ) -> OrderedEnumerable[TSource_co, TKey]:
+        from .ordered_enumerable import OrderedEnumerable
+        if len(args) == 1:
+            comparer = args[0]
+        else:  # len(args) == 2:
+            comparer = None
+        return OrderedEnumerable(
+            self._iter_factory,
+            None,
+            key_selector,
+            comparer,
+            False,
+        )
+
+    def order_by_descending(self,
+        key_selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TKey, TKey], int],
+    ) -> OrderedEnumerable[TSource_co, TKey]:
+        from .ordered_enumerable import OrderedEnumerable
+        if len(args) == 1:
+            comparer = args[0]
+        else:  # len(args) == 2:
+            comparer = None
+        return OrderedEnumerable(
+            self._iter_factory,
+            None,
+            key_selector,
+            comparer,
+            True,
+        )
 
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))

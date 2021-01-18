@@ -2,6 +2,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Sequence, 
 
 from .lookup import Lookup
 from .grouping import Grouping
+from .ordered_enumerable import OrderedEnumerable
 from .more_typing import SupportsAverage, SupportsLessThan
 
 
@@ -426,6 +427,40 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Filters elements based on the specified type.
 
         Builtin `isinstance()` is used.
+        '''
+
+    @overload
+    def order_by(self,
+        key_selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> OrderedEnumerable[TSource_co, TSupportsLessThan]:
+        '''
+        Sorts the elements of the sequence in ascending order according to a key.
+        '''
+
+    @overload
+    def order_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        comparer: Callable[[TKey, TKey], int],
+    ) -> OrderedEnumerable[TSource_co, TKey]:
+        '''
+        Sorts the elements of the sequence in ascending order by using a specified comparer.
+        '''
+
+    @overload
+    def order_by_descending(self,
+        key_selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> OrderedEnumerable[TSource_co, TSupportsLessThan]:
+        '''
+        Sorts the elements of the sequence in descending order according to a key.
+        '''
+
+    @overload
+    def order_by_descending(self,
+        key_selector: Callable[[TSource_co], TKey],
+        comparer: Callable[[TKey, TKey], int],
+    ) -> OrderedEnumerable[TSource_co, TKey]:
+        '''
+        Sorts the elements of the sequence in descending order by using a specified comparer.
         '''
 
     # @@@ TODO

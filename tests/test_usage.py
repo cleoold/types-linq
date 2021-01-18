@@ -753,6 +753,61 @@ class TestOfTypeMethod:
         assert en.of_type(B).count() == 1
 
 
+class TestOrderByMethod:
+    class Pet(NamedTuple):
+        name: str
+        age: int
+
+    def pets(self):
+        yield self.Pet('Barley', 8)
+        yield self.Pet('Boots', 4)
+        yield self.Pet('Whiskers', 1)
+        yield self.Pet('Daisy', 4)
+        yield self.Pet('Roman', 5)
+
+    def test_order_by_overload1(self):
+        en = Enumerable(self.pets())
+        q = en.order_by(lambda p: p.age)
+        assert q.to_list() == [
+            self.Pet('Whiskers', 1),
+            self.Pet('Boots', 4),
+            self.Pet('Daisy', 4),
+            self.Pet('Roman', 5),
+            self.Pet('Barley', 8),
+        ]
+
+    def test_order_by_overload2(self):
+        en = Enumerable(self.pets())
+        q = en.order_by(
+            lambda p: (999, p.age, p.name),
+            lambda t_lhs, t_rhs: t_lhs[1] - t_rhs[1],
+        ).select(lambda p: p.name)
+        assert q.to_list() == [
+            'Whiskers', 'Boots', 'Daisy', 'Roman', 'Barley',
+        ]
+
+    def test_order_by_descending_overload1(self):
+        en = Enumerable(self.pets())
+        q = en.order_by_descending(lambda p: p.age)
+        assert q.to_list() == [
+            self.Pet('Barley', 8),
+            self.Pet('Roman', 5),
+            self.Pet('Boots', 4),
+            self.Pet('Daisy', 4),
+            self.Pet('Whiskers', 1),
+        ]
+
+    def test_order_by_descending_overload2(self):
+        en = Enumerable(self.pets())
+        q = en.order_by_descending(
+            lambda p: (999, p.age, p.name),
+            lambda t_lhs, t_rhs: t_lhs[1] - t_rhs[1],
+        ).select(lambda p: p.name)
+        assert q.to_list() == [
+            'Barley', 'Roman', 'Boots', 'Daisy', 'Whiskers', 
+        ]
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
@@ -885,6 +940,88 @@ class TestWhereMethod:
         en = Enumerable(gen_func)
         wholes = en.where2(lambda e, i: e % 2 == i % 3 == 0)
         assert wholes.to_list() == [0, 6]
+
+
+class TestThenByMethod:
+    par = TestOrderByMethod()
+
+    def more_pets(self):
+        yield from self.par.pets()
+        yield self.par.Pet('Alfa', 4)
+        yield self.par.Pet('Bowah', 8)
+
+    def test_then_by_overload1(self):
+        en = Enumerable(self.more_pets())
+        q = en.order_by(lambda p: p.age) \
+            .then_by(lambda p: p.name) \
+            .select(lambda p: p.name)
+        assert q.to_list() == [
+            'Whiskers', 'Alfa', 'Boots', 'Daisy', 'Roman', 'Barley', 'Bowah'
+        ]
+
+    def test_then_by_overload2(self):
+        en = Enumerable(self.more_pets())
+        q = en.order_by(lambda p: p.age) \
+            .then_by(
+                lambda p: (999, 444, p[0]),
+                lambda t_lhs, t_rhs: -1 if t_lhs[2] < t_rhs[2] else 0,
+            ).select(lambda p: p.name)
+        assert q.to_list() == [
+            'Whiskers', 'Alfa', 'Boots', 'Daisy', 'Roman', 'Barley', 'Bowah'
+        ]
+
+    def test_then_by_descending_overload1(self):
+        en = Enumerable(self.more_pets())
+        q = en.order_by(lambda p: p.age) \
+            .then_by_descending(lambda p: p.name)
+        assert q.to_list() == [
+            self.par.Pet('Whiskers', 1),
+            self.par.Pet('Daisy', 4),
+            self.par.Pet('Boots', 4),
+            self.par.Pet('Alfa', 4),
+            self.par.Pet('Roman', 5),
+            self.par.Pet('Bowah', 8),
+            self.par.Pet('Barley', 8),
+        ]
+
+    def test_then_by_descending_overload2(self):
+        en = Enumerable(self.more_pets())
+        q = en.order_by(lambda p: p.age) \
+            .then_by_descending(
+                lambda p: (999, 444, p[0]),
+                lambda t_lhs, t_rhs: -1 if t_lhs[2] < t_rhs[2] else 0,
+            )
+        assert q.to_list() == [
+            self.par.Pet('Whiskers', 1),
+            self.par.Pet('Daisy', 4),
+            self.par.Pet('Boots', 4),
+            self.par.Pet('Alfa', 4),
+            self.par.Pet('Roman', 5),
+            self.par.Pet('Bowah', 8),
+            self.par.Pet('Barley', 8),
+        ]
+
+    def test_delayed(self):
+        def gen_func():
+            yield 1, 2, 3, 4
+            yield 9, 2, 3, 3
+            yield 9, 2, 3, 4
+            yield 1, 2, 2, 2
+            yield 2, 3, 4, 7
+            yield 9, 3, 2, 1
+            yield 4, 5, 8, 0
+            yield 9, 3, 3, 3
+        gen = gen_func()
+        en = Enumerable(gen)
+        q = en.order_by(lambda t: t[0]) \
+            .then_by(lambda t: t[1]) \
+            .then_by(lambda t: t[2]) \
+            .then_by(lambda t: t[3])
+        assert gen.gi_frame is not None
+        assert q.to_list() == [
+            (1, 2, 2, 2), (1, 2, 3, 4), (2, 3, 4, 7), (4, 5, 8, 0),
+            (9, 2, 3, 3), (9, 2, 3, 4), (9, 3, 2, 1), (9, 3, 3, 3),
+        ]
 
 
 class TestToLookupMethod:

@@ -41,23 +41,25 @@ class AnswerSheet(NamedTuple):
 
 students = ['Jacque', 'Franklin', 'Romeo']
 papers = [
-    AnswerSheet(subject='calculus', score=78, name='Jacque'),
-    AnswerSheet(subject='calculus', score=98, name='Romeo'),
+    AnswerSheet(subject='Calculus', score=78, name='Jacque'),
+    AnswerSheet(subject='Calculus', score=98, name='Romeo'),
     AnswerSheet(subject='Algorithms', score=59, name='Romeo'),
     AnswerSheet(subject='Mechanics', score=93, name='Jacque'),
     AnswerSheet(subject='E & M', score=87, name='Jacque'),
 ]
 
 query = En(students) \
+    .order_by(lambda student: student) \
     .group_join(papers,
         lambda student: student,
         lambda paper: paper.name,
         lambda student, papers: {
             'student': student,
-            'papers': papers.select(lambda paper: {
-                'subject': paper.subject,
-                'score': paper.score,
-            }).to_list(),
+            'papers': papers.order_by(lambda paper: paper.subject) \
+                .select(lambda paper: {
+                    'subject': paper.subject,
+                    'score': paper.score,
+                }).to_list(),
             'gpa': papers.average2(lambda paper: paper.score, None),
         }
     )
@@ -66,9 +68,9 @@ for obj in query:
     print(obj)
 
 # output:
-# {'student': 'Jacque', 'papers': [{'subject': 'calculus', 'score': 78}, {'subject': 'Mechanics', 'score': 93}, {'subject': 'E & M', 'score': 87}], 'gpa': 86.0}
 # {'student': 'Franklin', 'papers': [], 'gpa': None}
-# {'student': 'Romeo', 'papers': [{'subject': 'calculus', 'score': 98}, {'subject': 'Algorithms', 'score': 59}], 'gpa': 78.5}
+# {'student': 'Jacque', 'papers': [{'subject': 'E & M', 'score': 87}, {'subject': 'Mechanics', 'score': 93}, {'subject': 'Calculus', 'score': 78}], 'gpa': 86.0}
+# {'student': 'Romeo', 'papers': [{'subject': 'Algorithms', 'score': 59}, {'subject': 'Calculus', 'score': 98}], 'gpa': 78.5}
 ```
 
 ### Working with generators
