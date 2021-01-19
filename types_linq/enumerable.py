@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
+from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -519,6 +519,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         def inner():
             yield element
             yield from self
+        return Enumerable(inner)
+
+    @staticmethod
+    def range(start: int, count: Optional[int]) -> Enumerable[int]:
+        if count is not None:
+            if count < 0:
+                raise ValueError('count must be nonnegative')
+            def inner(curr=start, cnt=count):
+                while cnt > 0:
+                    yield curr
+                    curr += 1
+                    cnt -= 1
+        else:
+            def inner(curr=start):
+                while True:
+                    yield curr
+                    curr += 1
         return Enumerable(inner)
 
     def reverse(self) -> Enumerable[TSource_co]:

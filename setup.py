@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='types-linq',
-    version='v0.0.3',
+    version='v0.0.4',
     url='https://github.com/cleoold/types-linq',
     license='GNU General Public License v3',
     author='cleoold',

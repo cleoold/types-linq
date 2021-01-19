@@ -16,7 +16,7 @@ from .more_typing import (
 # weird.
 class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
     '''
-    A lookup is a one-to-many dictionary.
+    A lookup is a one-to-many dictionary. It maps keys to Enumerable sequences of values.
     '''
 
     _groupings: Dict[TKey_co, Grouping[TKey_co, TValue_co]]

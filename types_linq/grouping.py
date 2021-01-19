@@ -12,6 +12,9 @@ from .more_typing import (
 # kind of respect IGrouping's covariant type parameters if the method _append()
 # is really treated as an internal method
 class Grouping(Enumerable[TValue_co], Generic[TKey_co, TValue_co]):
+    '''
+    Represents a collection of objects that have a common key.
+    '''
 
     _key: TKey_co
     _values: List[TValue_co]

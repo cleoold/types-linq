@@ -1,5 +1,6 @@
 import math
 from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
+from _pytest.python_api import raises
 
 import pytest
 
@@ -813,6 +814,31 @@ class TestPrependMethod:
         assert ints == [10]
         assert en.to_list() == [10]
         assert en2.to_list() == [8, 7, 10]
+
+
+class TestRangeMethod:
+    def test_range(self):
+        ints = Enumerable.range(0, 6)
+        assert ints.to_list() == [0, 1, 2, 3, 4, 5]
+        ints2 = Enumerable.range(1, 10).select(lambda x: x * x)
+        assert ints2.to_list() == [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+    def test_no_elem(self):
+        ints = Enumerable.range(5, 0)
+        assert ints.to_list() == []
+
+    def test_1_elem(self):
+        ints = Enumerable.range(9, 1)
+        assert ints.to_list() == [9]
+
+    def test_invalid(self):
+        with pytest.raises(ValueError):
+            Enumerable.range(99, -1)
+
+    def test_no_end(self):
+        ints = Enumerable.range(77, None)
+        lst = ints.take(100).to_list()
+        assert lst == [*range(77, 177)]
 
 
 class TestSelectMethod:

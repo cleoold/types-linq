@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Generic, Iterable, Iterator, List, Sequence, Set, Tuple, Type, Union, overload
+from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
@@ -19,6 +19,9 @@ from .more_typing import (
 
 
 class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
+    '''
+    Provides a set of helper methods for querying iterable objects.
+    '''
 
     @overload
     def __init__(self, iterable: Iterable[TSource_co]):
@@ -466,6 +469,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def prepend(self, value: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
         '''
         Adds a value to the beginning of the sequence.
+        '''
+
+    # count: Optional[int] is nonstandard behavior
+    @staticmethod
+    def range(start: int, count: Optional[int]) -> Enumerable[int]:
+        '''
+        Generates a sequence of `count` integral numbers from `start`, incrementing each by one.
+
+        If `count` is `None`, the sequence is infinite.
         '''
 
     # @@@ TODO

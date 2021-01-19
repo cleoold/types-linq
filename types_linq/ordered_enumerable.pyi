@@ -11,6 +11,9 @@ from .more_typing import (
 
 
 class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
+    '''
+    Represents a sorted Enumerable sequence that is sorted by some key.
+    '''
 
     def __init__(self, *args): ...
 
