@@ -538,6 +538,21 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     curr += 1
         return Enumerable(inner)
 
+    @staticmethod
+    def repeat(value: TResult, count: Optional[int] = None) -> Enumerable[TResult]:
+        if count is not None:
+            if count < 0:
+                raise ValueError('count must be nonnegative')
+            def inner(val=value, cnt=count):
+                while cnt > 0:
+                    yield val
+                    cnt -= 1
+        else:
+            def inner(val=value):
+                while True:
+                    yield val
+        return Enumerable(inner)
+
     def reverse(self) -> Enumerable[TSource_co]:
         return Enumerable(lambda: self._reversed_impl(fallback=True))
 

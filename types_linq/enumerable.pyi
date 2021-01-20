@@ -3,7 +3,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
-from .more_typing import SupportsAverage
+from .more_typing import SupportsAverage, TResult
 from .more_typing import (
     TAccumulate,
     TCollection,
@@ -480,7 +480,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         If `count` is `None`, the sequence is infinite.
         '''
 
-    # @@@ TODO
+    # count: Optional[int] is nonstandard behavior
+    @staticmethod
+    def repeat(value: TResult, count: Optional[int] = None) -> Enumerable[TResult]:
+        '''
+        Generates a sequence that contains one repeated value.
+
+        If `count` is `None`, the sequence is infinite.
+        '''
 
     def reverse(self) -> Enumerable[TSource_co]:
         '''

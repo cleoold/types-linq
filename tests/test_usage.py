@@ -841,6 +841,28 @@ class TestRangeMethod:
         assert lst == [*range(77, 177)]
 
 
+class TestRepeatMethod:
+    def test_repeat(self):
+        en = Enumerable.repeat('a', 5)
+        assert en.to_list() == ['a'] * 5
+
+    def test_no_elem(self):
+        en = Enumerable.repeat('g', 0)
+        assert en.to_list() == []
+
+    def test_1_elem(self):
+        en = Enumerable.repeat('x', 1)
+        assert en.to_list() == ['x']
+
+    def test_invalid(self):
+        with pytest.raises(ValueError):
+            Enumerable.repeat(99, -1)
+
+    def test_no_end(self):
+        hellos = Enumerable.repeat((), None).take(107)
+        assert hellos.to_list() == [()] * 107
+
+
 class TestSelectMethod:
     def test_select(self):
         gen_func = lambda: (i for i in range(4))
