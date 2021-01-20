@@ -89,19 +89,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield from en.to_list()[s]
                     return
                 elif start_is_none:
-                    if s.stop >= 0:
-                        if step > 0:
-                            yield from en.take(s.stop)._every(step)
-                        else:
-                            yield from en.skip(s.stop + 1).reverse()._every(-step)
-                        return
-                    yield from en.to_list()[s]
-                elif s.start <= s.stop:
-                    en = en.skip(s.start).take(s.stop - s.start)
                     if step > 0:
-                        yield from en._every(step)
+                        yield from en.take(s.stop)._every(step)
                     else:
-                        yield from en.reverse()._every(-step)
+                        yield from en.skip(s.stop + 1).reverse()._every(-step)
+                    return
+                elif s.start <= s.stop:
+                    if step > 0:
+                        yield from en.skip(s.start).take(s.stop - s.start)._every(step)
+                    return
                 elif step <= 0:
                     yield from en.skip(s.stop + 1).take(s.start - s.stop) \
                         .reverse()._every(-step)

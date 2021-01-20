@@ -1209,6 +1209,9 @@ class TestElementsInMethod:
         (slice(7, 2, -3), list(range(7, 2, -3))),
         (slice(23, 3, -2), list(range(23, 3, -2))),
         (slice(23, 3, -3), list(range(23, 3, -3))),
+        (slice(2, 7, -1), []),
+        (slice(2, 2, -1), []),
+        (slice(0, 7, -2), []),
     ])
     def test_within_inf_generator(self, slicing: slice, expected: List[int]):
         def gen():
@@ -1226,6 +1229,8 @@ class TestElementsInMethod:
         (slice(None, 15, -1), [*range(30)][:15:-1]),
         (slice(None, 15, -2), [*range(30)][:15:-2]),
         (slice(None, 15, -3), [*range(30)][:15:-3]),
+        (slice(None, -15, -1), [*range(30)][:-15:-1]),
+        (slice(None, -15, -2), [*range(30)][:-15:-2]),
     ])
     def test_missing_start(self, slicing: slice, expected: List[int]):
         gen = lambda: (i for i in range(30))
