@@ -1,6 +1,6 @@
 # types-linq
 
-![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg) [![pypi](https://img.shields.io/pypi/v/types-linq)](https://pypi.org/project/types-linq/) [![pytest](https://github.com/cleoold/types-linq/workflows/pytest/badge.svg)](https://github.com/cleoold/types-linq/actions)
+![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg) [![pypi](https://img.shields.io/pypi/v/types-linq)](https://pypi.org/project/types-linq/) [![pytest](https://github.com/cleoold/types-linq/workflows/pytest/badge.svg)](https://github.com/cleoold/types-linq/actions?query=workflow%3Apytest)
 
 This is an attempt to implement linq methods seen in .NET ([link](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=net-5.0)). Currently WIP.
 
