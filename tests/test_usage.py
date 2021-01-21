@@ -1,6 +1,5 @@
 import math
 from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
-from _pytest.python_api import raises
 
 import pytest
 
@@ -922,6 +921,55 @@ class TestSelectManyMethod:
         assert q.to_list() == [
             '0.Ramen', '0.Egg', '0.Beef', '1.Gyoza', '2.Fried', '2.Chicken',
         ]
+
+
+class TestSequenceEqualMethod:
+    def test_sequence_equal(self):
+        lst = [['a'], ['x'], ['y'], [16], [17]]
+        en1 = Enumerable(lst)
+        en2 = Enumerable((['a'], ['x'], ['y'], [16], [17]))
+        assert en1.sequence_equal(en2) is True
+        assert en2.sequence_equal(en1) is True
+        assert en2.sequence_equal(lst) is True
+
+    def test_1_elem(self):
+        en1 = Enumerable(['a'])
+        en2 = Enumerable('a')
+        assert en1.sequence_equal(en2)
+        assert en2.sequence_equal(en1)
+
+    def test_both_empty(self):
+        assert Enumerable.empty().sequence_equal([]) is True
+
+    def test_one_empty(self):
+        en1 = Enumerable.empty().cast(str)
+        en2 = Enumerable(['a', 'x'])
+        assert en1.sequence_equal(en2) is False
+        assert en2.sequence_equal(en1) is False
+
+    def test_one_more(self):
+        en1 = Enumerable(['a', 'x', 'y'])
+        en2 = Enumerable(['a', 'x', 'y', 't'])
+        assert en1.sequence_equal(en2) is False
+        assert en2.sequence_equal(en1) is False
+
+    def test_first_off(self):
+        en1 = Enumerable(['a', 'x', 'y'])
+        en2 = Enumerable(['b', 'x', 'y'])
+        assert en1.sequence_equal(en2) is False
+        assert en2.sequence_equal(en1) is False
+
+    def test_last_off(self):
+        en1 = Enumerable(['a', 'x', 'y'])
+        en2 = Enumerable(['a', 'x', 'z'])
+        assert en1.sequence_equal(en2) is False
+        assert en2.sequence_equal(en1) is False
+
+    def test_middle_off(self):
+        en1 = Enumerable(['a', 'x', 'y', 'z', 'u'])
+        en2 = Enumerable(['b', 'x', 'k', 'z', 'u'])
+        assert en1.sequence_equal(en2) is False
+        assert en2.sequence_equal(en1) is False
 
 
 class TestSkipMethod:

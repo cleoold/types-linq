@@ -3,7 +3,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
-from .more_typing import SupportsAverage, TResult
+from .more_typing import SupportsAverage, TResult, TSource_co
 from .more_typing import (
     TAccumulate,
     TCollection,
@@ -540,6 +540,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Projects each element of the sequence to an iterable and flattens the resultant sequences.
         The indices of source elements are used.
+        '''
+
+    def sequence_equal(self, second: Iterable[TSource_co]) -> bool:
+        '''
+        Determines whether two sequences are equal using `==` on each element.
         '''
 
     # @@@ TODO

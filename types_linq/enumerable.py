@@ -592,6 +592,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield result_selector(elem, sub)
         return Enumerable(inner)
 
+    def sequence_equal(self, second: Iterable[TSource_co]) -> bool:
+        me, she = iter(self), iter(second)
+        while True:
+            try:
+                lhs = next(me)
+            except StopIteration:
+                try:
+                    next(she)
+                    return False
+                except StopIteration:
+                    return True
+            try:
+                rhs = next(she)
+            except StopIteration:
+                return False
+            if not (lhs == rhs):
+                return False
+
+
     def skip(self, count: int) -> Enumerable[TSource_co]:
         def inner():
             iterator = iter(self)
