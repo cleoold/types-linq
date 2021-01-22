@@ -972,6 +972,93 @@ class TestSequenceEqualMethod:
         assert en2.sequence_equal(en1) is False
 
 
+class TestSingleMethod:
+    def test_single_overload1_yes(self):
+        en = Enumerable([7])
+        assert en.single() == 7
+
+    def test_single_overload1_more(self):
+        en = Enumerable([7, 8])
+        with pytest.raises(ValueError):
+            en.single()
+
+    def test_single_overload1_empty(self):
+        en = Enumerable(())
+        with pytest.raises(ValueError):
+            en.single()
+
+    def test_single_overload2_at_first(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        assert en.single(lambda x: x == 1) == 1
+
+    def test_single_overload2_at_back(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        assert en.single(lambda x: x == 10) == 10
+
+    def test_single_overload2_middle(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        assert en.single(lambda x: x == 6) == 6
+
+    def test_single_overload2_dup(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        with pytest.raises(ValueError):
+            en.single(lambda x: x == 4 or x == 6)
+
+    def test_single_overload2_dup_non_adjacent(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        with pytest.raises(ValueError):
+            en.single(lambda x: x == 4 or x == 10)
+
+    def test_single_overload2_no(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        with pytest.raises(ValueError):
+            en.single(lambda x: x == 100)
+
+    def test_single_overload2_empty(self):
+        en = Enumerable(())
+        with pytest.raises(ValueError):
+            en.single(lambda x: x == 7)
+
+    def test_single2_overload1_yes(self):
+        en = Enumerable([7])
+        assert en.single2(tuple) == 7
+
+    def test_single2_overload1_more(self):
+        en = Enumerable([7, 8])
+        with pytest.raises(ValueError):
+            en.single2(tuple)
+
+    def test_single2_overload1_empty(self):
+        en = Enumerable(())
+        assert en.single2(tuple) == tuple
+
+    def test_single2_overload2_yes(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        assert en.single2(lambda x: x == 6, list) == 6
+
+    def test_single2_overload2_dup(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        with pytest.raises(ValueError):
+            en.single2(lambda x: x == 4 or x == 6, list)
+
+    def test_single2_overload2_no(self):
+        ints = [1, 4, 6, 9, 10]
+        en = Enumerable(ints)
+        assert en.single2(lambda x: x == 100, list) == list
+
+    def test_single2_overload2_empty(self):
+        en = Enumerable(())
+        assert en.single2(lambda x: x == 7, list) == list
+
+
 class TestSkipMethod:
     def test_some(self):
         lst = [1, 4, 6, 9, 10]

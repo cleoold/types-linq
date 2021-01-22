@@ -294,6 +294,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 yield elem
         return Enumerable(inner)
 
+    @staticmethod
+    def _raise_no_such_element() -> NoReturn:
+        raise ValueError('No element satisfying condition')
+
     def first(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
         if len(args) == 0:
             try:
@@ -609,6 +613,51 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 return False
             if not (lhs == rhs):
                 return False
+
+    def _find_single(self, res):
+        for elem in self:
+            if res is not _signal:
+                raise ValueError('Sequence does not contain exactly one element')
+            res = elem
+        return res
+
+    def _find_single_with_predicate(self, res, predicate):
+        for elem in self:
+            if predicate(elem):
+                if res is not _signal:
+                    raise ValueError(
+                        'There are multiple elements that satisfy condition: '
+                        f'{res} vs. {elem}'
+                    )
+                res = elem
+        return res
+
+    def single(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
+        res: Any = _signal
+        if len(args) == 0:
+            res = self._find_single(res)
+            if res is _signal:
+                raise ValueError('Sequence is empty')
+
+        else:  # len(args) == 1
+            predicate = args[0]
+            res = self._find_single_with_predicate(res, predicate)
+            if res is _signal:
+                self._raise_no_such_element()
+        return res
+
+    def single2(self, *args):
+        res: Any = _signal
+        if len(args) == 1:
+            default = args[0]
+            res = self._find_single(res)
+
+        else:  # len(args) == 2
+            predicate, default = args
+            res = self._find_single_with_predicate(res, predicate)
+        if res is _signal:
+            return default
+        return res
 
 
     def skip(self, count: int) -> Enumerable[TSource_co]:

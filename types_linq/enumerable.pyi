@@ -3,7 +3,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
-from .more_typing import SupportsAverage, TResult, TSource_co
+from .more_typing import SupportsAverage, TDefault, TResult, TSource_co
 from .more_typing import (
     TAccumulate,
     TCollection,
@@ -547,7 +547,36 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Determines whether two sequences are equal using `==` on each element.
         '''
 
-    # @@@ TODO
+    @overload
+    def single(self) -> TSource_co:
+        '''
+        Returns the only element in the sequence. Raises `ValueError` if the sequence does not contain
+        exactly one element.
+        '''
+
+    @overload
+    def single(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+        '''
+        Returns the only element in the sequence that satisfies the condition. Raises `ValueError` if no
+        element satisfies the condition, or more than one do.
+        '''
+
+    @overload
+    def single2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the only element in the sequence or the default value if the sequence is empty. Raises
+        `ValueError` if there are more than one elements in the sequence.
+        '''
+
+    @overload
+    def single2(self,
+        predicate: Callable[[TSource_co], bool],
+        default: TDefault,
+    ) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the only element in the sequence that satisfies the condition, or the default value if there is
+        no such element. Raises `ValueError` if there are more than one elements satisfying the condition.
+        '''
 
     def skip(self, count: int) -> Enumerable[TSource_co]:
         '''
