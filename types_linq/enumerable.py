@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from .grouping import Grouping
     from .ordered_enumerable import OrderedEnumerable
 
+from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
 from .more_typing import (
     TCollection,
     TDefault,
@@ -60,19 +61,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if isinstance(index, int):
             # Sequence is an abstract base class without @runtime_checkable
             if not fallback and isinstance(iterable, Sequence):
-                # an appropriate implementation should raise IndexError
-                return iterable[index]
+                # an appropriate implementation should raise IndexError, or IndexOutOfRangeError
+                try:
+                    return iterable[index]
+                except IndexError as e:
+                    raise IndexOutOfRangeError(e)
             iterator = iter(iterable)
             try:
                 for _ in range(index):
                     next(iterator)
                 return next(iterator)
             except StopIteration:
-                raise IndexError('Not enough elements in the sequence')
+                raise IndexOutOfRangeError('Not enough elements in the sequence')
 
         else:  # isinstance(index, slice)
             if not fallback and isinstance(iterable, Sequence):
-                res = iterable[index]
+                try:
+                    res = iterable[index]
+                except IndexError as e:
+                    raise IndexOutOfRangeError(e)
                 return res if isinstance(res, Enumerable) else Enumerable(res)
             # we do not enumerate all values if the begin and the end only involve
             # nonnegative indices since in which case the sliced part can be obtained
@@ -94,9 +101,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     else:
                         yield from en.skip(s.stop + 1).reverse()._every(-step)
                     return
-                elif s.start <= s.stop:
-                    if step > 0:
-                        yield from en.skip(s.start).take(s.stop - s.start)._every(step)
+                elif s.start <= s.stop and step > 0:
+                    yield from en.skip(s.start).take(s.stop - s.start)._every(step)
                     return
                 elif step <= 0:
                     yield from en.skip(s.stop + 1).take(s.start - s.stop) \
@@ -134,7 +140,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @staticmethod
     def _raise_empty_sequence() -> NoReturn:
-        raise TypeError('Sequence is empty')
+        raise InvalidOperationError('Sequence is empty')
 
     def aggregate(self, *args) -> Any:
         if len(args) == 3:
@@ -277,7 +283,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             default = args[0]
             try:
                 return self._getitem_impl(index, fallback=True)  # type: ignore
-            except IndexError:
+            except IndexOutOfRangeError:
                 return default
 
     @staticmethod
@@ -296,28 +302,28 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @staticmethod
     def _raise_no_such_element() -> NoReturn:
-        raise ValueError('No element satisfying condition')
+        raise InvalidOperationError('No element satisfying condition')
 
     def first(self, *args: Callable[[TSource_co], bool]) -> TSource_co:
         if len(args) == 0:
             try:
                 return self.element_at(0)  # type: ignore
-            except IndexError as e:
-                raise ValueError(*e.args)
+            except IndexOutOfRangeError as e:
+                raise InvalidOperationError(e)
 
         else:  # len(args) == 1
             predicate = args[0]
             for elem in self:
                 if predicate(elem):
                     return elem
-            raise ValueError('No element satisfying condition')
+            self._raise_no_such_element()
 
     def first2(self, *args):
         if len(args) == 1:
             default = args[0]
             try:
                 return self.element_at(0)  # type: ignore
-            except IndexError:
+            except IndexOutOfRangeError:
                 return default
 
         else:  # len(args) == 2
@@ -398,7 +404,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             for elem in self:
                 ret = elem
             if ret is _signal:
-                raise ValueError('Not enough elements in the sequence')
+                self._raise_empty_sequence()
 
         else:  # len(args) == 1
             predicate = args[0]
@@ -406,7 +412,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 if predicate(elem):
                     ret = elem
             if ret is _signal:
-                raise ValueError('No element satisfying condition')
+                self._raise_no_such_element()
         return ret
 
     def last2(self, *args):
@@ -522,10 +528,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(inner)
 
     @staticmethod
+    def _raise_count_negative() -> NoReturn:
+        raise InvalidOperationError('count must be nonnegative')
+
+    @staticmethod
     def range(start: int, count: Optional[int]) -> Enumerable[int]:
         if count is not None:
             if count < 0:
-                raise ValueError('count must be nonnegative')
+                Enumerable._raise_count_negative()
             def inner(curr=start, cnt=count):
                 while cnt > 0:
                     yield curr
@@ -542,7 +552,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def repeat(value: TResult, count: Optional[int] = None) -> Enumerable[TResult]:
         if count is not None:
             if count < 0:
-                raise ValueError('count must be nonnegative')
+                Enumerable._raise_count_negative()
             def inner(val=value, cnt=count):
                 while cnt > 0:
                     yield val
@@ -617,7 +627,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def _find_single(self, res):
         for elem in self:
             if res is not _signal:
-                raise ValueError('Sequence does not contain exactly one element')
+                raise InvalidOperationError('Sequence does not contain exactly one element')
             res = elem
         return res
 
@@ -625,7 +635,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         for elem in self:
             if predicate(elem):
                 if res is not _signal:
-                    raise ValueError(
+                    raise InvalidOperationError(
                         'There are multiple elements that satisfy condition: '
                         f'{res} vs. {elem}'
                     )
@@ -637,7 +647,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if len(args) == 0:
             res = self._find_single(res)
             if res is _signal:
-                raise ValueError('Sequence is empty')
+                self._raise_empty_sequence()
 
         else:  # len(args) == 1
             predicate = args[0]

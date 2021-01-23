@@ -3,8 +3,8 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
-from .more_typing import SupportsAverage, TDefault, TResult, TSource_co
 from .more_typing import (
+    SupportsAverage,
     TAccumulate,
     TCollection,
     TDefault,
@@ -99,8 +99,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         func: Callable[[TAccumulate, TSource_co], TAccumulate],
     ) -> TAccumulate:
         '''
-        Applies an accumulator function over the sequence. Raises `TypeError` if there is no
-        value.
+        Applies an accumulator function over the sequence. Raises `InvalidOperationError` if
+        there is no value in the sequence.
         '''
 
     def all(self, predicate: Callable[[TSource_co], bool]) -> bool:
@@ -128,7 +128,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def average(self: Enumerable[SupportsAverage[TResult]]) -> TResult:
         '''
-        Computes the average value of the sequence. Raises `TypeError` if there is no value.
+        Computes the average value of the sequence. Raises `InvalidOperationError` if there
+        is no value.
 
         The returned type is the type of the expression
         `(elem1 + elem2 + ...) / cast(int, ...)`.
@@ -137,8 +138,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def average(self, selector: Callable[[TSource_co], SupportsAverage[TResult]]) -> TResult:
         '''
-        Computes the average value of the sequence using the selector. Raises `TypeError`
-        if there is no value.
+        Computes the average value of the sequence using the selector. Raises
+        `InvalidOperationError` if there is no value.
 
         The returned type is the type of the expression
         `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)`.
@@ -219,8 +220,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def element_at(self, index: int) -> TSource_co:
         '''
-        Returns the element at specified index in the sequence. `IndexError` is raised if no such
-        element exists.
+        Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
+        no such element exists.
         '''
 
     @overload
@@ -244,15 +245,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def first(self) -> TSource_co:
         '''
-        Returns the first element of the sequence. Raises `ValueError` if there is no first
-        element.
+        Returns the first element of the sequence. Raises `InvalidOperationError` if there is no
+        first element.
         '''
 
     @overload
     def first(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
-        Returns the first element of the sequence that satisfies the condition. Raises `ValueError`
-        if no such element exists.
+        Returns the first element of the sequence that satisfies the condition. Raises
+        `InvalidOperationError` if no such element exists.
         '''
 
     @overload
@@ -339,15 +340,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def last(self) -> TSource_co:
         '''
-        Returns the last element of the sequence. Raises `ValueError` if there is no first
+        Returns the last element of the sequence. Raises `InvalidOperationError` if there is no first
         element.
         '''
 
     @overload
     def last(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
-        Returns the last element of the sequence that satisfies the condition. Raises `ValueError`
-        if no such element exists.
+        Returns the last element of the sequence that satisfies the condition. Raises
+        `InvalidOperationError` if no such element exists.
         '''
 
     @overload
@@ -370,14 +371,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def max(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
         '''
-        Returns the maximum value in the sequence. Raises `TypeError` if there is no value.
+        Returns the maximum value in the sequence. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
     def max(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Invokes a transform function on each element of the sequence and returns the maximum of the
-        resulting values. Raises `TypeError` if there is no value.
+        resulting values. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
@@ -399,14 +400,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def min(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
         '''
-        Returns the minimum value in the sequence. Raises `TypeError` if there is no value.
+        Returns the minimum value in the sequence. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
     def min(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Invokes a transform function on each element of the sequence and returns the minimum of the
-        resulting values. Raises `TypeError` if there is no value.
+        resulting values. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
@@ -477,7 +478,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Generates a sequence of `count` integral numbers from `start`, incrementing each by one.
 
-        If `count` is `None`, the sequence is infinite.
+        If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+        is negative.
         '''
 
     # count: Optional[int] is nonstandard behavior
@@ -486,7 +488,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Generates a sequence that contains one repeated value.
 
-        If `count` is `None`, the sequence is infinite.
+        If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+        is negative.
         '''
 
     def reverse(self) -> Enumerable[TSource_co]:
@@ -550,22 +553,22 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def single(self) -> TSource_co:
         '''
-        Returns the only element in the sequence. Raises `ValueError` if the sequence does not contain
-        exactly one element.
+        Returns the only element in the sequence. Raises `InvalidOperationError` if the sequence does not
+        contain exactly one element.
         '''
 
     @overload
     def single(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
-        Returns the only element in the sequence that satisfies the condition. Raises `ValueError` if no
-        element satisfies the condition, or more than one do.
+        Returns the only element in the sequence that satisfies the condition. Raises `InvalidOperationError`
+        if no element satisfies the condition, or more than one do.
         '''
 
     @overload
     def single2(self, default: TDefault) -> Union[TSource_co, TDefault]:
         '''
         Returns the only element in the sequence or the default value if the sequence is empty. Raises
-        `ValueError` if there are more than one elements in the sequence.
+        `InvalidOperationError` if there are more than one elements in the sequence.
         '''
 
     @overload
@@ -575,7 +578,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Union[TSource_co, TDefault]:
         '''
         Returns the only element in the sequence that satisfies the condition, or the default value if there is
-        no such element. Raises `ValueError` if there are more than one elements satisfying the condition.
+        no such element. Raises `InvalidOperationError` if there are more than one elements satisfying the
+        condition.
         '''
 
     def skip(self, count: int) -> Enumerable[TSource_co]:

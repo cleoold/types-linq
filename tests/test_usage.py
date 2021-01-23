@@ -3,8 +3,7 @@ from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar
 
 import pytest
 
-
-from types_linq import Enumerable
+from types_linq import Enumerable, InvalidOperationError, IndexOutOfRangeError
 
 
 TSource_co = TypeVar('TSource_co', covariant=True)
@@ -101,7 +100,7 @@ class TestAggregateMethod:
     def test_overload3_empty(self):
         ints: List[int] = []
         en = Enumerable(ints)
-        with pytest.raises(TypeError):
+        with pytest.raises(InvalidOperationError, match='Sequence is empty'):
             en.aggregate(lambda acc, e: cast(int, acc + e))
 
     def test_overload3_1(self):
@@ -182,7 +181,7 @@ class TestAverageMethod:
 
     def test_average_overload1_empty(self):
         ints: List[int] = []
-        with pytest.raises(TypeError):
+        with pytest.raises(InvalidOperationError):
             Enumerable(ints).average()
 
     def test_average_overload2(self):
@@ -332,7 +331,7 @@ class TestElementAtMethod:
     def test_overload1_out(self):
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
-        with pytest.raises(IndexError):
+        with pytest.raises(IndexOutOfRangeError):
             en.element_at(5)
 
     def test_overload2_out(self):
@@ -342,14 +341,20 @@ class TestElementAtMethod:
 
     def test_fallback(self):
         en = Enumerable(self.OnlyHasGetItem([]))
-        with pytest.raises(IndexError):
+        with pytest.raises(IndexOutOfRangeError):
             en.element_at(142512)
         assert en[142512] == 'haha'
         en2 = Enumerable(BasicIterable([]))
-        with pytest.raises(IndexError):
+        with pytest.raises(IndexOutOfRangeError):
             en2.element_at(142512)
-        with pytest.raises(IndexError):
+        with pytest.raises(IndexOutOfRangeError):
             en2[142512]
+        en3 = Enumerable([])
+        with pytest.raises(IndexOutOfRangeError):
+            en.element_at(1)
+        with pytest.raises(IndexOutOfRangeError):
+            en3[1]
+
 
     class OnlyHasGetItem(BasicIterable[TSource_co], Sequence[TSource_co]):
         # note: we get into troubles if Sequence is the first superclass
@@ -386,7 +391,7 @@ class TestFirstMethod:
         assert en.first() is 'a'
 
     def test_first_overload1_no(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             Enumerable({}).first()
 
     def test_first_overload2_yes(self):
@@ -397,7 +402,7 @@ class TestFirstMethod:
     def test_first_overload2_no(self):
         lst = ('a', 'b', 5, 'c', 6, 'd')
         en = Enumerable(lst)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             assert en.first(lambda e: isinstance(e, tuple))
 
     def test_first2_overload1_yes(self):
@@ -611,7 +616,7 @@ class TestLastMethod:
         assert en.last() == 'c'
 
     def test_last_overload1_no(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             Enumerable({}).last()
 
     def test_last_overload2_yes(self):
@@ -622,7 +627,7 @@ class TestLastMethod:
     def test_last_overload2_no(self):
         lst = ('a', 'b', 5, object(), 'c', 6, 'd')
         en = Enumerable(lst)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             assert en.last(lambda e: isinstance(e, tuple))
 
     def test_last2_overload1_yes(self):
@@ -653,7 +658,7 @@ class TestMaxMethod:
     def test_max_overload1_empty(self):
         nums: List[int] = []
         en = Enumerable(nums)
-        with pytest.raises(TypeError):
+        with pytest.raises(InvalidOperationError):
             en.max()
 
     def test_max_1(self):
@@ -699,7 +704,7 @@ class TestMinMethod:
     def test_min_overload1_empty(self):
         nums: List[int] = []
         en = Enumerable(nums)
-        with pytest.raises(TypeError):
+        with pytest.raises(InvalidOperationError):
             en.min()
 
     def test_min_1(self):
@@ -831,7 +836,7 @@ class TestRangeMethod:
         assert ints.to_list() == [9]
 
     def test_invalid(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             Enumerable.range(99, -1)
 
     def test_no_end(self):
@@ -854,7 +859,7 @@ class TestRepeatMethod:
         assert en.to_list() == ['x']
 
     def test_invalid(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             Enumerable.repeat(99, -1)
 
     def test_no_end(self):
@@ -979,12 +984,12 @@ class TestSingleMethod:
 
     def test_single_overload1_more(self):
         en = Enumerable([7, 8])
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single()
 
     def test_single_overload1_empty(self):
         en = Enumerable(())
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single()
 
     def test_single_overload2_at_first(self):
@@ -1005,24 +1010,24 @@ class TestSingleMethod:
     def test_single_overload2_dup(self):
         ints = [1, 4, 6, 9, 10]
         en = Enumerable(ints)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single(lambda x: x == 4 or x == 6)
 
     def test_single_overload2_dup_non_adjacent(self):
         ints = [1, 4, 6, 9, 10]
         en = Enumerable(ints)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single(lambda x: x == 4 or x == 10)
 
     def test_single_overload2_no(self):
         ints = [1, 4, 6, 9, 10]
         en = Enumerable(ints)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single(lambda x: x == 100)
 
     def test_single_overload2_empty(self):
         en = Enumerable(())
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single(lambda x: x == 7)
 
     def test_single2_overload1_yes(self):
@@ -1031,7 +1036,7 @@ class TestSingleMethod:
 
     def test_single2_overload1_more(self):
         en = Enumerable([7, 8])
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single2(tuple)
 
     def test_single2_overload1_empty(self):
@@ -1046,7 +1051,7 @@ class TestSingleMethod:
     def test_single2_overload2_dup(self):
         ints = [1, 4, 6, 9, 10]
         en = Enumerable(ints)
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidOperationError):
             en.single2(lambda x: x == 4 or x == 6, list)
 
     def test_single2_overload2_no(self):
@@ -1400,3 +1405,10 @@ class TestElementsInMethod:
         en2 = Enumerable(BasicIterable(['x']))
         assert en2[:7].to_list() == ['x']
         assert en2.elements_in(slice(7)).to_list() == ['x']
+        en3 = Enumerable(self.OnlyHasGetItemRaises([]))
+        with pytest.raises(IndexOutOfRangeError):
+            en3[:7]
+
+    class OnlyHasGetItemRaises(TestElementAtMethod.OnlyHasGetItem[TSource_co]):
+        def __getitem__(self, _):
+            raise IndexError('generic error')
