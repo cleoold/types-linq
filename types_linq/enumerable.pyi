@@ -587,6 +587,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Bypasses a specified number of elements in the sequence and then returns the remaining.
         '''
 
+    def skip_last(self, count: int) -> Enumerable[TSource_co]:
+        '''
+        Returns a new sequence that contains the elements of the current one with `count` elements omitted.
+        '''
+
     # @@@ TODO
 
     def take(self, count: int) -> Enumerable[TSource_co]:

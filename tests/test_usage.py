@@ -1085,6 +1085,42 @@ class TestSkipMethod:
         assert en.skip(-1).to_list() == lst
 
 
+class TestSkipLastMethod:
+    def test_some(self):
+        gen_func = lambda: (i for i in range(1, 8))
+        en = Enumerable(gen_func)
+        assert en.skip_last(1).to_list() == [1, 2, 3, 4, 5, 6]
+        assert en.skip_last(3).to_list() == [1, 2, 3, 4]
+
+    def test_all_skipped(self):
+        gen = (i for i in range(1, 8))
+        en = Enumerable(gen)
+        assert en.skip_last(7).to_list() == []
+        assert en.skip_last(8).to_list() == []
+
+    def test_count_zero_or_negative(self):
+        lst = [1, 2, 3]
+        en = Enumerable(lst)
+        assert en.skip_last(0).to_list() == lst
+        assert en.skip_last(-1).to_list() == lst
+
+    def test_enumerate(self):
+        'test no more than count items are ever evaluated a head of current position'
+        stored = []
+        def gen_func():
+            for i in range(6):
+                stored.append(i)
+                yield i
+        en = Enumerable(gen_func()).skip_last(3)
+        count = 0
+        # if all elements were enumerated at once inside the skip_last(), then stored would be filled
+        # at once, not like this
+        for elem in en:
+            assert elem == count
+            assert stored == [0, 1, 2, *range(3, 3 + count + 1)]
+            count += 1
+
+
 class TestTakeMethod:
     def test_some(self):
         lst = [1, 4, 6, 9, 10]

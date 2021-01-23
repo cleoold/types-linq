@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -679,6 +679,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             except StopIteration:
                 return
             yield from iterator
+        return Enumerable(inner)
+
+    def skip_last(self, count: int) -> Enumerable[TSource_co]:
+        if count <= 0:
+            return self.skip(0)
+        def inner():
+            iterator = iter(self)
+            q = Deque()
+            for elem in iterator:
+                if len(q) == count:
+                    while True:
+                        yield q.pop()
+                        q.appendleft(elem)
+                        try:
+                            elem = next(iterator)
+                        except StopIteration:
+                            break
+                else:
+                    q.appendleft(elem)
         return Enumerable(inner)
 
     def take(self, count: int) -> Enumerable[TSource_co]:
