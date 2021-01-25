@@ -1121,6 +1121,50 @@ class TestSkipLastMethod:
             count += 1
 
 
+class TestSkipWhileMethod:
+    def test_skip_while_some(self):
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        assert en.skip_while(lambda x: x <= 2).to_list() == [3, 6, 7, 1]
+
+    def test_skip_while_none(self):
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        assert en.skip_while(lambda x: x == 20).to_list() == lst
+
+    def test_skip_while_all(self):
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        assert en.skip_while(lambda x: x < 20).to_list() == []
+
+    def test_skip_while_empty(self):
+        en = Enumerable([])
+        assert en.skip_while(lambda x: x == 9).to_list() == []
+
+    def test_skip_while2_some(self):
+        # coverage py (5.4.1 with C) failed to identify code as covered in this test
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        q = en.skip_while2(lambda x, i: x <= 2 and i < 4)
+        assert q.to_list() == [2, 3, 6, 7, 1]
+        # equivalent:
+        # q = en.zip(en.range(0, None)) \
+        #     .skip_while(lambda t: t[0] <= 2 and t[1] < 4) \
+        #     .select(lambda t: t[0])
+
+    def test_skip_while2_none(self):
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        q = en.skip_while2(lambda x, i: x <= 2 and i > 40)
+        assert q.to_list() == lst
+
+    def test_skip_while2_all(self):
+        lst = [1, 1, 1, 1, 2, 3, 6, 7, 1]
+        en = Enumerable(lst)
+        q = en.skip_while2(lambda x, i: x < 20 and i < 40)
+        assert q.to_list() == []
+
+
 class TestTakeMethod:
     def test_some(self):
         lst = [1, 4, 6, 9, 10]

@@ -700,6 +700,26 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     q.appendleft(elem)
         return Enumerable(inner)
 
+    def skip_while(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            iterator = iter(self)
+            for elem in iterator:
+                if not predicate(elem):
+                    yield elem
+                    break
+            yield from iterator
+        return Enumerable(inner)
+
+    def skip_while2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            iterator = iter(self)
+            for i, elem in enumerate(iterator):
+                if not predicate(elem, i):
+                    yield elem
+                    break
+            yield from iterator
+        return Enumerable(inner)
+
     def take(self, count: int) -> Enumerable[TSource_co]:
         def inner():
             iterator = iter(self)

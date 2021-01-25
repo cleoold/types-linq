@@ -592,6 +592,18 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Returns a new sequence that contains the elements of the current one with `count` elements omitted.
         '''
 
+    def skip_while(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        '''
+        Bypasses elements in the sequence as long as the condition is true and then returns the remaining
+        elements.
+        '''
+
+    def skip_while2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        '''
+        Bypasses elements in the sequence as long as the condition is true and then returns the remaining
+        elements. The element's index is used in the predicate function.
+        '''
+
     # @@@ TODO
 
     def take(self, count: int) -> Enumerable[TSource_co]:
