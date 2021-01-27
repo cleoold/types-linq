@@ -720,6 +720,31 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             yield from iterator
         return Enumerable(inner)
 
+    def _sum_helper(self, selector, when_empty):
+        iterator = iter(self)
+        try:
+            sum_ = selector(next(iterator))
+        except StopIteration:
+            return when_empty()
+
+        for elem in iterator:
+            sum_ += selector(elem)
+        return sum_
+
+    def sum(self, *args) -> Any:
+        if len(args) == 0:
+            selector: Any = lambda x: x
+        else:  # len(args) == 1
+            selector = args[0]
+        return self._sum_helper(selector, lambda: 0)
+
+    def sum2(self, *args) -> Any:
+        if len(args) == 1:
+            selector, default = lambda x: x, args[0]
+        else: # len(args) == 2
+            selector, default = args
+        return self._sum_helper(selector, lambda: default)
+
     def take(self, count: int) -> Enumerable[TSource_co]:
         def inner():
             iterator = iter(self)

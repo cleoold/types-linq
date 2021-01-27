@@ -38,8 +38,14 @@ class SupportsLessThan(Protocol, metaclass=ABCMeta):
     @abstractmethod
     def __lt__(self, __o: Any) -> bool: ...
 
+@runtime_checkable
+class SupportsAdd(Protocol, metaclass=ABCMeta):
+    @abstractmethod
+    def __add__(self: TSelf, __o: TSelf) -> TSelf: ...
+
 
 # a type like 'Hashable' is rn useless because a subclass of a hashable class may not
 # be hashable (object -> list)
 
 TSupportsLessThan = TypeVar('TSupportsLessThan', bound=SupportsLessThan)
+TSupportsAdd = TypeVar('TSupportsAdd', bound=SupportsAdd)

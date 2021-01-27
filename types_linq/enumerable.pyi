@@ -13,6 +13,7 @@ from .more_typing import (
     TOther,
     TResult,
     TSource_co,
+    TSupportsAdd,
     TSupportsLessThan,
     TValue,
 )
@@ -146,8 +147,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def average2(
-        self: Enumerable[SupportsAverage[TResult]],
+    def average2(self: Enumerable[SupportsAverage[TResult]],
         default: TDefault,
     ) -> Union[TResult, TDefault]:
         '''
@@ -604,7 +604,36 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         elements. The element's index is used in the predicate function.
         '''
 
-    # @@@ TODO
+    # returning 0 conforms the builtin sum() function
+    @overload
+    def sum(self: Enumerable[TSupportsAdd]) -> Union[TSupportsAdd, int]:
+        '''
+        Computes the sum of the sequence, or `0` if the sequence is empty.
+        '''
+
+    # returning 0 conforms the builtin sum() function
+    @overload
+    def sum(self, selector: Callable[[TSource_co], TSupportsAdd]) -> Union[TSupportsAdd, int]:
+        '''
+        Computes the sum of the sequence using the selector. Returns `0` if the sequence is empty.
+        '''
+
+    @overload
+    def sum2(self: Enumerable[TSupportsAdd],
+        default: TDefault,
+    ) -> Union[TSupportsAdd, TDefault]:
+        '''
+        Computes the sum of the sequence. Returns the default value if it is empty.
+        '''
+
+    @overload
+    def sum2(self,
+        selector: Callable[[TSource_co], TSupportsAdd],
+        default: TDefault,
+    ) -> Union[TSupportsAdd, TDefault]:
+        '''
+        Computes the sum of the sequence using the selector. Returns the default value if it is empty.
+        '''
 
     def take(self, count: int) -> Enumerable[TSource_co]:
         '''

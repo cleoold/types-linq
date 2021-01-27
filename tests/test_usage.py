@@ -1165,6 +1165,45 @@ class TestSkipWhileMethod:
         assert q.to_list() == []
 
 
+class TestSumMethod:
+    def test_sum_overload1(self):
+        floats = [.1, .3, .5, .9, 1.1]
+        s = Enumerable(floats).sum()
+        assert s > 2.9 - 1e3 and s < 2.9 + 1e3
+
+    def test_sum_overload1_1(self):
+        ints = [44]
+        s = Enumerable(ints).sum()
+        assert s == 44
+
+    def test_sum_overload1_empty(self):
+        ints: List[float] = []
+        s = Enumerable(ints).sum()
+        assert s == 0
+
+    def test_sum_overload2(self):
+        lst = [[1], [3], [5], [9], [11]]
+        en = Enumerable(lst)
+        s = en.sum(lambda e: e[0])
+        assert s == 29
+
+    def test_sum2_overload1(self):
+        ints = [1, 3, 5, 9, 11]
+        s = Enumerable(ints).sum2(33)
+        assert s == 29
+
+    def test_sum2_overload1_empty(self):
+        ints: List[int] = []
+        s = Enumerable(ints).sum2(880)
+        assert s == 880
+
+    def test_sum2_overload2(self):
+        lst = [[1], [3], [5], [9], [11]]
+        en = Enumerable(lst)
+        s = en.sum2(lambda e: e[0], -2)
+        assert s == 29
+
+
 class TestTakeMethod:
     def test_some(self):
         lst = [1, 4, 6, 9, 10]
