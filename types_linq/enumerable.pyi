@@ -640,6 +640,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Returns a specified number of contiguous elements from the start of the sequence.
         '''
 
+    def take_last(self, count: int) -> Enumerable[TSource_co]:
+        '''
+        Returns a new sequence that contains the last `count` elements.
+        '''
+
     # @@@ TODO
 
     @overload

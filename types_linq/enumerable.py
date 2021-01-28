@@ -536,7 +536,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if count is not None:
             if count < 0:
                 Enumerable._raise_count_negative()
-            def inner(curr=start, cnt=count):
+            def inner(curr=start, cnt=count):  # type: ignore
                 while cnt > 0:
                     yield curr
                     curr += 1
@@ -553,7 +553,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if count is not None:
             if count < 0:
                 Enumerable._raise_count_negative()
-            def inner(val=value, cnt=count):
+            def inner(val=value, cnt=count):  # type: ignore
                 while cnt > 0:
                     yield val
                     cnt -= 1
@@ -753,6 +753,29 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield next(iterator)
             except StopIteration:
                 return
+        return Enumerable(inner)
+
+    def take_last(self, count: int) -> Enumerable[TSource_co]:
+        if count <= 0:
+            return self.empty()
+        def inner():
+            iterator = iter(self)
+            try:
+                q = Deque((next(iterator),))
+            except StopIteration:
+                return
+            for elem in iterator:
+                if len(q) == count:
+                    while True:
+                        q.popleft()
+                        q.append(elem)
+                        try:
+                            elem = next(iterator)
+                        except StopIteration:
+                            break
+                else:
+                    q.append(elem)
+            yield from q
         return Enumerable(inner)
 
     def to_dict(self,

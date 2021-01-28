@@ -1228,6 +1228,37 @@ class TestTakeMethod:
         assert en.take(4).concat(en.skip(4)).to_list() == lst
 
 
+class TestTakeLastMethod:
+    def test_some(self):
+        gen_func = lambda: (i for i in range(7))
+        en = Enumerable(gen_func)
+        assert en.take_last(1).to_list() == [6]
+        assert en.take_last(2).to_list() == [5, 6]
+        assert en.take_last(4).to_list() == [3, 4, 5, 6]
+
+    def test_take_all(self):
+        gen_func = lambda: (i for i in range(7))
+        en = Enumerable(gen_func)
+        assert en.take_last(7).to_list() == list(gen_func())
+        assert en.take_last(8).to_list() == list(gen_func())
+
+    def test_1_elem(self):
+        en = Enumerable([5])
+        assert en.take_last(1).to_list() == [5]
+        assert en.take_last(2).to_list() == [5]
+
+    def test_empty(self):
+        en = Enumerable(())
+        assert en.take_last(1).to_list() == []
+        assert en.take_last(2).to_list() == []
+
+    def test_count_zero_or_negative(self):
+        lst = [1, 2, 3]
+        en = Enumerable(lst)
+        assert en.take_last(0).to_list() == []
+        assert en.take_last(-1).to_list() == []
+
+
 class TestUnionMethod:
     def test_union(self):
         gen = (i for i in range(5))
