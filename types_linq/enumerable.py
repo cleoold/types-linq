@@ -536,13 +536,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if count is not None:
             if count < 0:
                 Enumerable._raise_count_negative()
-            def inner(curr=start, cnt=count):  # type: ignore
+            def inner(curr=start, cnt=count):  # type: ignore[misc]
                 while cnt > 0:
                     yield curr
                     curr += 1
                     cnt -= 1
         else:
-            def inner(curr=start):
+            def inner(curr=start):  # type: ignore[misc]
                 while True:
                     yield curr
                     curr += 1
@@ -553,12 +553,12 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if count is not None:
             if count < 0:
                 Enumerable._raise_count_negative()
-            def inner(val=value, cnt=count):  # type: ignore
+            def inner(val=value, cnt=count):  # type: ignore[misc]
                 while cnt > 0:
                     yield val
                     cnt -= 1
         else:
-            def inner(val=value):
+            def inner(val=value):  # type: ignore[misc]
                 while True:
                     yield val
         return Enumerable(inner)

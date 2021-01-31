@@ -71,14 +71,14 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
                 yield result_selector(key, grouping)
         return Enumerable(inner)
 
-    def contains(self, value: object) -> bool:
+    def contains(self, value: object) -> bool:  # type: ignore[override]
         '''
         Tests whether key is in the lookup.
         '''
         return value in self
 
     @property
-    def count(self) -> int:
+    def count(self) -> int:    # type: ignore[override]
         '''
         Gets the number of key-collection pairs.
         '''
