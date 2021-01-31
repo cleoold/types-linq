@@ -645,7 +645,16 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Returns a new sequence that contains the last `count` elements.
         '''
 
-    # @@@ TODO
+    def take_while(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        '''
+        Returns elements from the sequence as long as the condition is true and skips the remaining.
+        '''
+
+    def take_while2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        '''
+        Returns elements from the sequence as long as the condition is true and skips the remaining. The
+        element's index is used in the predicate function.
+        '''
 
     @overload
     def to_dict(self,

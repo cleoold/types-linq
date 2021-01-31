@@ -1259,6 +1259,38 @@ class TestTakeLastMethod:
         assert en.take_last(-1).to_list() == []
 
 
+class TestTakeWhileMethod:
+    def test_take_while_some(self):
+        lst = ['1', '3', '5', '7', '', '1', '4', '5']
+        en = Enumerable(lst)
+        q = en.take_while(lambda x: x != '')
+        assert q.to_list() == ['1', '3', '5', '7']
+
+    def test_take_while_all(self):
+        lst = ['1', '3', '5', '7', '', '1', '4', '5']
+        en = Enumerable(lst)
+        q = en.take_while(lambda x: x != '77')
+        assert q.to_list() == lst
+
+    def test_take_while_nothing(self):
+        lst = ['1', '3', '5', '7', '', '1', '4', '5']
+        en = Enumerable(lst)
+        q = en.take_while(lambda x: not isinstance(x, str))
+        assert q.to_list() == []
+
+    def test_take_while2_some(self):
+        lst = ['1', '3', '5', '7', '', '1', '4', '5']
+        en = Enumerable(lst)
+        q = en.take_while2(lambda x, i: isinstance(x, str) and i < 4)
+        assert q.to_list() == ['1', '3', '5', '7']
+
+    def test_take_while2_all(self):
+        lst = ['1', '3', '5', '7', '', '1', '4', '5']
+        en = Enumerable(lst)
+        q = en.take_while2(lambda x, i: isinstance(x, str) and i < 8)
+        assert q.to_list() == lst
+
+
 class TestUnionMethod:
     def test_union(self):
         gen = (i for i in range(5))

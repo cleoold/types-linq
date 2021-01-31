@@ -778,6 +778,22 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             yield from q
         return Enumerable(inner)
 
+    def take_while(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            for elem in self:
+                if not predicate(elem):
+                    break
+                yield elem
+        return Enumerable(inner)
+
+    def take_while2(self, predicate: Callable[[TSource_co, int], bool]) -> Enumerable[TSource_co]:
+        def inner():
+            for i, elem in enumerate(self):
+                if not predicate(elem, i):
+                    break
+                yield elem
+        return Enumerable(inner)
+
     def to_dict(self,
         key_selector: Callable[[TSource_co], TKey],
         *args: Callable[[TSource_co], TValue],
