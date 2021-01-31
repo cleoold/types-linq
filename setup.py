@@ -5,11 +5,11 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='types-linq',
-    version='v0.0.4',
+    version='v0.1.0',
     url='https://github.com/cleoold/types-linq',
-    license='GNU General Public License v3',
+    license='BSD 2-Clause License',
     author='cleoold',
-    description='LINQ with full typing support (WIP).',
+    description='Standard sequence helper methods with full typing support',
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=['types_linq'],
@@ -22,8 +22,8 @@ setup(
     platforms='any',
     classifiers=[
         'Topic :: Utilities',
-        'Development Status :: 1 - Planning',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Typing :: Typed',
