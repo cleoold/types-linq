@@ -180,7 +180,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Concatenates two sequences.
         '''
 
-    def configure_repeatable(self) -> Enumerable[TSource_co]:
+    def configure_repeatable(self, *, cache_capacity: int = ...) -> Enumerable[TSource_co]:
         '''
         Configures to cache the enumerated results in this query so that if the wrapped iterable is
         not repeatable (e.g. generator object), it will be repeatable.
@@ -213,6 +213,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         (`query = Enumerable(gen)`) or solidifying the source in advance (`query = Enumerable(list(gen))`).
         This method is useless if you have constructed an Enumerable from a repeatable source such as
         a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
+
+        Raises `InvalidOperationError` if cache_capacity is negative, or this method is invoked twice.
         '''
 
     @overload

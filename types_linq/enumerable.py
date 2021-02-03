@@ -231,22 +231,38 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             yield from second
         return Enumerable(inner)
 
-    def configure_repeatable(self) -> Enumerable[TSource_co]:
+    def configure_repeatable(self, *, cache_capacity: int = ...) -> Enumerable[TSource_co]:
         if self._configured_repeatable:
-            raise TypeError('Already configured')
+            raise InvalidOperationError('Already configured')
+        if cache_capacity is not ...:
+            if cache_capacity < 0:
+                raise InvalidOperationError('cache_capacity must be nonnegative')
+            elif cache_capacity == 0:
+                self._configured_repeatable = True
+                return self
 
         iterator = iter(self)
-        enumerated_values: List[TSource_co] = []
+        enumerated_values: Dict[int, TSource_co] = {}
+        min_index = 0
+        tracked = 0
         def closure():
+            nonlocal min_index, tracked
             i = 0
             while True:
-                while i < len(enumerated_values):
+                while i < tracked:
+                    i = max(min_index, i)
                     res = enumerated_values[i]
                     i += 1
                     yield res
                 try:
                     res = next(iterator)
-                    enumerated_values.append(res)
+                    len_ = len(enumerated_values)
+                    if cache_capacity is not ... and \
+                        len_ > 0 and len_ == cache_capacity:
+                        del enumerated_values[min_index]
+                        min_index += 1
+                    enumerated_values[tracked] = res
+                    tracked += 1
                     i += 1
                     yield res
                 except StopIteration:
