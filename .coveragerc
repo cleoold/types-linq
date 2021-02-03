@@ -1,0 +1,10 @@
+[run]
+branch = true
+source = types_linq
+omit = types_linq/more_typing.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+fail_under = 100

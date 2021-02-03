@@ -1,10 +1,7 @@
-import sys, os
 from collections.abc import Container, Iterable, Reversible, Sequence, Sized
 
 import pytest
 
-sys.path = [os.path.abspath('..')]  # run in tests folder
-sys.path.append(os.path.abspath('.'))  # run in root folder
 from types_linq import Enumerable
 
 
