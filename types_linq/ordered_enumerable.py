@@ -12,7 +12,6 @@ from .more_typing import (
 
 class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
-    _iter_factory: Callable[[], Iterable[TSource_co]]
     _parent: Optional[OrderedEnumerable[TSource_co, Any]]
     _key_selector: Callable[[TSource_co], TKey]
     _comparer: Optional[Callable[[TKey, TKey], int]]
@@ -31,8 +30,8 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
         self._comparer = comparer
         self._descending = descending
 
-    def __iter__(self) -> Iterator[TSource_co]:
-        lst = [elem for elem in self._iter_factory()]
+    def _get_iterable(self) -> Iterator[TSource_co]:
+        lst = [elem for elem in super()._get_iterable()]
         curr = self
         while curr is not None:
             comparer = curr._comparer
@@ -56,7 +55,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
         descending: bool,
     ) -> OrderedEnumerable[TSource_co, TKey2]:
         return OrderedEnumerable(
-            self._iter_factory,
+            self._get_iterable,
             self,
             key_selector,
             comparer,
