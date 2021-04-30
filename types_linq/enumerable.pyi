@@ -129,7 +129,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Appends a value to the end of the sequence.
         '''
 
-    def as_cached(self, *, cache_capacity: int = ...) -> CachedEnumerable[TSource_co]:
+    def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
         '''
         Returns a CachedEnumerable to cache the enumerated results in this query so that if the wrapped
         iterable is not repeatable (e.g. generator object), it will be repeatable.
@@ -164,6 +164,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
 
         Raises `InvalidOperationError` if cache_capacity is negative.
+
+        The behavior of this method differs from that of CachedEnumerable.
         '''
 
     @overload
