@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Generic, Iterator, Optional, overload
+from typing import Callable, Generic, Optional, overload
 
 from .enumerable import Enumerable
 from .more_typing import (

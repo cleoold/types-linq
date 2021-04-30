@@ -29,13 +29,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     '''
 
     @overload
-    def __init__(self, __iterable: Iterable[TSource_co]):
+    def __init__(self, __iterable: Iterable[TSource_co]) -> None:
         '''
         Wraps an iterable.
         '''
 
     @overload
-    def __init__(self, __iterable_factory: Callable[[], Iterable[TSource_co]]):
+    def __init__(self, __iterable_factory: Callable[[], Iterable[TSource_co]]) -> None:
         '''
         Wraps an iterable returned from the iterable factory. The factory will be called whenever
         an enumerating operation is performed.

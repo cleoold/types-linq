@@ -44,7 +44,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
                     def __init__(self, elem):
                         self.elem = elem
                     def __lt__(self, __o: key):
-                        return comparer(selector(self.elem), selector(__o.elem)) < 0
+                        return comparer(selector(self.elem), selector(__o.elem)) < 0  # type: ignore
             lst.sort(key=key, reverse=curr._descending)
             curr = curr._parent
         yield from lst

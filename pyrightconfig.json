@@ -1,0 +1,14 @@
+{
+    "include": ["types_linq", "tests"],
+    "pythonVersion": "3.7",
+    "typeCheckingMode":"strict",
+    "reportUnknownLambdaType": "none",
+    "reportUnknownVariableType": "none",
+    "reportUnknownMemberType": "none",
+    "reportUnnecessaryIsInstance": "none",
+    "reportUnnecessaryCast": "none",
+    "reportUnknownArgumentType": "none",
+    "reportUnknownParameterType": "none",
+    "reportInvalidStubStatement": "none",
+    "reportPrivateUsage": "none"
+}
