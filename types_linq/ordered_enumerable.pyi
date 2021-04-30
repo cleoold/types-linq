@@ -17,8 +17,6 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
     def __init__(self, *args): ...
 
-    def __iter__(self) -> Iterator[TSource_co]: ...
-
     def create_ordered_enumerable(self,
         key_selector: Callable[[TSource_co], TKey2],
         comparer: Optional[Callable[[TKey2], int]],
