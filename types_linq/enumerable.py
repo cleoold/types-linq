@@ -30,10 +30,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def __init__(self,
         it: Union[Iterable[TSource_co], Callable[[], Iterable[TSource_co]]]
     ):
-        if callable(it):
-            self._iter_factory = lambda it_=it: it_()
-        else:
+        if isinstance(it, Iterable):
             self._iter_factory = lambda it_=it: it_
+        else:
+            self._iter_factory = lambda it_=it: it_()
 
     def _get_iterable(self) -> Iterable[TSource_co]:
         return self._iter_factory()
