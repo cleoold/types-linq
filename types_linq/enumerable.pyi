@@ -3,6 +3,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
+from .cached_enumerable import CachedEnumerable
 from .more_typing import (
     SupportsAverage,
     TAccumulate,
@@ -37,6 +38,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         an enumerating operation is performed.
         '''
 
+    def _get_iterable(self) -> Iterable[TSource_co]: ...  # internal
+
     def __contains__(self, value: object) -> bool:
         '''
         Tests whether the sequence contains the specified element. Prefers calling `__contains__()`
@@ -59,7 +62,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def __iter__(self) -> Iterator[TSource_co]:
         '''
-        Returns an iterator the enumerates the values in the sequence.
+        Returns an iterator that enumerates the values in the sequence.
         '''
 
     def __len__(self) -> int:
@@ -124,6 +127,45 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def append(self, element: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
         '''
         Appends a value to the end of the sequence.
+        '''
+
+    def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
+        '''
+        Returns a CachedEnumerable to cache the enumerated results in this query so that if the wrapped
+        iterable is not repeatable (e.g. generator object), it will be repeatable.
+
+        By default, `Enumerable`s constructed from nonrepeatable sources cannot be enumerated multiple
+        times, for example
+        ```py
+        def gen():
+            yield 1
+            yield 0
+            yield 3
+
+        query = Enumerable(gen())
+        print(query.count())
+        print(query.where(lambda x: x > 0).to_list())
+        ```
+        prints `3` followed by an empty list `[]`. This is because the `.count()` exhausts the contents
+        in the generator before the second query is run.
+
+        To avoid the issue, use this method which saves the results along the way.
+        ```py
+        query = Enumerable(gen()).as_cached()
+        print(query.count())
+        print(query.take(2).to_list())
+        print(query.where(lambda x: x > 0).to_list())
+        ```
+        printing `3`, `[1, 0]` and `[1, 3]`.
+
+        This is an alternative way to deal with non-repeatable sources other than passing function
+        (`query = Enumerable(gen)`) or solidifying the source in advance (`query = Enumerable(list(gen))`).
+        This method is useless if you have constructed an Enumerable from a repeatable source such as
+        a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
+
+        Raises `InvalidOperationError` if cache_capacity is negative.
+
+        The behavior of this method differs from that of CachedEnumerable.
         '''
 
     @overload

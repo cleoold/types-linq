@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from .lookup import Lookup
     from .grouping import Grouping
     from .ordered_enumerable import OrderedEnumerable
+    from .cached_enumerable import CachedEnumerable
 
 from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
 from .more_typing import (
@@ -35,13 +36,16 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         else:
             self._iter_factory = lambda it_=it: it_
 
+    def _get_iterable(self) -> Iterable[TSource_co]:
+        return self._iter_factory()
+
     # 'fallback = F' -> calls dunder methods if available
     #                  -> otherwise calls own implementation
     # 'fallback = T'-> calls own implementation
     def _contains_impl(self, value: object, fallback: bool) -> bool:
-        iterable = self._iter_factory()
+        iterable = self._get_iterable()
         if not fallback and isinstance(iterable, Container):
-            return value in iterable
+            return value in iterable  # type: ignore
         for elem in iterable:
             if elem == value:
                 return True
@@ -57,7 +61,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         index: Union[int, slice],
         fallback: bool,
     ) -> Union[TSource_co, Enumerable[TSource_co]]:
-        iterable = self._iter_factory()
+        iterable = self._get_iterable()
         if isinstance(index, int):
             # Sequence is an abstract base class without @runtime_checkable
             if not fallback and isinstance(iterable, Sequence):
@@ -115,10 +119,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return self._getitem_impl(index, fallback=False)
 
     def __iter__(self) -> Iterator[TSource_co]:
-        return iter(self._iter_factory())
+        return iter(self._get_iterable())
 
     def _len_impl(self, fallback: bool) -> int:
-        iterable = self._iter_factory()
+        iterable = self._get_iterable()
         if not fallback and isinstance(iterable, Sized):
             return len(iterable)
         count = 0
@@ -129,7 +133,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return self._len_impl(fallback=False)
 
     def _reversed_impl(self, fallback: bool) -> Iterator[TSource_co]:
-        iterable = self._iter_factory()
+        iterable = self._get_iterable()
         # Sequence is an abstract base class without @runtime_checkable
         if not fallback and isinstance(iterable, (Sequence, Reversible)):
             return reversed(iterable)
@@ -191,6 +195,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             yield from self
             yield element
         return Enumerable(inner)
+
+    def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
+        from .cached_enumerable import CachedEnumerable
+        return CachedEnumerable(self, cache_capacity)
 
     def _average_helper(self, selector, when_empty):
         count = 0
@@ -264,7 +272,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 yield default
                 return
             yield from iterator
-        return Enumerable(inner)
+        return Enumerable(inner)  # type: ignore
 
     def distinct(self) -> Enumerable[TSource_co]:
         def inner():
@@ -496,7 +504,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         else:  # len(args) == 2:
             comparer = None
         return OrderedEnumerable(
-            self._iter_factory,
+            self._get_iterable,
             None,
             key_selector,
             comparer,
@@ -513,7 +521,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         else:  # len(args) == 2:
             comparer = None
         return OrderedEnumerable(
-            self._iter_factory,
+            self._get_iterable,
             None,
             key_selector,
             comparer,
