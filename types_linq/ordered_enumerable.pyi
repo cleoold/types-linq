@@ -37,7 +37,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
     @overload
     def then_by(self,
         key_selector: Callable[[TSource_co], TKey2],
-        comparer: Callable[[TKey2, TKey2], int],
+        __comparer: Callable[[TKey2, TKey2], int],
     ) -> OrderedEnumerable[TSource_co, TKey2]:
         '''
         Performs a subsequent ordering of the elements in ascending order by using a specified comparer.
@@ -54,7 +54,7 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
     @overload
     def then_by_descending(self,
         key_selector: Callable[[TSource_co], TKey2],
-        comparer: Callable[[TKey2, TKey2], int],
+        __comparer: Callable[[TKey2, TKey2], int],
     ) -> OrderedEnumerable[TSource_co, TKey2]:
         '''
         Performs a subsequent ordering of the elements in descending order by using a specified comparer.

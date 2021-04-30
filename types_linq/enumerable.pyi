@@ -29,13 +29,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     '''
 
     @overload
-    def __init__(self, iterable: Iterable[TSource_co]):
+    def __init__(self, __iterable: Iterable[TSource_co]):
         '''
         Wraps an iterable.
         '''
 
     @overload
-    def __init__(self, iterable_factory: Callable[[], Iterable[TSource_co]]):
+    def __init__(self, __iterable_factory: Callable[[], Iterable[TSource_co]]):
         '''
         Wraps an iterable returned from the iterable factory. The factory will be called whenever
         an enumerating operation is performed.
@@ -82,9 +82,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def aggregate(self,
-        seed: TAccumulate,
-        func: Callable[[TAccumulate, TSource_co], TAccumulate],
-        result_selector: Callable[[TAccumulate], TResult],
+        __seed: TAccumulate,
+        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
+        __result_selector: Callable[[TAccumulate], TResult],
     ) -> TResult:
         '''
         Applies an accumulator function over the sequence. The seed is used as the initial
@@ -93,8 +93,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def aggregate(self,
-        seed: TAccumulate,
-        func: Callable[[TAccumulate, TSource_co], TAccumulate],
+        __seed: TAccumulate,
+        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
     ) -> TAccumulate:
         '''
         Applies an accumulator function over the sequence. The seed is used as the initial
@@ -103,7 +103,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def aggregate(self,
-        func: Callable[[TAccumulate, TSource_co], TAccumulate],
+        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
     ) -> TAccumulate:
         '''
         Applies an accumulator function over the sequence. Raises `InvalidOperationError` if
@@ -122,7 +122,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def any(self, predicate: Callable[[TSource_co], bool]) -> bool:
+    def any(self, __predicate: Callable[[TSource_co], bool]) -> bool:
         '''
         Tests whether any element of the sequence satisfy a condition.
         '''
@@ -182,7 +182,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def average(self, selector: Callable[[TSource_co], SupportsAverage[TResult]]) -> TResult:
+    def average(self, __selector: Callable[[TSource_co], SupportsAverage[TResult]]) -> TResult:
         '''
         Computes the average value of the sequence using the selector. Raises
         `InvalidOperationError` if there is no value.
@@ -193,7 +193,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def average2(self: Enumerable[SupportsAverage[TResult]],
-        default: TDefault,
+        __default: TDefault,
     ) -> Union[TResult, TDefault]:
         '''
         Computes the average value of the sequence. Returns `default` if there is no value.
@@ -204,8 +204,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def average2(self,
-        selector: Callable[[TSource_co], SupportsAverage[TResult]],
-        default: TDefault,
+        __selector: Callable[[TSource_co], SupportsAverage[TResult]],
+        __default: TDefault,
     ) -> Union[TResult, TDefault]:
         '''
         Computes the average value of the sequence using the selector. Returns `default` if there
@@ -215,7 +215,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)` or `TDefault`.
         '''
 
-    def cast(self, t_result: Type[TResult]) -> Enumerable[TResult]:
+    def cast(self, __t_result: Type[TResult]) -> Enumerable[TResult]:
         '''
         Casts the elements to the specified type.
         '''
@@ -232,7 +232,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def contains(self, value: TOther, comparer: Callable[[TSource_co, TOther], bool]) -> bool:
+    def contains(self, value: TOther, __comparer: Callable[[TSource_co, TOther], bool]) -> bool:
         '''
         Tests whether the sequence contains the specified element using the provided comparer.
         '''
@@ -244,7 +244,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def count(self, predicate: Callable[[TSource_co], bool]) -> int:
+    def count(self, __predicate: Callable[[TSource_co], bool]) -> int:
         '''
         Returns the number of elements that satisfy the condition.
         '''
@@ -270,7 +270,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def element_at(self, index: int, default: TDefault) -> Union[TSource_co, TDefault]:
+    def element_at(self, index: int, __default: TDefault) -> Union[TSource_co, TDefault]:
         '''
         Returns the element at specified index in the sequence. Default value is returned if no
         such element exists.
@@ -295,14 +295,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def first(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+    def first(self, __predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
         Returns the first element of the sequence that satisfies the condition. Raises
         `InvalidOperationError` if no such element exists.
         '''
 
     @overload
-    def first2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+    def first2(self, __default: TDefault) -> Union[TSource_co, TDefault]:
         '''
         Returns the first element of the sequence or a default value if there is no such
         element.
@@ -310,8 +310,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def first2(self,
-        predicate: Callable[[TSource_co], bool],
-        default: TDefault,
+        __predicate: Callable[[TSource_co], bool],
+        __default: TDefault,
     ) -> Union[TSource_co, TDefault]:
         '''
         Returns the first element of the sequence that satisfies the condition or a default value if
@@ -322,7 +322,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def group_by(self,
         key_selector: Callable[[TSource_co], TKey],
         value_selector: Callable[[TSource_co], TValue],
-        result_selector: Callable[[TKey, Enumerable[TValue]], TResult],
+        __result_selector: Callable[[TKey, Enumerable[TValue]], TResult],
     ) -> Enumerable[TResult]:
         '''
         Groups the elements of the sequence according to specified key selector and value selector. Then
@@ -341,7 +341,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def group_by2(self,
         key_selector: Callable[[TSource_co], TKey],
-        result_selector: Callable[[TKey, Enumerable[TSource_co]], TResult],
+        __result_selector: Callable[[TKey, Enumerable[TSource_co]], TResult],
     ) -> Enumerable[TResult]:
         '''
         Groups the elements of the sequence according to a specified key selector function and creates a
@@ -390,14 +390,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def last(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+    def last(self, __predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
         Returns the last element of the sequence that satisfies the condition. Raises
         `InvalidOperationError` if no such element exists.
         '''
 
     @overload
-    def last2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+    def last2(self, __default: TDefault) -> Union[TSource_co, TDefault]:
         '''
         Returns the last element of the sequence or a default value if there is no such
         element.
@@ -405,8 +405,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def last2(self,
-        predicate: Callable[[TSource_co], bool],
-        default: TDefault,
+        __predicate: Callable[[TSource_co], bool],
+        __default: TDefault,
     ) -> Union[TSource_co, TDefault]:
         '''
         Returns the last element of the sequence that satisfies the condition or a default value if
@@ -420,22 +420,24 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def max(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
+    def max(self, __result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Invokes a transform function on each element of the sequence and returns the maximum of the
         resulting values. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
-    def max2(self: Enumerable[TSupportsLessThan], default: TDefault) -> Union[TSupportsLessThan, TDefault]:
+    def max2(self: Enumerable[TSupportsLessThan],
+        __default: TDefault,
+    ) -> Union[TSupportsLessThan, TDefault]:
         '''
         Returns the maximum value in the sequence, or the default one if there is no value.
         '''
 
     @overload
     def max2(self,
-        result_selector: Callable[[TSource_co], TSupportsLessThan],
-        default: TDefault,
+        __result_selector: Callable[[TSource_co], TSupportsLessThan],
+        __default: TDefault,
     ) -> Union[TSupportsLessThan, TDefault]:
         '''
         Invokes a transform function on each element of the sequence and returns the maximum of the
@@ -449,22 +451,24 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def min(self, result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
+    def min(self, __result_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Invokes a transform function on each element of the sequence and returns the minimum of the
         resulting values. Raises `InvalidOperationError` if there is no value.
         '''
 
     @overload
-    def min2(self: Enumerable[TSupportsLessThan], default: TDefault) -> Union[TSupportsLessThan, TDefault]:
+    def min2(self: Enumerable[TSupportsLessThan],
+        __default: TDefault,
+    ) -> Union[TSupportsLessThan, TDefault]:
         '''
         Returns the minimum value in the sequence, or the default one if there is no value.
         '''
 
     @overload
     def min2(self,
-        result_selector: Callable[[TSource_co], TSupportsLessThan],
-        default: TDefault,
+        __result_selector: Callable[[TSource_co], TSupportsLessThan],
+        __default: TDefault,
     ) -> Union[TSupportsLessThan, TDefault]:
         '''
         Invokes a transform function on each element of the sequence and returns the minimum of the
@@ -489,7 +493,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def order_by(self,
         key_selector: Callable[[TSource_co], TKey],
-        comparer: Callable[[TKey, TKey], int],
+        __comparer: Callable[[TKey, TKey], int],
     ) -> OrderedEnumerable[TSource_co, TKey]:
         '''
         Sorts the elements of the sequence in ascending order by using a specified comparer.
@@ -506,13 +510,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def order_by_descending(self,
         key_selector: Callable[[TSource_co], TKey],
-        comparer: Callable[[TKey, TKey], int],
+        __comparer: Callable[[TKey, TKey], int],
     ) -> OrderedEnumerable[TSource_co, TKey]:
         '''
         Sorts the elements of the sequence in descending order by using a specified comparer.
         '''
 
-    def prepend(self, value: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
+    def prepend(self, element: TSource_co) -> Enumerable[TSource_co]:  # type: ignore
         '''
         Adds a value to the beginning of the sequence.
         '''
@@ -555,7 +559,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def select_many(self,
         collection_selector: Callable[[TSource_co], Iterable[TCollection]],
-        result_selector: Callable[[TSource_co, TCollection], TResult],
+        __result_selector: Callable[[TSource_co, TCollection], TResult],
     ) -> Enumerable[TResult]:
         '''
         Projects each element of the sequence into an iterable, flattens the resulting sequence
@@ -564,7 +568,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def select_many(self,
-        selector: Callable[[TSource_co], Iterable[TResult]],
+        __selector: Callable[[TSource_co], Iterable[TResult]],
     ) -> Enumerable[TResult]:
         '''
         Projects each element of the sequence to an iterable and flattens the resultant sequences.
@@ -573,7 +577,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def select_many2(self,
         collection_selector: Callable[[TSource_co, int], Iterable[TCollection]],
-        result_selector: Callable[[TSource_co, TCollection], TResult],
+        __result_selector: Callable[[TSource_co, TCollection], TResult],
     ) -> Enumerable[TResult]:
         '''
         Projects each element of the sequence into an iterable, flattens the resulting sequence
@@ -583,7 +587,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def select_many2(self,
-        selector: Callable[[TSource_co, int], Iterable[TResult]],
+        __selector: Callable[[TSource_co, int], Iterable[TResult]],
     ) -> Enumerable[TResult]:
         '''
         Projects each element of the sequence to an iterable and flattens the resultant sequences.
@@ -603,14 +607,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def single(self, predicate: Callable[[TSource_co], bool]) -> TSource_co:
+    def single(self, __predicate: Callable[[TSource_co], bool]) -> TSource_co:
         '''
         Returns the only element in the sequence that satisfies the condition. Raises `InvalidOperationError`
         if no element satisfies the condition, or more than one do.
         '''
 
     @overload
-    def single2(self, default: TDefault) -> Union[TSource_co, TDefault]:
+    def single2(self, __default: TDefault) -> Union[TSource_co, TDefault]:
         '''
         Returns the only element in the sequence or the default value if the sequence is empty. Raises
         `InvalidOperationError` if there are more than one elements in the sequence.
@@ -618,8 +622,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def single2(self,
-        predicate: Callable[[TSource_co], bool],
-        default: TDefault,
+        __predicate: Callable[[TSource_co], bool],
+        __default: TDefault,
     ) -> Union[TSource_co, TDefault]:
         '''
         Returns the only element in the sequence that satisfies the condition, or the default value if there is
@@ -658,14 +662,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     # returning 0 conforms the builtin sum() function
     @overload
-    def sum(self, selector: Callable[[TSource_co], TSupportsAdd]) -> Union[TSupportsAdd, int]:
+    def sum(self, __selector: Callable[[TSource_co], TSupportsAdd]) -> Union[TSupportsAdd, int]:
         '''
         Computes the sum of the sequence using the selector. Returns `0` if the sequence is empty.
         '''
 
     @overload
     def sum2(self: Enumerable[TSupportsAdd],
-        default: TDefault,
+        __default: TDefault,
     ) -> Union[TSupportsAdd, TDefault]:
         '''
         Computes the sum of the sequence. Returns the default value if it is empty.
@@ -673,8 +677,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def sum2(self,
-        selector: Callable[[TSource_co], TSupportsAdd],
-        default: TDefault,
+        __selector: Callable[[TSource_co], TSupportsAdd],
+        __default: TDefault,
     ) -> Union[TSupportsAdd, TDefault]:
         '''
         Computes the sum of the sequence using the selector. Returns the default value if it is empty.
@@ -704,7 +708,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def to_dict(self,
         key_selector: Callable[[TSource_co], TKey],
-        value_selector: Callable[[TSource_co], TValue],
+        __value_selector: Callable[[TSource_co], TValue],
     ) -> Dict[TKey, TValue]:
         '''
         Enumerates all values and returns a dict containing them. key_selector and value_selector
@@ -733,7 +737,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def to_lookup(self,
         key_selector: Callable[[TSource_co], TKey],
-        value_selector: Callable[[TSource_co], TValue],
+        __value_selector: Callable[[TSource_co], TValue],
     ) -> Lookup[TKey, TValue]:
         '''
         Enumerates all values and returns a lookup containing them according to specified key
@@ -767,7 +771,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def zip(self,
-        second: Iterable[TOther],
+        __second: Iterable[TOther],
     ) -> Enumerable[Tuple[TSource_co, TOther]]:
         '''
         Produces a sequence of 2-element tuples from the two sequences.
@@ -775,39 +779,39 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def zip(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
     ) -> Enumerable[Tuple[TSource_co, TOther, TOther2]]: ...
 
     @overload
     def zip(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
-        fourth: Iterable[TOther3],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
+        __fourth: Iterable[TOther3],
     ) -> Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3]]: ...
 
     @overload
     def zip(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
-        fourth: Iterable[TOther3],
-        fifth: Iterable[TOther4],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
+        __fourth: Iterable[TOther3],
+        __fifth: Iterable[TOther4],
     ) -> Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3, TOther4]]: ...
 
     @overload
     def zip(self,
-        second: Iterable[Any],
-        third: Iterable[Any],
-        fourth: Iterable[Any],
-        fifth: Iterable[Any],
-        sixth: Iterable[Any],
+        __second: Iterable[Any],
+        __third: Iterable[Any],
+        __fourth: Iterable[Any],
+        __fifth: Iterable[Any],
+        __sixth: Iterable[Any],
         *iters: Iterable[Any],
     ) -> Enumerable[Tuple[Any, ...]]: ...
 
     @overload
     def zip2(self,
-        second: Iterable[TOther],
-        result_selector: Callable[[TSource_co, TOther], TResult],
+        __second: Iterable[TOther],
+        __result_selector: Callable[[TSource_co, TOther], TResult],
     ) -> Enumerable[TResult]:
         '''
         Applies a specified function to the corresponding elements of two sequences, producing a
@@ -816,35 +820,35 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def zip2(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
-        result_selector: Callable[[TSource_co, TOther, TOther2], TResult],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
+        __result_selector: Callable[[TSource_co, TOther, TOther2], TResult],
     ) -> Enumerable[TResult]: ...
 
     @overload
     def zip2(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
-        fourth: Iterable[TOther3],
-        result_selector: Callable[[TSource_co, TOther, TOther2, TOther3], TResult],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
+        __fourth: Iterable[TOther3],
+        __result_selector: Callable[[TSource_co, TOther, TOther2, TOther3], TResult],
     ) -> Enumerable[TResult]: ...
 
     @overload
     def zip2(self,
-        second: Iterable[TOther],
-        third: Iterable[TOther2],
-        fourth: Iterable[TOther3],
-        fifth: Iterable[TOther4],
-        result_selector: Callable[[TSource_co, TOther, TOther2, TOther3, TOther4], TResult],
+        __second: Iterable[TOther],
+        __third: Iterable[TOther2],
+        __fourth: Iterable[TOther3],
+        __fifth: Iterable[TOther4],
+        __result_selector: Callable[[TSource_co, TOther, TOther2, TOther3, TOther4], TResult],
     ) -> Enumerable[TResult]: ...
 
     @overload
     def zip2(self,
-        second: Iterable[Any],
-        third: Iterable[Any],
-        fourth: Iterable[Any],
-        fifth: Iterable[Any],
-        sixth: Iterable[Any],
+        __second: Iterable[Any],
+        __third: Iterable[Any],
+        __fourth: Iterable[Any],
+        __fifth: Iterable[Any],
+        __sixth: Iterable[Any],
         *iters_and_result_selector: Union[Iterable[Any], Callable[..., Any]],
     ) -> Enumerable[Any]: ...
 
@@ -852,13 +856,13 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     # for convenience.
 
     @overload
-    def elements_in(self, index: slice) -> Enumerable[TSource_co]:
+    def elements_in(self, __index: slice) -> Enumerable[TSource_co]:
         '''
         Produces a subsequence defined by the given slice notation.
         '''
 
     @overload
-    def elements_in(self, start: int, stop: int, step: int = 1) -> Enumerable[TSource_co]:
+    def elements_in(self, __start: int, __stop: int, __step: int = 1) -> Enumerable[TSource_co]:
         '''
         Produces a subsequence with indices that define a slice.
         '''
