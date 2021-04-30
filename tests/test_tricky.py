@@ -80,8 +80,6 @@ class TestAsCachedMethod:
         en = Enumerable(naturals()).as_cached(cache_capacity=0)
         assert en.take(1).to_list() == [0]
         assert en.take(2).to_list() == [1, 2]
-        with pytest.raises(InvalidOperationError):
-            en.as_cached()
 
     def test_one_capacity(self):
         en = Enumerable(naturals()).as_cached(cache_capacity=1)
@@ -91,11 +89,55 @@ class TestAsCachedMethod:
         assert en.take(1).to_list() == [4]
         assert en.take(2).to_list() == [4, 5]
 
+    def test_capcity_grow_from_zero(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=0)
+        en.take(3).to_list()
+        en.as_cached(cache_capacity=1)
+        en.take(1).to_list() == [3]
+        en.take(2).to_list() == [3, 4]
+
+    def test_capacity_grow_from_one(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=1)
+        en.take(10).to_list()
+        en.as_cached(cache_capacity=5)
+        assert en.take(10).to_list() == [*range(9, 19)]
+        assert en.take(10).to_list() == [*range(14, 24)]
+
+    def test_capacity_grow_to_inf(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=5)
+        en.take(10).to_list()
+        en.as_cached(cache_capacity=None)
+        en.take(10).to_list()
+        en.take(10).to_list()
+        assert en.take(15).to_list() == [*range(5, 20)]
+
+    def test_capacity_shrink(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=10)
+        en.take(10).to_list()
+        en.as_cached(cache_capacity=9)
+        assert en.take(10).to_list() == [*range(1, 11)]
+        en.as_cached(cache_capacity=5)
+        assert en.take(10).to_list() == [*range(6, 16)]
+
+    def test_capacity_shrink_to_zero(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=10)
+        en.take(10).to_list()
+        en.as_cached(cache_capacity=0)
+        assert en.take(10).to_list() == [*range(10, 20)]
+
+    def test_capacity_shrink_no_delete(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=10)
+        en.take(5).to_list()
+        en.as_cached(cache_capacity=6)
+        assert en.take(6).to_list() == [*range(0, 6)]
+        en.take(7).to_list()
+        assert en.take(6).to_list() == [*range(1, 7)]
+
     def test_errors(self):
         gen = (i for i in range(0))
         en = Enumerable(gen).as_cached()
         with pytest.raises(InvalidOperationError):
-            en.as_cached()
+            en.as_cached(cache_capacity=-1)
         en2 = Enumerable(gen)
         with pytest.raises(InvalidOperationError):
             en2.as_cached(cache_capacity=-1)

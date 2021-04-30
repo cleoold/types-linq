@@ -1,8 +1,8 @@
 from __future__ import annotations
-from types_linq.types_linq_error import InvalidOperationError
 from typing import Dict, Iterable, Iterator, Optional
 
 from .enumerable import Enumerable
+from .types_linq_error import InvalidOperationError
 
 from .more_typing import (
     TSource_co,
@@ -53,4 +53,16 @@ class CachedEnumerable(Enumerable[TSource_co]):
                 break
 
     def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
-        raise InvalidOperationError('Already configured')
+        '''
+        Updates settings and returns the original Enumerable reference.
+
+        Raises `InvalidOperationError` if cache_capacity is negative.
+        '''
+        if cache_capacity is not None:
+            if cache_capacity < 0:
+                raise InvalidOperationError('cache_capacity must be nonnegative')
+            while len(self._enumerated_values) > cache_capacity:
+                del self._enumerated_values[self._min_index]
+                self._min_index += 1
+        self._cache_capacity = cache_capacity
+        return self

@@ -62,7 +62,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def __iter__(self) -> Iterator[TSource_co]:
         '''
-        Returns an iterator the enumerates the values in the sequence.
+        Returns an iterator that enumerates the values in the sequence.
         '''
 
     def __len__(self) -> int:
@@ -131,8 +131,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def as_cached(self, *, cache_capacity: int = ...) -> CachedEnumerable[TSource_co]:
         '''
-        Configures to cache the enumerated results in this query so that if the wrapped iterable is
-        not repeatable (e.g. generator object), it will be repeatable.
+        Returns a CachedEnumerable to cache the enumerated results in this query so that if the wrapped
+        iterable is not repeatable (e.g. generator object), it will be repeatable.
 
         By default, `Enumerable`s constructed from nonrepeatable sources cannot be enumerated multiple
         times, for example
@@ -163,7 +163,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         This method is useless if you have constructed an Enumerable from a repeatable source such as
         a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
 
-        Raises `InvalidOperationError` if cache_capacity is negative, or this method is invoked twice.
+        Raises `InvalidOperationError` if cache_capacity is negative.
         '''
 
     @overload
