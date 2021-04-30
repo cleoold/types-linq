@@ -13,7 +13,6 @@ from .more_typing import (
     TDefault,
     TInner,
     TKey,
-    TOther,
     TResult,
     TSource_co,
     TValue,
@@ -230,7 +229,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return self._average_helper(selector, lambda: default)
 
     def cast(self, _: Type[TResult]) -> Enumerable[TResult]:
-        return self
+        return self  # type: ignore
 
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():
@@ -810,7 +809,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             value_selector: Any = lambda x: x
         else:  # len(args) == 1
             value_selector = args[0]
-        return dict((key_selector(e), value_selector(e)) for e in self)
+        return {key_selector(e): value_selector(e) for e in self}
 
     def to_set(self) -> Set[TSource_co]:
         return {e for e in self}
@@ -855,17 +854,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield elem
         return Enumerable(inner)
 
-    def zip(self,
-        second: Iterable[TOther],
-        *args: Callable[[TSource_co, TOther], TResult],
-    ) -> Union[Enumerable[TResult], Enumerable[Tuple[TSource_co, TOther]]]:
-        if len(args) == 0:
-            result_selector: Any = lambda x, y: (x, y)
-        else:  # len(args) == 1
-            result_selector = args[0]
+    def zip(self, *iters: Iterable[Any]) -> Enumerable[Any]:
         def inner():
-            for x, y in zip(self, second):
-                yield result_selector(x, y)
+            yield from zip(self, *iters)
+        return Enumerable(inner)
+
+    def zip2(self, *iters_and_result_selector: Any) -> Enumerable[Any]:
+        iters = iters_and_result_selector[:-1]
+        result_selector = iters_and_result_selector[-1]
+        def inner():
+            for tup in zip(self, *iters):
+                yield result_selector(*tup)
         return Enumerable(inner)
 
     def elements_in(self, *args) -> Enumerable[TSource_co]:

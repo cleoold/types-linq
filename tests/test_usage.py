@@ -1439,21 +1439,27 @@ class TestToLookupMethod:
 
 
 class TestZipMethod:
-    def test_overload1(self):
-        lst = [1, 2, 3, 4]
-        other_lst = ['x', 'y', 'z', 't']
-        en = Enumerable(lst)
-        zipped = en.zip(other_lst, lambda x, y: f'{x}{y}')
-        assert zipped.to_list() == ['1x', '2y', '3z', '4t']
-
-    def test_overload2(self):
+    def test_zip(self):
         lst = [1, 2, 3, 4]
         other_lst = ['x', 'y', 'z', 't']
         en = Enumerable(lst)
         zipped = en.zip(Enumerable(other_lst))
         assert zipped.to_list() == [(1, 'x'), (2, 'y'), (3, 'z'), (4, 't')]
+        zipped2 = en.zip(other_lst, lst)
+        assert zipped2.to_list() == [
+            (1, 'x', 1), (2, 'y', 2), (3, 'z', 3), (4, 't', 4),
+        ]
 
-    def test_different_len(self):
+    def test_zip2(self):
+        lst = [1, 2, 3, 4]
+        other_lst = ['x', 'y', 'z', 't']
+        en = Enumerable(lst)
+        zipped = en.zip2(other_lst, lambda x, y: f'{x}{y}')
+        assert zipped.to_list() == ['1x', '2y', '3z', '4t']
+        zipped2 = en.zip2(other_lst, lst, lambda x, y, z: f'{x}{y}{z}')
+        assert zipped2.to_list() == ['1x1', '2y2', '3z3', '4t4']
+
+    def test_zip_different_len(self):
         'take shorter'
         lst = [1, 2, 3, 4]
         other_lst = ['x', 'y', 'z', 't']

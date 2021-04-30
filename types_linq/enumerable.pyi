@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
@@ -12,6 +12,9 @@ from .more_typing import (
     TInner,
     TKey,
     TOther,
+    TOther2,
+    TOther3,
+    TOther4,
     TResult,
     TSource_co,
     TSupportsAdd,
@@ -765,6 +768,45 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     @overload
     def zip(self,
         second: Iterable[TOther],
+    ) -> Enumerable[Tuple[TSource_co, TOther]]:
+        '''
+        Produces a sequence of 2-element tuples from the two sequences.
+        '''
+
+    @overload
+    def zip(self,
+        second: Iterable[TOther],
+        third: Iterable[TOther2],
+    ) -> Enumerable[Tuple[TSource_co, TOther, TOther2]]: ...
+
+    @overload
+    def zip(self,
+        second: Iterable[TOther],
+        third: Iterable[TOther2],
+        fourth: Iterable[TOther3],
+    ) -> Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3]]: ...
+
+    @overload
+    def zip(self,
+        second: Iterable[TOther],
+        third: Iterable[TOther2],
+        fourth: Iterable[TOther3],
+        fifth: Iterable[TOther4],
+    ) -> Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3, TOther4]]: ...
+
+    @overload
+    def zip(self,
+        second: Iterable[Any],
+        third: Iterable[Any],
+        fourth: Iterable[Any],
+        fifth: Iterable[Any],
+        sixth: Iterable[Any],
+        *iters: Iterable[Any],
+    ) -> Enumerable[Tuple[Any, ...]]: ...
+
+    @overload
+    def zip2(self,
+        second: Iterable[TOther],
         result_selector: Callable[[TSource_co, TOther], TResult],
     ) -> Enumerable[TResult]:
         '''
@@ -773,12 +815,38 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
-    def zip(self,
+    def zip2(self,
         second: Iterable[TOther],
-    ) -> Enumerable[Tuple[TSource_co, TOther]]:
-        '''
-        Produces a sequence of 2-element tuples from the two sequences.
-        '''
+        third: Iterable[TOther2],
+        result_selector: Callable[[TSource_co, TOther, TOther2], TResult],
+    ) -> Enumerable[TResult]: ...
+
+    @overload
+    def zip2(self,
+        second: Iterable[TOther],
+        third: Iterable[TOther2],
+        fourth: Iterable[TOther3],
+        result_selector: Callable[[TSource_co, TOther, TOther2, TOther3], TResult],
+    ) -> Enumerable[TResult]: ...
+
+    @overload
+    def zip2(self,
+        second: Iterable[TOther],
+        third: Iterable[TOther2],
+        fourth: Iterable[TOther3],
+        fifth: Iterable[TOther4],
+        result_selector: Callable[[TSource_co, TOther, TOther2, TOther3, TOther4], TResult],
+    ) -> Enumerable[TResult]: ...
+
+    @overload
+    def zip2(self,
+        second: Iterable[Any],
+        third: Iterable[Any],
+        fourth: Iterable[Any],
+        fifth: Iterable[Any],
+        sixth: Iterable[Any],
+        *iters_and_result_selector: Union[Iterable[Any], Callable[..., Any]],
+    ) -> Enumerable[Any]: ...
 
     # Methods below are non-standard. They do not have .NET builtin equivalence and are here just
     # for convenience.
