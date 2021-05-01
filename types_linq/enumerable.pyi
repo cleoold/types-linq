@@ -166,6 +166,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         This method is useless if you have constructed an Enumerable from a repeatable source such as
         a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
 
+        If cache_capacity is None, it is infinite.
+
         Raises `InvalidOperationError` if cache_capacity is negative.
 
         The behavior of this method differs from that of CachedEnumerable.
