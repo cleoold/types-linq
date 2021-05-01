@@ -1,6 +1,9 @@
 name: pyright
 
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: 0 9 * * 4
 
 jobs:
   on-ubuntu-latest-py37:
