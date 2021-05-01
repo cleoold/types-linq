@@ -910,7 +910,7 @@ class TestSelectManyMethod:
         dinner = [(533, ['ramen', 'rice']), (16, ['pork'])]
         en = Enumerable(dinner)
         q = en.select_many2(
-            lambda tup, i: [i] + tup[1],
+            lambda tup, i: [i] + tup[1],  # type: ignore
             lambda src, c: f'{src[0]}.{c}',
         )
         assert q.to_list() == ['533.0', '533.ramen', '533.rice', '16.1', '16.pork']
@@ -1598,5 +1598,5 @@ class TestElementsInMethod:
             en3[:7]
 
     class OnlyHasGetItemRaises(TestElementAtMethod.OnlyHasGetItem[TSource_co]):
-        def __getitem__(self, _):
+        def __getitem__(self, _):  # type: ignore[override]
             raise IndexError('generic error')

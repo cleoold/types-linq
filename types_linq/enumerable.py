@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -112,7 +112,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                         .reverse()._every(-step)
             return Enumerable(inner)
 
-    def __getitem__(self,
+    def __getitem__(self,  # type: ignore[override]
         index: Union[int, slice],
     ) -> Union[TSource_co, Enumerable[TSource_co]]:
         return self._getitem_impl(index, fallback=False)
