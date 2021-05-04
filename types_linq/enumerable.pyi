@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
@@ -80,6 +80,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Inverts the order of the elements in the sequence. Prefers calling `__reversed__()` on the wrapped
         iterable if available, otherwise, calls `self.reverse()`.
         '''
+
+    @staticmethod
+    def _raise_empty_sequence() -> NoReturn: ...  # internal
 
     @overload
     def aggregate(self,
