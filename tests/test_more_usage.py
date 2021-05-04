@@ -63,3 +63,25 @@ class TestForEachMethod:
         en = MoreEnumerable([7, 9, 11])
         en.for_each2(lambda x, i: side_effects.append(f'{x}/{i}'))
         assert side_effects == ['7/0', '9/1', '11/2']
+
+
+class TestInterleaveMethod:
+    def test_interleave_one(self):
+        en = MoreEnumerable([1, 2, 4]).interleave(*[])
+        assert en.to_list() == [1, 2, 4]
+
+    def test_interleave_two(self):
+        en = MoreEnumerable([1, 2, 3]).interleave([4, 5, 6])
+        assert en.to_list() == [1, 4, 2, 5, 3, 6]
+
+    def test_interleave_three(self):
+        en = MoreEnumerable([1, 2]).interleave([4, 5], [11, 12])
+        assert en.to_list() == [1, 4, 11, 2, 5, 12]
+
+    def test_skip_consumed_me(self):
+        en = MoreEnumerable(['1', '2']).interleave(['4', '5', '6'], ['7', '8', '9'])
+        assert en.to_list() == ['1', '4', '7', '2', '5', '8', '6', '9']
+
+    def test_skip_consumed_them(self):
+        en = MoreEnumerable([4, 5, 6]).interleave([9], [12, 17], [44, 45, 46])
+        assert en.to_list() == [4, 9, 12, 44, 5, 17, 45, 6, 46]

@@ -1,4 +1,4 @@
-from typing import Any, Callable, overload
+from typing import Any, Callable, Iterable, overload
 
 from .enumerable import Enumerable
 from .more_typing import (
@@ -57,4 +57,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
         Executes the given function on each element in the source sequence. Each element's index is used in
         the logic of the function. The return values are discarded.
+        '''
+
+    def interleave(self, *iters: Iterable[TSource_co]) -> MoreEnumerable[TSource_co]:
+        '''
+        Interleaves the elements of two or more sequences into a single sequence, skipping sequences if they
+        are consumed.
         '''

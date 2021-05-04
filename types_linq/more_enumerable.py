@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 
 from .enumerable import Enumerable
 from .more_typing import (
@@ -37,3 +37,18 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def for_each2(self, action: Callable[[TSource_co, int], Any]) -> None:
         for i, elem in enumerate(self):
             action(elem, i)
+
+    def interleave(self, *iters: Iterable[TSource_co]) -> MoreEnumerable[TSource_co]:
+        def inner():
+            its = [iter(self)]
+            for iter_ in iters:
+                its.append(iter(iter_))
+            while its:
+                i = 0
+                while i < len(its):
+                    try:
+                        yield next(its[i])
+                        i += 1
+                    except StopIteration:
+                        its.pop(i)
+        return MoreEnumerable(inner)
