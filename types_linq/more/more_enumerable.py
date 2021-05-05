@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Iterable, Iterator, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Deque, Iterable, Iterator, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
 from ..enumerable import Enumerable
 from ..more_typing import (
+    TSource,
     TSource_co,
     TSupportsLessThan,
 )
@@ -113,3 +114,32 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         from .extrema_enumerable import ExtremaEnumerable
         return ExtremaEnumerable(self, selector, lambda x, y: x < y)
+
+    @staticmethod
+    def traverse_breath_first(
+        root: TSource,
+        children_selector: Callable[[TSource], Iterable[TSource]],
+    ) -> MoreEnumerable[TSource]:
+        def inner():
+            queue = Deque((root,))
+            while queue:
+                elem = queue.popleft()
+                yield elem
+                for child in children_selector(elem):
+                    queue.append(child)
+        return MoreEnumerable(inner)
+
+    @staticmethod
+    def traverse_depth_first(
+        root: TSource,
+        children_selector: Callable[[TSource], Iterable[TSource]],
+    ) -> MoreEnumerable[TSource]:
+        def inner():
+            stack = [root]
+            while stack:
+                elem = stack.pop()
+                yield elem
+                children = [*children_selector(elem)]
+                for children in reversed(children):
+                    stack.append(children)
+        return MoreEnumerable(inner)

@@ -331,3 +331,47 @@ class TestExtremaEnumerableTakeLastMethod:
     def test_take_last(self, count: int, expected: List[str]):
         en = MoreEnumerable(TestMaxByMethod.strings).max_by(len).take_last(count)
         assert en.to_list() == expected
+
+
+class TestTraverseBreathFirstMethod:
+    tree = Tree \
+    (
+        left=Tree
+        (
+            left=Tree(0),
+            val=1,
+            right=Tree(2),
+        ),
+        val=3,
+        right=Tree
+        (
+            left=None,
+            val=4,
+            right=Tree(5),
+        )
+    )
+
+    @staticmethod
+    def selector(n: Tree):
+        return [t for t in (n.left, n.right) if t is not None]
+
+    def test_traverse_tree(self):
+        en = MoreEnumerable.traverse_breath_first(self.tree, self.selector)
+        assert en.select(lambda n: n.val).to_list() == [3, 1, 4, 0, 2, 5]
+
+    def test_preserve_children_order(self):
+        en = MoreEnumerable.traverse_breath_first(0, lambda i: [*range(1, 10)] if i == 0 else [])
+        assert en.to_list() == [*range(10)]
+
+
+class TestTraverseDepthFirstMethod:
+    def test_traverse_tree(self):
+        en = MoreEnumerable.traverse_depth_first(
+            TestTraverseBreathFirstMethod.tree,
+            TestTraverseBreathFirstMethod.selector,
+        )
+        assert en.select(lambda n: n.val).to_list() == [3, 1, 0, 2, 4, 5]
+
+    def test_preserve_children_order(self):
+        en = MoreEnumerable.traverse_depth_first(0, lambda i: [*range(1, 10)] if i == 0 else [])
+        assert en.to_list() == [*range(10)]

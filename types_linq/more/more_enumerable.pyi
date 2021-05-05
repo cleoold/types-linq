@@ -5,6 +5,7 @@ from .extrema_enumerable import ExtremaEnumerable
 from ..more_typing import (
     TAccumulate,
     TResult,
+    TSource,
     TSource_co,
     TSupportsLessThan,
 )
@@ -124,4 +125,24 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         '''
         Returns the minimal elements of the sequence based on the given selector.
+        '''
+
+    @staticmethod
+    def traverse_breath_first(
+        root: TSource,
+        children_selector: Callable[[TSource], Iterable[TSource]],
+    ) -> MoreEnumerable[TSource]:
+        '''
+        Traverses the tree from the root node in a breath-first fashion. A selector is used to select
+        children of each node.
+        '''
+
+    @staticmethod
+    def traverse_depth_first(
+        root: TSource,
+        children_selector: Callable[[TSource], Iterable[TSource]],
+    ) -> MoreEnumerable[TSource]:
+        '''
+        Traverses the tree from the root node in a depth-first fashion. A selector is used to select
+        children of each node.
         '''
