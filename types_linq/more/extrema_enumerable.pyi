@@ -1,7 +1,7 @@
 from typing import Callable, Generic, Iterable
 
 from .more_enumerable import MoreEnumerable
-from .more_typing import (
+from ..more_typing import (
     TSource_co,
     TSupportsLessThan,
 )

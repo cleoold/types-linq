@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from .grouping import Grouping
     from .ordered_enumerable import OrderedEnumerable
     from .cached_enumerable import CachedEnumerable
-    from .more_enumerable import MoreEnumerable
+    from .more.more_enumerable import MoreEnumerable
 
 from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
 from .more_typing import (
@@ -201,7 +201,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return CachedEnumerable(self, cache_capacity)
 
     def as_more(self) -> MoreEnumerable[TSource_co]:
-        from .more_enumerable import MoreEnumerable
+        from .more.more_enumerable import MoreEnumerable
         return MoreEnumerable(self)
 
     def _average_helper(self, selector, when_empty):

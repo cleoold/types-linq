@@ -1,8 +1,8 @@
 from typing import Any, Callable, Iterable, overload
 
-from .enumerable import Enumerable
+from ..enumerable import Enumerable
 from .extrema_enumerable import ExtremaEnumerable
-from .more_typing import (
+from ..more_typing import (
     TAccumulate,
     TResult,
     TSource_co,

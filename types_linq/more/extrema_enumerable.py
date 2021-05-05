@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Callable, Deque, Generic, Iterable, Optional, Union
 
 from .more_enumerable import MoreEnumerable
-from .more_typing import (
+from ..more_typing import (
     TSource,
     TSource_co,
     TSupportsLessThan,

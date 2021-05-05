@@ -4,8 +4,8 @@ from typing import Any, Callable, Iterable, TYPE_CHECKING
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
-from .enumerable import Enumerable
-from .more_typing import (
+from ..enumerable import Enumerable
+from ..more_typing import (
     TSource_co,
     TSupportsLessThan,
 )
