@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -876,3 +876,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             return self.elements_in(start, stop, 1)
         else:  # len(args) == 3
             return self.elements_in(slice(*args))
+
+    def to_tuple(self) -> Tuple[TSource_co, ...]:
+        return tuple(e for e in self)

@@ -52,6 +52,11 @@ class TestIterMethod2:
         en = Enumerable(gen)
         assert en.to_set() == {0, 1, 2, 3, 4, 77}
 
+    def test_to_tuple(self):
+        gen = (chr(i) for i in range(120, 123))
+        en = Enumerable(gen)
+        assert en.to_tuple() == ('x', 'y', 'z')
+
     def test_to_dict_overload1(self):
         gen = ((i, chr(i)) for i in range(120, 123))
         en = Enumerable(gen)

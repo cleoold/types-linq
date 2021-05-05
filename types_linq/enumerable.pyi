@@ -868,3 +868,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence with indices that define a slice.
         '''
+
+    def to_tuple(self) -> Tuple[TSource_co, ...]:
+        '''
+        Enumerates all values and returns a tuple containing them.
+        '''
