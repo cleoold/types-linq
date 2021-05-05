@@ -15,6 +15,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
     MoreEnumerable provides more query methods. Instances of this class can be created by directly
     constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
     instead of Enumerable.
+
+    Some APIs are subject to change as updates to .NET (6) are happening - they will move to Enumerable
+    class if one day they appear in the official .NET doc.
     '''
 
     @overload
@@ -52,6 +55,21 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Returns the original MoreEnumerable reference.
         '''
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
+        '''
+        Returns distinct elements from the sequence where "distinctness" is determined by the value
+        returned by the selector.
+        '''
+
+    def except_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> MoreEnumerable[TSource_co]:
+        '''
+        Produces the set difference of two sequences: self - second, according to a key selector that
+        determines "distinctness".
+        '''
+
     @overload
     def flatten(self) -> MoreEnumerable[Any]:
         '''
@@ -70,19 +88,19 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Note: the nested objects must be Iterable to be flatten.
         '''
 
-    def flatten2(self, selector: Callable[[Any], Optional[Iterable[Any]]]) -> MoreEnumerable[Any]:
+    def flatten2(self, selector: Callable[[Any], Optional[Iterable[object]]]) -> MoreEnumerable[Any]:
         '''
         Flattens the sequence containing arbitrarily-nested subsequences. A selector is used to select a
         subsequence based on the object's properties. If the selector returns None, then the object is
         considered a leaf.
         '''
 
-    def for_each(self, action: Callable[[TSource_co], Any]) -> None:
+    def for_each(self, action: Callable[[TSource_co], object]) -> None:
         '''
         Executes the given function on each element in the source sequence. The return values are discarded.
         '''
 
-    def for_each2(self, action: Callable[[TSource_co, int], Any]) -> None:
+    def for_each2(self, action: Callable[[TSource_co, int], object]) -> None:
         '''
         Executes the given function on each element in the source sequence. Each element's index is used in
         the logic of the function. The return values are discarded.

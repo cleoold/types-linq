@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING
+
+from typing import Any, Callable, Iterable, Iterator, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
@@ -34,6 +35,23 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: reportIncompatibleMethodOverride=false
         return self
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
+        return self.except_by((), key_selector)
+
+    def except_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> MoreEnumerable[TSource_co]:
+        def inner():
+            s = {key_selector(s) for s in second}
+            for elem in self:
+                key = key_selector(elem)
+                if key in s:
+                    continue
+                s.add(key)
+                yield elem
+        return MoreEnumerable(inner)
+
     def flatten(self, *args: Callable[[Iterable[Any]], bool]) -> MoreEnumerable[Any]:
         if len(args) == 0:
             return self.flatten(lambda x: not isinstance(x, str))
@@ -43,9 +61,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 if isinstance(x, Iterable) and predicate(x)
                 else None)
 
-    def flatten2(self, selector: Callable[[Any], Optional[Iterable[Any]]]) -> MoreEnumerable[Any]:
+    def flatten2(self, selector: Callable[[Any], Optional[Iterable[object]]]) -> MoreEnumerable[Any]:
         def inner():
-            stack = [iter(self)]
+            stack: List[Iterator[object]] = [iter(self)]
             while stack:
                 it = stack.pop()
                 while True:
@@ -61,11 +79,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
                     yield elem
         return MoreEnumerable(inner)
 
-    def for_each(self, action: Callable[[TSource_co], Any]) -> None:
+    def for_each(self, action: Callable[[TSource_co], object]) -> None:
         for elem in self:
             action(elem)
 
-    def for_each2(self, action: Callable[[TSource_co, int], Any]) -> None:
+    def for_each2(self, action: Callable[[TSource_co, int], object]) -> None:
         for i, elem in enumerate(self):
             action(elem, i)
 

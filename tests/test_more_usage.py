@@ -60,6 +60,31 @@ class TestAggregateRightMethod:
         assert sole == 87
 
 
+class TestDistinctByMethod:
+    def test_distinct_by(self):
+        en = MoreEnumerable([1, 4, 5, 6, 4, 3, 1, 99])
+        assert en.distinct_by(lambda x: x // 2).to_list() == [1, 4, 6, 3, 99]
+
+
+class TestExceptByMethod:
+    def test_except_by(self):
+        en = MoreEnumerable(['aaa', 'bb', 'c', 'dddd'])
+        assert en.except_by(['xx', 'y'], len).to_list() == ['aaa', 'dddd']
+
+    def test_no_repeat(self):
+        en = MoreEnumerable(['aaa', 'bb', 'c', 'dddd', 'aaa'])
+        assert en.except_by(['xx', 'y'], len).to_list() == ['aaa', 'dddd']
+
+    def test_remove_nothing(self):
+        i = -1
+        def selector(_):
+            nonlocal i; i += 1
+            return i
+        strs = ['aaa', 'bb', 'c', 'dddd', 'dddd']
+        en = MoreEnumerable(strs)
+        assert en.except_by((), selector).to_list() == strs
+
+
 class TestFlattenMethod:
     def test_flatten_overload1(self):
         en = MoreEnumerable(
