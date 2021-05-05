@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, overload
+from typing import Any, Callable, Iterable, Optional, overload
 
 from ..enumerable import Enumerable
 from .extrema_enumerable import ExtremaEnumerable
@@ -50,6 +50,31 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def as_more(self) -> MoreEnumerable[TSource_co]:
         '''
         Returns the original MoreEnumerable reference.
+        '''
+
+    @overload
+    def flatten(self) -> MoreEnumerable[Any]:
+        '''
+        Flattens the sequence containing arbitrarily-nested subsequences.
+
+        Note: the nested objects must be Iterable to be flatten.
+        Instances of `str` are not flattened.
+        '''
+
+    @overload
+    def flatten(self, __predicate: Callable[[Iterable[Any]], bool]) -> MoreEnumerable[Any]:
+        '''
+        Flattens the sequence containing arbitrarily-nested subsequences. A predicate function determines
+        whether a nested iterable should be flattened or not.
+
+        Note: the nested objects must be Iterable to be flatten.
+        '''
+
+    def flatten2(self, selector: Callable[[Any], Optional[Iterable[Any]]]) -> MoreEnumerable[Any]:
+        '''
+        Flattens the sequence containing arbitrarily-nested subsequences. A selector is used to select a
+        subsequence based on the object's properties. If the selector returns None, then the object is
+        considered a leaf.
         '''
 
     def for_each(self, action: Callable[[TSource_co], Any]) -> None:

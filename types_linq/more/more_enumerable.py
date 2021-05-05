@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Iterable, TYPE_CHECKING
+from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
@@ -33,6 +33,33 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
     def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: reportIncompatibleMethodOverride=false
         return self
+
+    def flatten(self, *args: Callable[[Iterable[Any]], bool]) -> MoreEnumerable[Any]:
+        if len(args) == 0:
+            return self.flatten(lambda x: not isinstance(x, str))
+        else:  # len(args) == 1
+            predicate = args[0]
+            return self.flatten2(lambda x: x
+                if isinstance(x, Iterable) and predicate(x)
+                else None)
+
+    def flatten2(self, selector: Callable[[Any], Optional[Iterable[Any]]]) -> MoreEnumerable[Any]:
+        def inner():
+            stack = [iter(self)]
+            while stack:
+                it = stack.pop()
+                while True:
+                    try:
+                        elem = next(it)
+                    except StopIteration:
+                        break
+                    nested = selector(elem)
+                    if nested is not None:
+                        stack.append(it)
+                        it = iter(nested)
+                        continue
+                    yield elem
+        return MoreEnumerable(inner)
 
     def for_each(self, action: Callable[[TSource_co], Any]) -> None:
         for elem in self:

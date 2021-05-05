@@ -1,7 +1,16 @@
+from dataclasses import dataclass
+from typing import Any, List, Optional, cast
+
 import pytest
 
-from typing import List
 from types_linq import Enumerable, MoreEnumerable, InvalidOperationError
+
+
+@dataclass
+class Tree:
+    val: int
+    left: 'Optional[Tree]' = None
+    right: 'Optional[Tree]' = None
 
 
 class TestAsMore:
@@ -49,6 +58,81 @@ class TestAggregateRightMethod:
         en = MoreEnumerable(ints)
         sole = en.aggregate_right(lambda e, rr: e - rr)
         assert sole == 87
+
+
+class TestFlattenMethod:
+    def test_flatten_overload1(self):
+        en = MoreEnumerable(
+        [
+            1, 2, 3,
+            [
+                4, 5, 'orange', 'sequence',
+                [
+                    6, [7],
+                ],
+                8,
+            ],
+            'foo',
+            [],
+            MoreEnumerable(
+            [
+                9, 10, (11, 12),
+            ]),
+        ])
+        assert en.flatten().to_list() == [
+            1, 2, 3, 4, 5, 'orange', 'sequence', 6, 7, 8, 'foo', 9, 10, 11, 12,
+        ]
+
+    def test_flatten_overload2(self):
+        en = MoreEnumerable([
+            1, 2, 3, [4, 5], [6, 7, 8], [9, 10, [11, 12], 13],
+        ])
+        assert en.flatten(lambda x: len(cast(List[Any], x)) != 2).to_list() == [
+            1, 2, 3, [4, 5], 6, 7, 8, 9, 10, [11, 12], 13,
+        ]
+
+    def test_flatten_overload2_false(self):
+        lst = [1, 2, 3, [4, 5, [6]]]
+        en = MoreEnumerable(lst)
+        assert en.flatten(lambda x: False).to_list() == lst
+
+    def test_flatten2_tree(self):
+        t = Tree \
+        (
+            left=Tree
+            (
+                left=Tree(0),
+                val=1,
+                right=Tree(2),
+            ),
+            val=3,
+            right=Tree
+            (
+                left=Tree(4),
+                val=5,
+                right=Tree(6),
+            )
+        )
+        en = MoreEnumerable((t, 'ignore_me'))
+
+        def pred(x):
+            if isinstance(x, int):
+                return None
+            elif isinstance(x, Tree):
+                return (x.left, x.val, x.right)
+            elif isinstance(x, str):
+                return ()
+            elif isinstance(x, tuple):
+                return x
+            elif x is None:
+                return ()
+            raise Exception
+
+        assert en.flatten2(pred).to_list() == [*range(7)]
+
+    def test_flatten2_empty(self):
+        en = MoreEnumerable(())
+        assert en.flatten2(lambda x: x).to_list() == []
 
 
 class TestForEachMethod:
