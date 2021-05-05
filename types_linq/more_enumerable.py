@@ -1,9 +1,13 @@
 from __future__ import annotations
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .extrema_enumerable import ExtremaEnumerable
 
 from .enumerable import Enumerable
 from .more_typing import (
     TSource_co,
+    TSupportsLessThan,
 )
 
 
@@ -52,3 +56,15 @@ class MoreEnumerable(Enumerable[TSource_co]):
                     except StopIteration:
                         its.pop(i)
         return MoreEnumerable(inner)
+
+    def max_by(self,
+        selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        from .extrema_enumerable import ExtremaEnumerable
+        return ExtremaEnumerable(self, selector, lambda x, y: y < x)
+
+    def min_by(self,
+        selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        from .extrema_enumerable import ExtremaEnumerable
+        return ExtremaEnumerable(self, selector, lambda x, y: x < y)

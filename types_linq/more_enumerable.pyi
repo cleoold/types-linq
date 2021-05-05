@@ -1,16 +1,20 @@
 from typing import Any, Callable, Iterable, overload
 
 from .enumerable import Enumerable
+from .extrema_enumerable import ExtremaEnumerable
 from .more_typing import (
     TAccumulate,
     TResult,
     TSource_co,
+    TSupportsLessThan,
 )
 
 
 class MoreEnumerable(Enumerable[TSource_co]):
     '''
-    MoreEnumerable provides more query methods.
+    MoreEnumerable provides more query methods. Instances of this class can be created by directly
+    constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
+    instead of Enumerable.
     '''
 
     @overload
@@ -63,4 +67,18 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
         Interleaves the elements of two or more sequences into a single sequence, skipping sequences if they
         are consumed.
+        '''
+
+    def max_by(self,
+        selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        '''
+        Returns the maximal elements of the sequence based on the given selector.
+        '''
+
+    def min_by(self,
+        selector: Callable[[TSource_co], TSupportsLessThan],
+    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        '''
+        Returns the minimal elements of the sequence based on the given selector.
         '''

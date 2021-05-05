@@ -85,3 +85,140 @@ class TestInterleaveMethod:
     def test_skip_consumed_them(self):
         en = MoreEnumerable([4, 5, 6]).interleave([9], [12, 17], [44, 45, 46])
         assert en.to_list() == [4, 9, 12, 44, 5, 17, 45, 6, 46]
+
+
+class TestMaxByMethod:
+    strings = ['foo', 'bar', 'cheese', 'orange', 'baz', 'spam', 'egg', 'toasts', 'dish']
+
+    def test_max_by(self):
+        en = MoreEnumerable(self.strings).max_by(len)
+        assert en.to_list() == ['cheese', 'orange', 'toasts']
+
+    def test_max_by_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        assert en.to_list() == []
+
+
+class TestMinByMethod:
+    def test_min_by(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).min_by(len)
+        assert en.to_list() == ['foo', 'bar', 'baz', 'egg']
+
+    def test_min_by_empty(self):
+        en = MoreEnumerable([]).min_by(len)
+        assert en.to_list() == []
+
+
+# no extensive testing because similar things are already tested in Enumerable
+class TestExtremaEnumerableFirstMethod:
+    def test_first_overload1(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.first() == 'cheese'
+
+    def test_first_overload1_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        with pytest.raises(InvalidOperationError):
+            en.first()
+
+    def test_first_call_parent_overload2(self):
+        'properly delegates the with-predicate overload to base class implementation'
+        # don't crash
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.first(lambda x: 'o' in x) == 'orange'
+
+    def test_first2_overload1(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.first2('mmmmmm') == 'cheese'
+
+    def test_first2_overload1_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        assert en.first2('mmmmmm') == 'mmmmmm'
+
+    def test_first2_call_parent_overload2(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.first2(lambda x: False, 'mmmmmm') == 'mmmmmm'
+
+
+class TestExtremaEnumerableLastMethod:
+    def test_last_overload1(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.last() == 'toasts'
+
+    def test_last_overload1_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        with pytest.raises(InvalidOperationError):
+            en.last()
+
+    def test_last_call_parent_overload2(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.last(lambda x: 'g' in x) == 'orange'
+
+    def test_last2_overload1(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.last2('mmmmmm') == 'toasts'
+
+    def test_last2_overload1_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        assert en.last2('mmmmmm') == 'mmmmmm'
+
+    def test_last2_call_parent_overload2(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        assert en.last2(lambda x: False, 'mmmmmm') == 'mmmmmm'
+
+
+class TestExtremaEnumerableSingleMethod:
+    strings = ['foo', 'bar', 'cheese']
+
+    def test_single_overload1(self):
+        en = MoreEnumerable(self.strings).max_by(len)
+        assert en.single() == 'cheese'
+
+    def test_single_overload1_more(self):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len)
+        with pytest.raises(InvalidOperationError):
+            en.single()
+
+    def test_single_call_parent_overload2(self):
+        en = MoreEnumerable(self.strings).max_by(len)
+        with pytest.raises(InvalidOperationError):
+            en.single(lambda x: False)
+
+    def test_single2_overload1(self):
+        en = MoreEnumerable(self.strings).max_by(len)
+        assert en.single2('mmmmmm') == 'cheese'
+
+    def test_single2_overload1_empty(self):
+        en = MoreEnumerable([]).max_by(len)
+        assert en.single2('mmmmmm') == 'mmmmmm'
+
+    def test_single2_call_parent_overload2(self):
+        en = MoreEnumerable(self.strings).max_by(len)
+        assert en.single2(lambda x: False, 'mmmmmm') == 'mmmmmm'
+
+
+class TestExtremaEnumerableTakeMethod:
+    @pytest.mark.parametrize('count,expected', [
+        (-1, []),
+        (0, []),
+        (1, ['cheese']),
+        (2, ['cheese', 'orange']),
+        (3, ['cheese', 'orange', 'toasts']),
+        (4, ['cheese', 'orange', 'toasts']),
+    ])
+    def test_take(self, count: int, expected: List[str]):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len).take(count)
+        assert en.to_list() == expected
+
+
+class TestExtremaEnumerableTakeLastMethod:
+    @pytest.mark.parametrize('count,expected', [
+        (-1, []),
+        (0, []),
+        (1, ['toasts']),
+        (2, ['orange', 'toasts']),
+        (3, ['cheese', 'orange', 'toasts']),
+        (4, ['cheese', 'orange', 'toasts']),
+    ])
+    def test_take_last(self, count: int, expected: List[str]):
+        en = MoreEnumerable(TestMaxByMethod.strings).max_by(len).take_last(count)
+        assert en.to_list() == expected
