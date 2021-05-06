@@ -115,7 +115,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    def max_by(self,
+    def maxima_by(self,
         selector: Callable[[TSource_co], TSupportsLessThan],
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         '''
@@ -123,7 +123,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    def max_by(self,
+    def maxima_by(self,
         selector: Callable[[TSource_co], TKey],
         __comparer: Callable[[TKey, TKey], int],
     ) -> ExtremaEnumerable[TSource_co, TKey]:
@@ -132,7 +132,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    def min_by(self,
+    def minima_by(self,
         selector: Callable[[TSource_co], TSupportsLessThan],
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         '''
@@ -140,7 +140,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    def min_by(self,
+    def minima_by(self,
         selector: Callable[[TSource_co], TKey],
         __comparer: Callable[[TKey, TKey], int],
     ) -> ExtremaEnumerable[TSource_co, TKey]:

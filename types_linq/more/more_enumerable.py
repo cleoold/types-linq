@@ -103,7 +103,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
                         its.pop(i)
         return MoreEnumerable(inner)
 
-    def max_by(self,
+    def maxima_by(self,
         selector: Callable[[TSource_co], TKey],
         *args: Callable[[TKey, TKey], int],
     ) -> ExtremaEnumerable[TSource_co, TKey]:
@@ -114,7 +114,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             comparer = args[0]
         return ExtremaEnumerable(self, selector, comparer, False)
 
-    def min_by(self,
+    def minima_by(self,
         selector: Callable[[TSource_co], TKey],
         *args: Callable[[TKey, TKey], int],
     ) -> ExtremaEnumerable[TSource_co, TKey]:
