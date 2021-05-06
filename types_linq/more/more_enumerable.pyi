@@ -77,7 +77,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Flattens the sequence containing arbitrarily-nested subsequences.
 
         Note: the nested objects must be Iterable to be flatten.
-        Instances of `str` are not flattened.
+        Instances of `str` or `bytes` are not flattened.
         '''
 
     @overload

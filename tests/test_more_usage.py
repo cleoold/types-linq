@@ -91,7 +91,7 @@ class TestFlattenMethod:
         [
             1, 2, 3,
             [
-                4, 5, 'orange', 'sequence',
+                4, 5, 'orange', b'sequence',
                 [
                     6, [7],
                 ],
@@ -105,7 +105,7 @@ class TestFlattenMethod:
             ]),
         ])
         assert en.flatten().to_list() == [
-            1, 2, 3, 4, 5, 'orange', 'sequence', 6, 7, 8, 'foo', 9, 10, 11, 12,
+            1, 2, 3, 4, 5, 'orange', b'sequence', 6, 7, 8, 'foo', 9, 10, 11, 12,
         ]
 
     def test_flatten_overload2(self):

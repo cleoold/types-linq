@@ -55,7 +55,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
     def flatten(self, *args: Callable[[Iterable[Any]], bool]) -> MoreEnumerable[Any]:
         if len(args) == 0:
-            return self.flatten(lambda x: not isinstance(x, str))
+            return self.flatten(lambda x: not isinstance(x, (str, bytes)))
         else:  # len(args) == 1
             predicate = args[0]
             return self.flatten2(lambda x: x
