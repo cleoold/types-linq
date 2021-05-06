@@ -4,6 +4,7 @@ from ..enumerable import Enumerable
 from .extrema_enumerable import ExtremaEnumerable
 from ..more_typing import (
     TAccumulate,
+    TKey,
     TResult,
     TSource,
     TSource_co,
@@ -113,6 +114,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         are consumed.
         '''
 
+    @overload
     def max_by(self,
         selector: Callable[[TSource_co], TSupportsLessThan],
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
@@ -120,11 +122,30 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Returns the maximal elements of the sequence based on the given selector.
         '''
 
+    @overload
+    def max_by(self,
+        selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> ExtremaEnumerable[TSource_co, TKey]:
+        '''
+        Returns the maximal elements of the sequence based on the given selector and the comparer.
+        '''
+
+    @overload
     def min_by(self,
         selector: Callable[[TSource_co], TSupportsLessThan],
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         '''
         Returns the minimal elements of the sequence based on the given selector.
+        '''
+
+    @overload
+    def min_by(self,
+        selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> ExtremaEnumerable[TSource_co, TKey]:
+        '''
+        Returns the minimal elements of the sequence based on the given selector and the comparer.
         '''
 
     @staticmethod

@@ -199,23 +199,33 @@ class TestInterleaveMethod:
 class TestMaxByMethod:
     strings = ['foo', 'bar', 'cheese', 'orange', 'baz', 'spam', 'egg', 'toasts', 'dish']
 
-    def test_max_by(self):
+    def test_overload1(self):
         en = MoreEnumerable(self.strings).max_by(len)
         assert en.to_list() == ['cheese', 'orange', 'toasts']
 
-    def test_max_by_empty(self):
+    def test_overload1_empty(self):
         en = MoreEnumerable([]).max_by(len)
         assert en.to_list() == []
 
+    def test_overload2(self):
+        s = [[[x]] for x in self.strings]
+        en = MoreEnumerable(s).max_by(lambda x: x[0], lambda x, y: len(x[0]) - len(y[0]))
+        assert en.to_list() == [[['cheese']], [['orange']], [['toasts']]]
+
 
 class TestMinByMethod:
-    def test_min_by(self):
+    def test_overload1(self):
         en = MoreEnumerable(TestMaxByMethod.strings).min_by(len)
         assert en.to_list() == ['foo', 'bar', 'baz', 'egg']
 
-    def test_min_by_empty(self):
+    def test_overload1_empty(self):
         en = MoreEnumerable([]).min_by(len)
         assert en.to_list() == []
+
+    def test_overload2(self):
+        s = [[[x]] for x in TestMaxByMethod.strings]
+        en = MoreEnumerable(s).min_by(lambda x: x[0], lambda x, y: len(x[0]) - len(y[0]))
+        assert en.to_list() == [[['foo']], [['bar']], [['baz']], [['egg']]]
 
 
 # no extensive testing because similar things are already tested in Enumerable

@@ -7,9 +7,9 @@ if TYPE_CHECKING:
 
 from ..enumerable import Enumerable
 from ..more_typing import (
+    TKey,
     TSource,
     TSource_co,
-    TSupportsLessThan,
 )
 
 
@@ -104,16 +104,26 @@ class MoreEnumerable(Enumerable[TSource_co]):
         return MoreEnumerable(inner)
 
     def max_by(self,
-        selector: Callable[[TSource_co], TSupportsLessThan],
-    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TKey, TKey], int],
+    ) -> ExtremaEnumerable[TSource_co, TKey]:
         from .extrema_enumerable import ExtremaEnumerable
-        return ExtremaEnumerable(self, selector, lambda x, y: y < x)
+        if len(args) == 0:
+            comparer = None
+        else:  # len(args) == 1
+            comparer = args[0]
+        return ExtremaEnumerable(self, selector, comparer, False)
 
     def min_by(self,
-        selector: Callable[[TSource_co], TSupportsLessThan],
-    ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
+        selector: Callable[[TSource_co], TKey],
+        *args: Callable[[TKey, TKey], int],
+    ) -> ExtremaEnumerable[TSource_co, TKey]:
         from .extrema_enumerable import ExtremaEnumerable
-        return ExtremaEnumerable(self, selector, lambda x, y: x < y)
+        if len(args) == 0:
+            comparer = None
+        else:  # len(args) == 1
+            comparer = args[0]
+        return ExtremaEnumerable(self, selector, comparer, True)
 
     @staticmethod
     def traverse_breath_first(

@@ -1,21 +1,22 @@
-from typing import Callable, Generic, Iterable
+from typing import Callable, Generic, Iterable, Optional
 
 from .more_enumerable import MoreEnumerable
 from ..more_typing import (
+    TKey,
     TSource_co,
-    TSupportsLessThan,
 )
 
 
-class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TSupportsLessThan]):
+class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
     '''
     Specialization for manipulating extrema.
     '''
 
     def __init__(self,
         source: Iterable[TSource_co],
-        selector: Callable[[TSource_co], TSupportsLessThan],
-        lt_op: Callable[[TSupportsLessThan, TSupportsLessThan], bool],
+        selector: Callable[[TSource_co], TKey],
+        comparer: Optional[Callable[[TKey, TKey], int]],
+        for_min: bool,
     ) -> None: ...  # internal
 
     def take(self, count: int) -> MoreEnumerable[TSource_co]:
