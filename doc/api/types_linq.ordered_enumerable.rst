@@ -18,7 +18,7 @@ instancemethod ``create_ordered_enumerable[TKey2](key_selector, comparer, descen
 
 Parameters
   - `key_selector` (``Callable[[TSource_co], TKey2]``)
-  - `comparer` (``Optional[Callable[[TKey2], int]]``)
+  - `comparer` (``Optional[Callable[[TKey2, TKey2], int]]``)
   - `descending` (``bool``)
 
 Returns
