@@ -613,7 +613,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield result_selector(elem, sub)
         return Enumerable(inner)
 
-    def sequence_equal(self, second: Iterable[TSource_co]) -> bool:
+    def sequence_equal(self,
+        second: Iterable[TSource_co],
+        *args: Callable[..., bool],
+    ) -> bool:
+        if len(args) == 0:
+            comparer = lambda x, y: x == y
+        else:  # len(args) == 1
+            comparer = args[0]
+
         me, she = iter(self), iter(second)
         while True:
             try:
@@ -628,7 +636,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 rhs = next(she)
             except StopIteration:
                 return False
-            if not (lhs == rhs):
+            if not comparer(lhs, rhs):
                 return False
 
     def _find_single(self, res):

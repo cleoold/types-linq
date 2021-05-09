@@ -67,4 +67,4 @@ execute the following commands:
     $ make html
 
 Note to generate api files, one must have Python version 3.9 or above. The api rst files
-are commited in the repository.
+are commited to the repository.

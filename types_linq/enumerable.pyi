@@ -1172,6 +1172,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             Table 2: Chicken
         '''
 
+    @overload
     def sequence_equal(self, second: Iterable[TSource_co]) -> bool:
         '''
         Determines whether two sequences are equal using `==` on each element.
@@ -1185,6 +1186,22 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
                 >>> Enumerable(gen()).sequence_equal(lst)
                 True
+        '''
+
+    @overload
+    def sequence_equal(self,
+        second: Iterable[TOther],
+        __comparer: Callable[[TSource_co, TOther], bool],
+    ) -> bool:
+        '''
+        Determines whether two sequences are equal using a comparer that returns True if two values
+        are equal, on each element.
+
+        Example
+            >>> ints = [1, 3, 5, 7, 9]
+            >>> strs = ['1', '3', '5', '7', '9']
+            >>> Enumerable(ints).sequence_equal(strs, lambda x, y: str(x) == y)
+            True
         '''
 
     @overload

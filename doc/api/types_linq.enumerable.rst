@@ -1624,6 +1624,27 @@ Example
 
 ----
 
+instancemethod ``sequence_equal[TOther](second, __comparer)``
+---------------------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TOther]``)
+  - `__comparer` (``Callable[[TSource_co, TOther], bool]``)
+
+Returns
+  - ``bool``
+
+Determines whether two sequences are equal using a comparer that returns True if two values
+are equal, on each element.
+
+Example
+    >>> ints = [1, 3, 5, 7, 9]
+    >>> strs = ['1', '3', '5', '7', '9']
+    >>> Enumerable(ints).sequence_equal(strs, lambda x, y: str(x) == y)
+    True
+
+----
+
 instancemethod ``single()``
 -----------------------------
 
