@@ -68,7 +68,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 try:
                     return iterable[index]
                 except IndexError as e:
-                    raise IndexOutOfRangeError(e)
+                    raise IndexOutOfRangeError from e
             iterator = iter(iterable)
             try:
                 for _ in range(index):
