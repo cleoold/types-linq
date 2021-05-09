@@ -46,17 +46,17 @@ class CachedEnumerable(Enumerable[TSource_co]):
                 yield res
             try:
                 res = next(self._iter)
-                len_ = len(self._enumerated_values)
-                if self._cache_capacity is not None and \
-                    len_ > 0 and len_ == self._cache_capacity:
-                    del self._enumerated_values[self._min_index]
-                    self._min_index += 1
-                self._enumerated_values[self._tracked] = res
-                self._tracked += 1
-                i += 1
-                yield res
             except StopIteration:
                 break
+            len_ = len(self._enumerated_values)
+            if self._cache_capacity is not None and \
+                len_ > 0 and len_ == self._cache_capacity:
+                del self._enumerated_values[self._min_index]
+                self._min_index += 1
+            self._enumerated_values[self._tracked] = res
+            self._tracked += 1
+            i += 1
+            yield res
 
     def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
         '''
