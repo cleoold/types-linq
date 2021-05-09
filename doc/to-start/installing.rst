@@ -24,7 +24,7 @@ Clone the project and install from local files:
     $ python setup.py install
 
 Run Tests
-***********
+============
 
 In the project root, execute the following commands (or something similar) to run the
 test cases:
@@ -50,3 +50,21 @@ Instead, opening vscode should also hightlight red striggles (?)
 
 However, the `GitHub action settings <https://github.com/cleoold/types-linq/tree/main/.github/workflows>`_
 are most up-to-date and can be consulted.
+
+Build the Documentation
+=========================
+
+To generate the pages you are currently looking at, in the project root,
+execute the following commands:
+
+.. code-block:: bash
+
+    $ cd doc
+    $ pip install -r requirements.txt
+    # generate api rst files
+    $ python ./gen_api_doc.py
+    # create html pages, contents are available in _build/html folder
+    $ make html
+
+Note to generate api files, one must have Python version 3.9 or above. The api rst files
+are commited in the repository.

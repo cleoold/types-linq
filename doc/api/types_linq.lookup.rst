@@ -4,7 +4,14 @@ module ``types_linq.lookup``
 class ``Lookup[TKey_co, TValue_co]``
 **************************************
 
+.. code-block:: python
+
+    from types_linq.lookup import Lookup
+
 A lookup is a one-to-many dictionary. It maps keys to Enumerable sequences of values.
+
+Users should not construct instances of this class directly. Use ``Enumerable.to_lookup()``
+instead.
 
 Bases
 ======

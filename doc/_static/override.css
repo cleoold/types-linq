@@ -4,6 +4,7 @@ code {
     font-size: 90%;
     border: none;
     border-bottom: 1px solid rgba(61, 110, 110, 0.288);
+    background: none;
 }
 
 span.pre {

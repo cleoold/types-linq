@@ -11,7 +11,13 @@ from .more_typing import (
 
 class CachedEnumerable(Enumerable[TSource_co]):
     '''
+    .. code-block:: python
+
+        from types_linq.cached_enumerable import CachedEnumerable
+
     Enumerable that stores the enumerated results which can be accessed repeatedly.
+
+    Users should not construct instances of this class directly. Use ``Enumerable.as_cached()`` instead.
     '''
 
     _iter: Iterator[TSource_co]
@@ -54,7 +60,7 @@ class CachedEnumerable(Enumerable[TSource_co]):
 
     def as_cached(self, *, cache_capacity: Optional[int] = None) -> CachedEnumerable[TSource_co]:
         '''
-        Updates settings and returns the original Enumerable reference.
+        Updates settings and returns the original CachedEnumerable reference.
 
         Raises `InvalidOperationError` if cache_capacity is negative.
         '''
