@@ -3,6 +3,13 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v0.1.2
+********
+
+- Add to_tuple()
+- Add an overload to sequence_equal() that accepts a comparision function
+- https://github.com/cleoold/types-linq/commit/f70bd510492a915776f6cac26854111650541b22
+
 v0.1.1
 ********
 

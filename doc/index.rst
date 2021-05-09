@@ -16,7 +16,7 @@ something different:
   conventions, edge behaviors, etc. This means typical Python conventions might be shadowed here
 * It tries to implement deferred evaluations. The library operates in a streaming manner if possible and handles
   infinite streams (Python generators) properly
-* Strong type safety while using this library is guarenteed since the APIs are typed
+* Strong type safety while using this library is guarenteed since the APIs are `typed <https://www.python.org/dev/peps/pep-0484/>`_
 * It honours the Python `collections.abc <https://docs.python.org/3/library/collections.abc.html>`_ interfaces
 
 The project is licensed under the BSD-2-Clause License.
