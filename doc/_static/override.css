@@ -1,0 +1,27 @@
+.rst-content code,
+.rst-content tt,
+code {
+    font-size: 90%;
+    border: none;
+    border-bottom: 1px solid rgba(61, 110, 110, 0.288);
+    background: none;
+}
+
+span.pre {
+    color: rgb(21, 77, 78);
+    white-space: normal;
+}
+
+.wy-menu .toctree-l1 span.pre {
+    color: unset;
+}
+
+.wy-nav-content {
+    max-width: 1100px;
+}
+
+.rst-content .linenodiv pre,
+.rst-content div[class^="highlight"] pre,
+.rst-content pre.literal-block {
+    font-size: 14px;
+}

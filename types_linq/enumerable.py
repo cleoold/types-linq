@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -69,7 +69,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 try:
                     return iterable[index]
                 except IndexError as e:
-                    raise IndexOutOfRangeError(e)
+                    raise IndexOutOfRangeError from e
             iterator = iter(iterable)
             try:
                 for _ in range(index):
@@ -611,7 +611,15 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     yield result_selector(elem, sub)
         return Enumerable(inner)
 
-    def sequence_equal(self, second: Iterable[TSource_co]) -> bool:
+    def sequence_equal(self,
+        second: Iterable[TSource_co],
+        *args: Callable[..., bool],
+    ) -> bool:
+        if len(args) == 0:
+            comparer = lambda x, y: x == y
+        else:  # len(args) == 1
+            comparer = args[0]
+
         me, she = iter(self), iter(second)
         while True:
             try:
@@ -626,7 +634,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 rhs = next(she)
             except StopIteration:
                 return False
-            if not (lhs == rhs):
+            if not comparer(lhs, rhs):
                 return False
 
     def _find_single(self, res):
@@ -874,3 +882,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             return self.elements_in(start, stop, 1)
         else:  # len(args) == 3
             return self.elements_in(slice(*args))
+
+    def to_tuple(self) -> Tuple[TSource_co, ...]:
+        return tuple(e for e in self)
