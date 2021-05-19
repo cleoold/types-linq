@@ -4,7 +4,7 @@ from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
 from .cached_enumerable import CachedEnumerable
-from .more.more_enumerable import MoreEnumerable
+from .more import MoreEnumerable
 from .more_typing import (
     SupportsAverage,
     TAccumulate,

@@ -14,6 +14,10 @@ from ..more_typing import (
 
 class MoreEnumerable(Enumerable[TSource_co]):
     '''
+    .. code-block:: python
+
+        from types_linq.more import MoreEnumerable
+
     MoreEnumerable provides more query methods. Instances of this class can be created by directly
     constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
     instead of Enumerable.

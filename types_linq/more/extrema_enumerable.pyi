@@ -9,7 +9,14 @@ from ..more_typing import (
 
 class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
     '''
+    .. code-block:: python
+
+        from types_linq.more.extrema_enumerable import ExtremaEnumerable
+
     Specialization for manipulating extrema.
+
+    Users should not construct instances of this class directly. Use ``MoreEnumerable.maxima_by()``
+    instead.
     '''
 
     def __init__(self,

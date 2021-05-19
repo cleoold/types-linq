@@ -3,7 +3,8 @@ from typing import Any, List, Optional, cast
 
 import pytest
 
-from types_linq import Enumerable, MoreEnumerable, InvalidOperationError
+from types_linq import Enumerable, InvalidOperationError
+from types_linq.more import MoreEnumerable
 
 
 @dataclass
