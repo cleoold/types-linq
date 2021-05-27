@@ -382,6 +382,12 @@ class TestExceptMethod:
         exc = en.except1([88, 77, 21, 66, 79, 77])
         assert exc.to_list() == [4, -5, 25, 12, 0]
 
+    def test_except1_unhashable(self):
+        lst = [[1, 2, 3], [4, 5], [6, 7], [6, 7]]
+        en = Enumerable(lst)
+        exc = en.except1([[4, 5], [1, 2, 3]])
+        assert exc.to_list() == [[6, 7]]
+
     def test_remove_nothing(self):
         ints = [4, -5, 25, 12, 0]
         en = Enumerable(ints)
