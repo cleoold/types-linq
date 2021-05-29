@@ -290,6 +290,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def as_more(self) -> MoreEnumerable[TSource_co]:
         '''
         Returns a MoreEnumerable that has more non-standard query methods available.
+
+        Example
+            >>> Enumerable([1, 2, 3]).as_more()
         '''
 
     @overload

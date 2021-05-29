@@ -54,6 +54,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
         Applies a right-associative accumulator function over the sequence. Raises `InvalidOperationError`
         if there is no value in the sequence.
+
+        Example
+            >>> things = [4, 16, 'x', object(), 'uv']
+            >>> MoreEnumerable(things).aggregate_right(lambda e, rr: f'(cons {repr(e)} {rr})')
+            '(cons 4 (cons 16 (cons 'x' (cons <object object at 0x000000000B000000> 'uv'))))'
         '''
 
     def as_more(self) -> MoreEnumerable[TSource_co]:
@@ -65,6 +70,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
         Returns distinct elements from the sequence where "distinctness" is determined by the value
         returned by the selector.
+
+        Example
+            >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
+            >>> MoreEnumerable(ints).distinct_by(lambda x: x // 2).to_list()
+            [1, 4, 6, 3, 99]
         '''
 
     def except_by(self,
@@ -73,7 +83,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> MoreEnumerable[TSource_co]:
         '''
         Produces the set difference of two sequences: self - second, according to a key selector that
-        determines "distinctness".
+        determines "distinctness". Note the second iterable is homogenous to self.
+
+        Example
+            >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+            >>> second = [(24, 'd'), (77, 'y')]
+            >>> MoreEnumerable(first).except_by(second, lambda x: x[1]).to_list()
+            [(16, 'x'), (16, 't')]
         '''
 
     @overload
@@ -83,6 +99,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
         Note: the nested objects must be Iterable to be flatten.
         Instances of `str` or `bytes` are not flattened.
+
+        Example
+            >>> lst = ['apple', ['orange', ['juice', 'mango'], 'delta function']]
+            >>> MoreEnumerable(lst).flatten().to_list()
+            ['apple', 'orange', 'juice', 'mango', 'delta function']
         '''
 
     @overload
@@ -104,6 +125,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def for_each(self, action: Callable[[TSource_co], object]) -> None:
         '''
         Executes the given function on each element in the source sequence. The return values are discarded.
+
+        Example
+            .. code-block:: python
+
+                >>> def gen():
+                ...     yield 116; yield 35; yield -9
+
+                >>> Enumerable(gen()).where(lambda x: x > 0).as_more().for_each(print)
+                116
+                35
         '''
 
     def for_each2(self, action: Callable[[TSource_co, int], object]) -> None:
@@ -116,6 +147,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
         Interleaves the elements of two or more sequences into a single sequence, skipping sequences if they
         are consumed.
+
+        Example
+            >>> MoreEnumerable(['1', '2']).interleave(['4', '5', '6'], ['7', '8', '9']).to_list()
+            ['1', '4', '7', '2', '5', '8', '6', '9']
         '''
 
     @overload
@@ -124,6 +159,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> ExtremaEnumerable[TSource_co, TSupportsLessThan]:
         '''
         Returns the maximal elements of the sequence based on the given selector.
+
+        Example
+            >>> strings = ['foo', 'bar', 'cheese', 'orange', 'baz', 'spam', 'egg', 'toasts', 'dish']
+            >>> MoreEnumerable(strings).maxima_by(len).to_list()
+            ['cheese', 'orange', 'toasts']
+            >>> MoreEnumerable(strings).maxima_by(lambda x: x.count('e')).first()
+            'cheese'
         '''
 
     @overload
@@ -133,6 +175,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> ExtremaEnumerable[TSource_co, TKey]:
         '''
         Returns the maximal elements of the sequence based on the given selector and the comparer.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
         '''
 
     @overload
@@ -150,6 +195,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
     ) -> ExtremaEnumerable[TSource_co, TKey]:
         '''
         Returns the minimal elements of the sequence based on the given selector and the comparer.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
         '''
 
     @staticmethod
@@ -158,8 +206,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
         children_selector: Callable[[TSource], Iterable[TSource]],
     ) -> MoreEnumerable[TSource]:
         '''
-        Traverses the tree from the root node in a breath-first fashion. A selector is used to select
-        children of each node.
+        Traverses the tree (graph) from the root node in a breath-first fashion. A selector is used to
+        select children of each node.
+
+        Graphs are not checked for cycles. If the resulting sequence needs to be finite then it is the
+        responsibility of children_selector to ensure that duplicate nodes are not visited.
         '''
 
     @staticmethod
@@ -168,6 +219,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
         children_selector: Callable[[TSource], Iterable[TSource]],
     ) -> MoreEnumerable[TSource]:
         '''
-        Traverses the tree from the root node in a depth-first fashion. A selector is used to select
-        children of each node.
+        Traverses the tree (graph) from the root node in a depth-first fashion. A selector is used to
+        select children of each node.
+
+        Graphs are not checked for cycles. If the resulting sequence needs to be finite then it is the
+        responsibility of children_selector to ensure that duplicate nodes are not visited.
         '''

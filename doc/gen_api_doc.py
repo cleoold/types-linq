@@ -1,5 +1,6 @@
 import ast
 import os
+import re
 from itertools import chain
 from dataclasses import dataclass
 from textwrap import dedent
@@ -307,17 +308,24 @@ with open(api_spec.type_file) as f:
     _().visit(ast.parse(f.read()))
 
 # write api rst for each module
-os.makedirs('api', exist_ok=True)
 for module in api_spec.modules:
-    print(f'Processing module {module["name"]}')
-    with open(module['file_path']) as fin, open(f'api/{module["name"]}.rst', 'w') as fout:
+    m_name = module['name']
+    print(f'Processing module {m_name}')
+    # if module name is more than one dot -> then the front ones means a submodule.
+    # create nested folder
+    sub_folder = ''
+    if m_name.count('.') > 1:
+        sub_folder = re.search(r'^\w+\.(.+)\.\w+$', m_name).group(1).replace('.', '/')
+        print(sub_folder)
+    os.makedirs(f'api/{sub_folder}', exist_ok=True)
+    with open(module['file_path']) as fin, open(f'api/{sub_folder}/{m_name}.rst', 'w') as fout:
         code = fin.read()
         v = ModuleVisitor(module)
         v.visit(ast.parse(code))
         v.report_found_globals()
 
-        fout.write(f'module ``{module["name"]}``\n')
-        fout.write('#' * (len(module['name']) + 12))
+        fout.write(f'module ``{m_name}``\n')
+        fout.write('#' * (len(m_name) + 12))
         fout.write('\n\n')
 
         for c in v.classes:
