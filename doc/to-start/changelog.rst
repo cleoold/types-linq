@@ -3,6 +3,13 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v0.2.0
+********
+
+- Add a MoreEnumerable class containing the following method names: aggregate_right(), distinct_by(), except_by(),
+  flatten(), for_each(), interleave(), maxima_by(), minima_by(), traverse_breath_first() and traverse_depth_first()
+- Add as_more() to Enumerable class
+
 v0.1.2
 ********
 
