@@ -1,9 +1,10 @@
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
 from .ordered_enumerable import OrderedEnumerable
 from .cached_enumerable import CachedEnumerable
+from .more import MoreEnumerable
 from .more_typing import (
     SupportsAverage,
     TAccumulate,
@@ -140,6 +141,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             10
             1
         '''
+
+    @staticmethod
+    def _raise_empty_sequence() -> NoReturn: ...  # internal
 
     @overload
     def aggregate(self,
@@ -281,6 +285,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Raises `InvalidOperationError` if cache_capacity is negative.
 
         The behavior of this method differs from that of ``CachedEnumerable``.
+        '''
+
+    def as_more(self) -> MoreEnumerable[TSource_co]:
+        '''
+        Returns a MoreEnumerable that has more non-standard query methods available.
+
+        Example
+            >>> Enumerable([1, 2, 3]).as_more()
         '''
 
     @overload

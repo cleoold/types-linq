@@ -12,7 +12,7 @@ setup(
     description='Standard sequence helper methods with full typing support',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=['types_linq'],
+    packages=['types_linq', 'types_linq.more'],
     package_data={
         '': ['*.pyi', 'py.typed'],
     },
