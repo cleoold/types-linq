@@ -65,8 +65,10 @@ class _SetWrapper(MutableSet[TValue]):
         return self._map.__iter__()
 
 
-class _Set(MutableSet[TValue]):
-
+class ComposeSet(MutableSet[TValue]):
+    '''
+    A set which support hashable and unhashable type
+    '''
     _set: Set[TValue]
     _cmp_set: MutableSet[TValue]
 
@@ -100,9 +102,10 @@ class _Set(MutableSet[TValue]):
         return self._get_set(value).discard(value)
 
 
-
-class _Map(MutableMapping[TKey, TValue]):
-
+class ComposeMap(MutableMapping[TKey, TValue]):
+    '''
+    A map which support hashable and unhashable key type
+    '''
     _map: Dict[TKey, TValue]
     _cmp_map: MutableMapping[TKey, TValue]
 

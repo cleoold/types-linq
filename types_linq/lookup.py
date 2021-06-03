@@ -3,7 +3,7 @@ from typing import Callable, Iterable
 
 from .enumerable import Enumerable
 from .grouping import Grouping
-from .util import _Map
+from .util import ComposeMap
 
 from .more_typing import (
     TSource,
@@ -27,14 +27,14 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
     instead.
     '''
 
-    _groupings: _Map[TKey_co, Grouping[TKey_co, TValue_co]]
+    _groupings: ComposeMap[TKey_co, Grouping[TKey_co, TValue_co]]
 
     def __init__(self,
         source: Iterable[TSource],
         key_selector: Callable[[TSource], TKey_co],
         value_selector: Callable[[TSource], TValue_co],
     ):
-        self._groupings = _Map()
+        self._groupings = ComposeMap()
 
         for src in source:
             key = key_selector(src)

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .cached_enumerable import CachedEnumerable
 
 from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
-from .util import _Set
+from .util import ComposeSet
 from .more_typing import (
     TCollection,
     TDefault,
@@ -276,7 +276,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def distinct(self) -> Enumerable[TSource_co]:
         def inner():
-            s = _Set()
+            s = ComposeSet()
             for elem in self:
                 if elem in s:
                     continue
@@ -300,7 +300,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():
-            s = _Set(second)
+            s = ComposeSet(second)
             for elem in self:
                 if elem in s:
                     continue
@@ -384,7 +384,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():
-            s = _Set(second)
+            s = ComposeSet(second)
             for elem in self:
                 if elem not in s:
                     continue
@@ -841,7 +841,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():
             # TODO: optimise chained .union() call to reuse s
-            s = _Set()
+            s = ComposeSet()
             for elem in self.concat(second):
                 if elem in s:
                     continue
