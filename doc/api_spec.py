@@ -175,4 +175,41 @@ modules: list[ModuleSpec] = [
             },
         },
     },
+    {
+        'file_path': f'{_path}/more/more_enumerable.pyi',
+        'name': f'{_project}.more.more_enumerable',
+        'classes': {
+            'MoreEnumerable': {
+                'methods': {
+                    'aggregate_right',
+                    'as_more',
+                    'distinct_by',
+                    'except_by',
+                    'flatten',
+                    'flatten2',
+                    'for_each',
+                    'for_each2',
+                    'interleave',
+                    'maxima_by',
+                    'minima_by',
+                    'traverse_breath_first',
+                    'traverse_depth_first',
+                },
+                'readonly_properties': {*()},
+            },
+        },
+    },
+    {
+        'file_path': f'{_path}/more/extrema_enumerable.pyi',
+        'name': f'{_project}.more.extrema_enumerable',
+        'classes': {
+            'ExtremaEnumerable': {
+                'methods': {
+                    'take',
+                    'take_last',
+                },
+                'readonly_properties': {*()},
+            },
+        },
+    }
 ]

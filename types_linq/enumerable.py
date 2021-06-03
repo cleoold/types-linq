@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from .grouping import Grouping
     from .ordered_enumerable import OrderedEnumerable
     from .cached_enumerable import CachedEnumerable
+    from .more import MoreEnumerable
 
 from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
 from .util import ComposeSet
@@ -200,6 +201,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         from .cached_enumerable import CachedEnumerable
         return CachedEnumerable(self, cache_capacity)
 
+    def as_more(self) -> MoreEnumerable[TSource_co]:
+        from .more import MoreEnumerable
+        return MoreEnumerable(self)
+
     def _average_helper(self, selector, when_empty):
         count = 0
         iterator = iter(self)
@@ -275,14 +280,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(inner)  # type: ignore
 
     def distinct(self) -> Enumerable[TSource_co]:
-        def inner():
-            s = ComposeSet()
-            for elem in self:
-                if elem in s:
-                    continue
-                s.add(elem)
-                yield elem
-        return Enumerable(inner)
+        return self.except1(())
 
     def element_at(self, index: int, *args: TDefault) -> Union[TSource_co, TDefault]:
         if len(args) == 0:

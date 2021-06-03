@@ -42,3 +42,10 @@ The project is licensed under the BSD-2-Clause License.
     :glob:
 
     api/*
+
+.. toctree::
+    :maxdepth: 1
+    :caption: API (MORE):
+    :glob:
+
+    api/more/*

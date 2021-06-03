@@ -5,14 +5,14 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='types-linq',
-    version='v0.1.2',
+    version='v0.2.0',
     url='https://github.com/cleoold/types-linq',
     license='BSD 2-Clause License',
     author='cleoold',
     description='Standard sequence helper methods with full typing support',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=['types_linq'],
+    packages=['types_linq', 'types_linq.more'],
     package_data={
         '': ['*.pyi', 'py.typed'],
     },
