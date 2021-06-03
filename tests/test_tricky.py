@@ -3,7 +3,7 @@ from collections.abc import Container, Iterable, Reversible, Sequence, Sized
 import pytest
 
 from types_linq import Enumerable, InvalidOperationError
-
+from types_linq.util import ComposeSet, ComposeMap
 
 def naturals():
     i = 0
@@ -153,3 +153,63 @@ class TestOrderedByThenIter:
         en = Enumerable(naturals()).take(5).as_cached()
         en.take(3).to_list()
         assert en.order_by(lambda x: x).to_list() == [*range(5)]
+
+
+
+class TestComposeMapAandSet:
+    def __set_equal(self, iter1, iter2) -> bool:
+        lst1 = [*iter1]
+        lst2 = [*iter2]
+        if len(lst1) != len(lst2):
+            return False
+        for e in iter1:
+            if e not in lst2:
+                return False
+            lst2.remove(e)
+        return len(lst2) == 0
+
+    
+    def test_set(self):
+        set = ComposeSet([[1, 2, 4], (5, 6), 7, [], [9]])
+        assert len(set) == 5
+        assert self.__set_equal(set, [[1, 2, 4], (5, 6), 7, [], [9]])
+        
+        # add element
+        set.add((5, 6))
+        assert self.__set_equal(set, [[1, 2, 4], (5, 6), 7, [], [9]])
+        set.add([1, 2, 4])
+        assert self.__set_equal(set, [[1, 2, 4], (5, 6), 7, [], [9]])
+        set.add([10, 11])
+        assert self.__set_equal(set, [[1, 2, 4], (5, 6), 7, [], [9], [10, 11]])
+
+        # remove element
+        set.discard([1, 2, 4])
+        set.discard(7)
+        assert self.__set_equal(set, [(5, 6), [], [9], [10, 11]])
+
+        # remove non-exist element
+        # discard shouldn't throw KeyError
+        set.discard([1, 2, 4])
+        with pytest.raises(KeyError):
+            set.remove([1, 2, 4])
+        
+
+    def test_map(self):
+        map = ComposeMap([([1, 2, 4], 1), ((4, 6), 3), ([], 3)])
+        assert self.__set_equal(map, [[1, 2, 4], (4, 6), []])
+        assert self.__set_equal(map.items(), [([1, 2, 4], 1), ((4, 6), 3), ([], 3)])
+        
+        # modify map values
+        map[[1, 2, 4]] = 3
+        assert map[[1, 2, 4]] == 3
+        map[(4, 6)] = 1
+        assert map[(4, 6)] == 1
+        
+        # delete element
+        del map[[]]
+        assert [] not in map
+        del map[(4, 6)]
+        assert (4, 6) not in map
+        with pytest.raises(KeyError):
+            del map[[]]
+        assert self.__set_equal(map.items(), [([1, 2, 4], 3)])
