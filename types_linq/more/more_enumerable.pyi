@@ -200,6 +200,19 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
         '''
 
+    def pipe(self, action: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
+        '''
+        Executes the given action on each element in the sequence and yields it. Return values of
+        action are discarded.
+
+        Example
+            >>> store = set()
+            >>> MoreEnumerable([1, 2, 2, 1]).pipe(store.add).where(lambda x: x % 2 == 0).to_list()
+            [2, 2]
+            >>> store
+            {1, 2}
+        '''
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,

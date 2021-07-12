@@ -126,6 +126,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
             comparer = args[0]
         return ExtremaEnumerable(self, selector, comparer, True)
 
+    def pipe(self, action: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
+        def inner():
+            for elem in self:
+                action(elem)
+                yield elem
+        return MoreEnumerable(inner)
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,

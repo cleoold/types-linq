@@ -349,6 +349,20 @@ class TestExtremaEnumerableTakeLastMethod:
         assert en.to_list() == expected
 
 
+class TestPipeMethod:
+    def test_pipe(self):
+        store = []
+        ints = [1, 2]
+        en = MoreEnumerable(ints)
+        assert en.pipe(store.append).to_list() == ints
+        assert store == ints
+
+    def test_action_then_yield(self):
+        en = MoreEnumerable([[], []])
+        q = en.pipe(lambda x: x.append(1)).where(lambda x: len(x) == 0)
+        assert q.to_list() == []
+
+
 class TestTraverseBreathFirstMethod:
     tree = Tree \
     (

@@ -294,6 +294,27 @@ if lhs < rhs, and 0 if they are equal.
 
 ----
 
+instancemethod ``pipe(action)``
+---------------------------------
+
+Parameters
+  - `action` (``Callable[[TSource_co], object]``)
+
+Returns
+  - ``MoreEnumerable[TSource_co]``
+
+Executes the given action on each element in the sequence and yields it. Return values of
+action are discarded.
+
+Example
+    >>> store = set()
+    >>> MoreEnumerable([1, 2, 2, 1]).pipe(store.add).where(lambda x: x % 2 == 0).to_list()
+    [2, 2]
+    >>> store
+    {1, 2}
+
+----
+
 staticmethod ``traverse_breath_first[TSource](root, children_selector)``
 --------------------------------------------------------------------------
 

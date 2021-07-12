@@ -192,6 +192,7 @@ modules: list[ModuleSpec] = [
                     'interleave',
                     'maxima_by',
                     'minima_by',
+                    'pipe',
                     'traverse_breath_first',
                     'traverse_depth_first',
                 },
