@@ -3,6 +3,13 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v0.2.1
+********
+
+- Add pipe() to MoreEnumerable class
+- Enumerable.distinct(), except1(), .union(), .intersect(), .to_lookup(), .join(), .grooup_join(),
+  MoreEnumerable.distinct_by(), .except_by() now have preliminary support for unhashable keys
+
 v0.2.0
 ********
 
