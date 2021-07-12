@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
 from ..enumerable import Enumerable
+from ..util import ComposeSet
 from ..more_typing import (
     TKey,
     TSource,
@@ -44,7 +45,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         key_selector: Callable[[TSource_co], object],
     ) -> MoreEnumerable[TSource_co]:
         def inner():
-            s = {key_selector(s) for s in second}
+            s = ComposeSet(key_selector(s) for s in second)
             for elem in self:
                 key = key_selector(elem)
                 if key in s:

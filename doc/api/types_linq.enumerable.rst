@@ -947,6 +947,12 @@ Returns
 Correlates the elements of two sequences based on equality of keys and groups the results using the
 selector.
 
+In normal cases, the iteration preserves order of elements in self (outer), and for each element in
+self, the order of matching elements from inner.
+
+Unhashable keys are supported (where hashibility is determined by checking `typing.Hashable`). If any
+keys formed by key selectors involve such types, the order is unspecified.
+
 Example
     .. code-block:: python
 
@@ -1019,6 +1025,12 @@ Returns
   - ``Enumerable[TResult]``
 
 Correlates the elements of two sequences based on matching keys.
+
+In normal cases, the iteration preserves order of elements in self (outer), and for each element in
+self, the order of matching elements from inner.
+
+Unhashable keys are supported (where hashibility is determined by checking `typing.Hashable`). If any
+keys formed by key selectors involve such types, the order is unspecified.
 
 Example
     .. code-block:: python
@@ -2012,7 +2024,8 @@ Returns
   - ``Lookup[TKey, TValue]``
 
 Enumerates all values and returns a lookup containing them according to specified key
-selector and value selector.
+selector and value selector. The values within each group are in the same order as in
+self.
 
 Example
     >>> food = [
@@ -2039,7 +2052,7 @@ Returns
   - ``Lookup[TKey, TSource_co]``
 
 Enumerates all values and returns a lookup containing them according to the specified
-key selector.
+key selector. The values within each group are in the same order as in self.
 
 ----
 

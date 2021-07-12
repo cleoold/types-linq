@@ -72,6 +72,11 @@ class TestExceptByMethod:
         en = MoreEnumerable(['aaa', 'bb', 'c', 'dddd'])
         assert en.except_by(['xx', 'y'], len).to_list() == ['aaa', 'dddd']
 
+    def test_unhashable(self):
+        en = MoreEnumerable([['aaa'], ['bb'], ['c'], ['dddd']])
+        q = en.except_by([['xx'], ['y']], lambda x: len(x[0]))
+        assert q.to_list() == [['aaa'], ['dddd']]
+
     def test_no_repeat(self):
         en = MoreEnumerable(['aaa', 'bb', 'c', 'dddd', 'aaa'])
         assert en.except_by(['xx', 'y'], len).to_list() == ['aaa', 'dddd']

@@ -117,6 +117,8 @@ class ComposeMap(MutableMapping[TKey, TValue]):
                 self[k] = v
 
     def _get_map(self, x: object) -> MutableMapping[TKey, TValue]:
+        # TODO: this test is not perfectly sufficient.
+        # counterexample: x is namedtuple('t', ['x'])([])
         if isinstance(x, Hashable):
             return self._map
         else:
@@ -127,11 +129,16 @@ class ComposeMap(MutableMapping[TKey, TValue]):
     
     def __getitem__(self, key: TKey) -> TValue:
         return self._get_map(key).__getitem__(key)
-    
+
     def __delitem__(self, key: TKey) -> None:
         return self._get_map(key).__delitem__(key)
 
     def __iter__(self) -> Iterator[TKey]:
+        # notice on iteration order:
+        # if this data structure contains only hashable objects (stored in the dict)
+        # then the iter order is consistent with dict => using insertion order. this is
+        # useful for meeting the .net ToLookup() spec. however, if this is not the case
+        # then the iter order is broken.
         yield from self._map
         yield from self._cmp_map
 

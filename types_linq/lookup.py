@@ -40,7 +40,6 @@ class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
             key = key_selector(src)
             elem = value_selector(src)
             if key not in self._groupings:
-                # ordered dict keys
                 self._groupings[key] = Grouping(key)
             self._groupings[key]._append(elem)
 

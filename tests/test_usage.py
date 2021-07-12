@@ -567,6 +567,12 @@ class TestIntersectMethod:
         intersect = en.intersect([88, 34, 21, 66, 79, 77])
         assert intersect.to_list() == [88, 21, 77, 79]
 
+    def test_unhashable(self):
+        lsts = [[4], [88], [21], [-5], [25], [12], [77]]
+        en = Enumerable(lsts)
+        intersect = en.intersect([[88], [34], [21], [66], [77]])
+        assert intersect.to_list() == [[88], [21], [77]]
+
     def test_showup_multiple(self):
         ints = [6, 6, 6, 6]
         en = Enumerable(ints)
@@ -1321,6 +1327,14 @@ class TestUnionMethod:
         q = en.union([15, 16, 17, 15, 18])
         assert q.to_list() == [0, 1, 2, 3, 4, 15, 16, 17, 18]
 
+    def test_unhashable(self):
+        gen = ([i, i] for i in range(5))
+        en = Enumerable(gen)
+        q = en.union([[15, 15], [16, 16], [17, 17], [15, 15], [18, 18]])
+        assert q.to_list() == [
+            [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [15, 15], [16, 16], [17, 17], [18, 18]
+        ]
+
     def test_dedup(self):
         lst = [1, 2, 2, 7, -1, 8, -1]
         en = Enumerable(lst)
@@ -1443,6 +1457,12 @@ class TestToLookupMethod:
         assert lookup['snack'].to_list() == ['popcorns']
         assert lookup['drink'].to_list() == ['coke']
         assert lookup['wtf'].to_list() == []
+
+    def test_unhashable(self):
+        en = Enumerable(([v0], v1) for v0, v1 in self.food)
+        lookup = en.to_lookup(lambda e: e[0], lambda e: e[1])
+        assert lookup.count == 4
+        assert lookup[['side']].to_list() == ['chicken', 'apples', 'orange']
 
     def test_id(self):
         flat1 = Enumerable(self.food) \
