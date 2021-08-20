@@ -334,6 +334,86 @@ Example
 
 ----
 
+instancemethod ``rank[TSupportsLessThan]()``
+----------------------------------------------
+
+Constraint
+  - `self`: ``MoreEnumerable[TSupportsLessThan]``
+
+Returns
+  - ``MoreEnumerable[int]``
+
+Ranks each item in the sequence in descending order.
+
+Example
+    >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
+    >>> MoreEnumerable(scores).rank().to_list()
+    [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+
+----
+
+instancemethod ``rank(__comparer)``
+-------------------------------------
+
+Parameters
+  - `__comparer` (``Callable[[TSource_co, TSource_co], int]``)
+
+Returns
+  - ``MoreEnumerable[int]``
+
+Ranks each item in the sequence in descending order using the given comparer.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
+
+----
+
+instancemethod ``rank_by[TSupportsLessThan](key_selector)``
+-------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TSupportsLessThan]``)
+
+Returns
+  - ``MoreEnumerable[int]``
+
+Ranks each item in the sequence in descending order using the given selector.
+
+Example
+    .. code-block:: python
+
+        >>> scores = [
+        ...     {'name': 'Frank', 'score': 75},
+        ...     {'name': 'Alica', 'score': 90},
+        ...     {'name': 'Erika', 'score': 99},
+        ...     {'name': 'Rogers', 'score': 90},
+        ... ]
+
+        >>> MoreEnumerable(scores).rank_by(lambda x: x['score']) \
+        ...     .zip(scores) \
+        ...     .group_by(lambda t: t[0], lambda t: t[1]['name']) \
+        ...     .to_dict(lambda g: g.key, lambda g: g.to_list())
+        {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
+
+----
+
+instancemethod ``rank_by[TKey](key_selector, __comparer)``
+------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+  - `__comparer` (``Callable[[TKey, TKey], int]``)
+
+Returns
+  - ``MoreEnumerable[int]``
+
+Ranks each item in the sequence in descending order using the given selector and comparer.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
+
+----
+
 staticmethod ``traverse_breath_first[TSource](root, children_selector)``
 --------------------------------------------------------------------------
 
