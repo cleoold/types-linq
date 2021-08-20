@@ -61,6 +61,16 @@ class TestAggregateRightMethod:
         assert sole == 87
 
 
+class TestEnumerateMethod:
+    def test_enumerate(self):
+        en = MoreEnumerable(['2', '4', '6'])
+        assert en.enumerate().to_list() == [(0, '2'), (1, '4'), (2, '6')]
+
+    def test_enumerate_start(self):
+        en = MoreEnumerable(['2', '4', '6'])
+        assert en.enumerate(1).to_list() == [(1, '2'), (2, '4'), (3, '6')]
+
+
 class TestDistinctByMethod:
     def test_distinct_by(self):
         en = MoreEnumerable([1, 4, 5, 6, 4, 3, 1, 99])

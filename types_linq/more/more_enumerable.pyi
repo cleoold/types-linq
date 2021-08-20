@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Optional, overload
+from typing import Any, Callable, Iterable, Optional, Tuple, overload
 
 from ..enumerable import Enumerable
 from .extrema_enumerable import ExtremaEnumerable
@@ -75,6 +75,17 @@ class MoreEnumerable(Enumerable[TSource_co]):
             >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
             >>> MoreEnumerable(ints).distinct_by(lambda x: x // 2).to_list()
             [1, 4, 6, 3, 99]
+        '''
+
+    def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
+        '''
+        Returns a sequence of tuples containing the index and the value from the source sequence. `start`
+        is used to specify the starting index.
+
+        Example
+            >>> ints = [2, 4, 6]
+            >>> MoreEnumerable(ints).enumerate().to_list()
+            [(0, 2), (1, 4), (2, 6)]
         '''
 
     def except_by(self,

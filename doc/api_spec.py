@@ -184,6 +184,7 @@ modules: list[ModuleSpec] = [
                     'aggregate_right',
                     'as_more',
                     'distinct_by',
+                    'enumerate',
                     'except_by',
                     'flatten',
                     'flatten2',

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Deque, Iterable, Iterator, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Deque, Iterable, Iterator, List, Optional, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
@@ -39,6 +39,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
     def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
         return self.except_by((), key_selector)
+
+    def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
+        return MoreEnumerable(lambda: enumerate(self, start))
 
     def except_by(self,
         second: Iterable[TSource_co],

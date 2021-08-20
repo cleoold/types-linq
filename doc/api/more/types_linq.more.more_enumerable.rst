@@ -101,6 +101,25 @@ Example
 
 ----
 
+instancemethod ``enumerate(start=0)``
+---------------------------------------
+
+Parameters
+  - `start` (``int``)
+
+Returns
+  - ``MoreEnumerable[Tuple[int, TSource_co]]``
+
+Returns a sequence of tuples containing the index and the value from the source sequence. `start`
+is used to specify the starting index.
+
+Example
+    >>> ints = [2, 4, 6]
+    >>> MoreEnumerable(ints).enumerate().to_list()
+    [(0, 2), (1, 4), (2, 6)]
+
+----
+
 instancemethod ``except_by(second, key_selector)``
 ----------------------------------------------------
 
