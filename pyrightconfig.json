@@ -10,5 +10,6 @@
     "reportUnknownArgumentType": "none",
     "reportUnknownParameterType": "none",
     "reportInvalidStubStatement": "none",
-    "reportPrivateUsage": "none"
+    "reportPrivateUsage": "none",
+    "reportMissingParameterType": "none",
 }

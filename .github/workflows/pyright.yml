@@ -1,9 +1,10 @@
 name: pyright
 
 on:
-  push:
   schedule:
     - cron: 0 9 * * 4
+  push:
+    branches: [main]
   pull_request:
 
 jobs:
