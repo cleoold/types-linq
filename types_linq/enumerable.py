@@ -349,9 +349,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             result_selector = args[0]
             inner = lambda: Lookup(self, key_selector, value_selector) \
                 .apply_result_selector(result_selector)  # type: ignore
+            return Enumerable(inner)
         else:  # len(args) == 0:
             inner = lambda: Lookup(self, key_selector, value_selector)
-        return Enumerable(inner)
+            return Enumerable(inner)
 
     def group_by2(self,
         key_selector: Callable[[TSource_co], TKey],
@@ -362,9 +363,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             result_selector = args[0]
             inner = lambda: Lookup(self, key_selector, lambda x: x) \
                 .apply_result_selector(result_selector)  # type: ignore
+            return Enumerable(inner)
         else:  # len(args) == 0:
             inner = lambda: Lookup(self, key_selector, lambda x: x)
-        return Enumerable(inner)
+            return Enumerable(inner)
 
     def group_join(self,
         inner: Iterable[TInner],
