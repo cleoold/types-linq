@@ -712,6 +712,30 @@ class TestMaxMethod:
         en = Enumerable(lst)
         assert en.max2(lambda x: x[0], object) == 4
 
+
+class TestMaxByMethod:
+    def test_overload1(self):
+        strings = ['aaa', 'bb', 'c', 'dddd']
+        en = Enumerable(strings)
+        assert en.max_by(len) == 'dddd'
+
+    def test_overload1_empty(self):
+        strings: List[str] = []
+        en = Enumerable(strings)
+        with pytest.raises(InvalidOperationError):
+            en.max_by(len)
+
+    def test_dup_choose_first(self):
+        strings = ['foo', 'cheese', 'baz', 'spam', 'orange', 'string']
+        en = Enumerable(strings)
+        assert en.max_by(len) == 'cheese'
+
+    def test_overload2(self):
+        lst = [['foo'], ['cheese'], ['baz'], ['spam'], ['string']]
+        en = Enumerable(lst)
+        assert en.max_by(lambda x: x[0], lambda x, y: len(x) - len(y)) == ['cheese']
+
+
 class TestMinMethod:
     def test_min_overload1(self):
         nums = (1, 0.4, 2.2, 5, 1, 2)
@@ -755,6 +779,32 @@ class TestMinMethod:
         lst = [[0], [1], [-9], [4], [4], [-11]]
         en = Enumerable(lst)
         assert en.min2(lambda x: x[0], object) == -11
+
+
+class TestMinByMethod:
+    def test_overload1(self):
+        strings = ['aaa', 'bb', 'c', 'dddd']
+        en = Enumerable(strings)
+        assert en.min_by(len) == 'c'
+
+    def test_overload1_empty(self):
+        strings: List[str] = []
+        en = Enumerable(strings)
+        with pytest.raises(InvalidOperationError):
+            en.min_by(len)
+
+    def test_dup_choose_first(self):
+        class MyType:
+            def __init__(self, x: int): self.x = x
+        lst = [MyType(2), MyType(7), MyType(19), MyType(1), MyType(7), MyType(1)]
+        en = Enumerable(lst)
+        assert en.min_by(lambda x: x.x) == lst[3]
+        assert en.min_by(lambda x: x.x) != lst[-1]
+
+    def test_overload2(self):
+        lst = [['foo'], ['cheese'], ['baz'], ['spam'], ['string']]
+        en = Enumerable(lst)
+        assert en.min_by(lambda x: x[0], lambda x, y: len(x) - len(y)) == ['foo']
 
 
 class TestOfTypeMethod:

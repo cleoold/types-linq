@@ -32,6 +32,10 @@ and its .NET counterpart.
   objects, construct hashmaps, etc. While in Python such identities are often solely determined by object's
   magic methods such as ``__hash__()``, ``__eq__()``, ``__lt__()``, etc. So method overloads that involve such
   comparer interfaces are omitted in this library, or implemented in another form.
+* In C#, there are nullable types and default values for a type. For example, ``default(int) == 0`` and ``default(int?) == null``.
+  Some C# methods return such default values if the source sequence is empty, or skip ``null``'s if the source sequence contains
+  concrete data too. There are no such notions in Python and the C#-like default semantics are non-existent. So, this usage is
+  not supported by this library (Can ``None`` be considered a default value for all cases? Hmm..).
 * All classes in this library are concrete. There are no interfaces like what are usually done in C#.
 
 Limitations:

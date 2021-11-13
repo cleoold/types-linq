@@ -1223,6 +1223,43 @@ Example
 
 ----
 
+instancemethod ``max_by[TSupportsLessThan](key_selector)``
+------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TSupportsLessThan]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the maximal element of the sequence based on the given key selector. Raises
+`InvalidOperationError` if there is no value.
+
+Example
+    >>> strs = ['aaa', 'bb', 'c', 'dddd']
+    >>> Enumerable(strs).max_by(len)
+    'dddd'
+
+----
+
+instancemethod ``max_by[TKey](key_selector, __comparer)``
+-----------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+  - `__comparer` (``Callable[[TKey, TKey], int]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the maximal element of the sequence based on the given key selector and the comparer.
+Raises `InvalidOperationError` if there is no value.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
+
+----
+
 instancemethod ``min[TSupportsLessThan]()``
 ---------------------------------------------
 
@@ -1277,6 +1314,38 @@ Returns
 
 Invokes a transform function on each element of the sequence and returns the minimum of the
 resulting values. Returns the default one if there is no value.
+
+----
+
+instancemethod ``min_by[TSupportsLessThan](key_selector)``
+------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TSupportsLessThan]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the minimal element of the sequence based on the given key selector. Raises
+`InvalidOperationError` if there is no value.
+
+----
+
+instancemethod ``min_by[TKey](key_selector, __comparer)``
+-----------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+  - `__comparer` (``Callable[[TKey, TKey], int]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the minimal element of the sequence based on the given key selector and the comparer.
+Raises `InvalidOperationError` if there is no value.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
 
 ----
 

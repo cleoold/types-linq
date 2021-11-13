@@ -447,6 +447,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             curr = mapped if op(curr, mapped) else curr
         return curr
 
+    def _minmax_by_helper(self, key_selector, op) -> Any:
+        iterator = iter(self)
+        try:
+            curr = next(iterator)
+        except StopIteration:
+            self._raise_empty_sequence()
+        curr_key = key_selector(curr)
+        for elem in iterator:
+            elem_key = key_selector(elem)
+            if op(curr_key, elem_key):
+                curr = elem
+                curr_key = elem_key
+        return curr
+
     def max(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
             result_selector: Any = lambda x: x
@@ -469,6 +483,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             lambda: default,
         )
 
+    def max_by(self,
+        key_selector: Callable[[TSource_co], Any],
+        *args: Callable[[Any, Any], int],
+    ) -> Any:
+        if len(args) == 0:
+            op = lambda l, r: l < r
+        else:  # len(args) == 1
+            comp = args[0]
+            op = lambda l, r: comp(l, r) < 0
+        return self._minmax_by_helper(key_selector, op)
+
     def min(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
             result_selector: Any = lambda x: x
@@ -490,6 +515,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             lambda l, r: r < l,
             lambda: default,
         )
+
+    def min_by(self,
+        key_selector: Callable[[TSource_co], Any],
+        *args: Callable[[Any, Any], int],
+    ) -> Any:
+        if len(args) == 0:
+            op = lambda l, r: r < l
+        else:  # len(args) == 1
+            comp = args[0]
+            op = lambda l, r: comp(l, r) > 0
+        return self._minmax_by_helper(key_selector, op)
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
         return self.where(lambda e: isinstance(e, t_result)).cast(t_result)

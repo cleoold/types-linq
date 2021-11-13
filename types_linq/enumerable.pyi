@@ -925,6 +925,31 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
+    def max_by(self, key_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSource_co:
+        '''
+        Returns the maximal element of the sequence based on the given key selector. Raises
+        `InvalidOperationError` if there is no value.
+
+        Example
+            >>> strs = ['aaa', 'bb', 'c', 'dddd']
+            >>> Enumerable(strs).max_by(len)
+            'dddd'
+        '''
+
+    @overload
+    def max_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> TSource_co:
+        '''
+        Returns the maximal element of the sequence based on the given key selector and the comparer.
+        Raises `InvalidOperationError` if there is no value.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
+        '''
+
+    @overload
     def min(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Returns the minimum value in the sequence. Raises `InvalidOperationError` if there is no value.
@@ -953,6 +978,26 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Invokes a transform function on each element of the sequence and returns the minimum of the
         resulting values. Returns the default one if there is no value.
+        '''
+
+    @overload
+    def min_by(self, key_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSource_co:
+        '''
+        Returns the minimal element of the sequence based on the given key selector. Raises
+        `InvalidOperationError` if there is no value.
+        '''
+
+    @overload
+    def min_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> TSource_co:
+        '''
+        Returns the minimal element of the sequence based on the given key selector and the comparer.
+        Raises `InvalidOperationError` if there is no value.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
         '''
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
