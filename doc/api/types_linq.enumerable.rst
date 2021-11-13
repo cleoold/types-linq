@@ -639,6 +639,8 @@ Returns
 Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
 no such element exists.
 
+If the index is negative, it means counting from the end.
+
 This method always uses a generic list element-finding method (O(n)) regardless the
 implementation of the wrapped iterable.
 
@@ -650,6 +652,9 @@ Example
 
         >>> Enumerable(gen()).element_at(1)
         10
+
+        >>> Enumerable(gen()).element_at(-1)
+        100
 
 ----
 
@@ -665,6 +670,8 @@ Returns
 
 Returns the element at specified index in the sequence. Default value is returned if no
 such element exists.
+
+If the index is negative, it means counting from the end.
 
 This method always uses a generic list element-finding method (O(n)) regardless the
 implementation of the wrapped iterable.

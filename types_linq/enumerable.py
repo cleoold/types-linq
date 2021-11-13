@@ -55,6 +55,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def __contains__(self, value: object) -> bool:
         return self._contains_impl(value, fallback=False)
 
+    @staticmethod
+    def _raise_not_enough_elements() -> NoReturn:
+        raise IndexOutOfRangeError('Not enough elements in the sequence')
+
     def _every(self, step: int) -> Enumerable[TSource_co]:
         return self.where2(lambda _, i: i % step == 0)
 
@@ -71,20 +75,27 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     return iterable[index]
                 except IndexError as e:
                     raise IndexOutOfRangeError from e
-            iterator = iter(iterable)
-            try:
-                for _ in range(index):
-                    next(iterator)
-                return next(iterator)
-            except StopIteration:
-                raise IndexOutOfRangeError('Not enough elements in the sequence')
+            if index >= 0:
+                iterator = iter(iterable)
+                try:
+                    for _ in range(index):
+                        next(iterator)
+                    return next(iterator)
+                except StopIteration:
+                    self._raise_not_enough_elements()
+            else:
+                en = iterable if isinstance(iterable, Enumerable) else Enumerable(iterable)
+                last = en.take_last(-index).to_list()
+                if len(last) < -index:
+                    self._raise_not_enough_elements()
+                return last[0]
 
         else:  # isinstance(index, slice)
             if not fallback and isinstance(iterable, Sequence):
                 try:
                     res = iterable[index]
                 except IndexError as e:
-                    raise IndexOutOfRangeError(e)
+                    raise IndexOutOfRangeError from e
                 return res if isinstance(res, Enumerable) else Enumerable(res)
             # we do not enumerate all values if the begin and the end only involve
             # nonnegative indices since in which case the sliced part can be obtained

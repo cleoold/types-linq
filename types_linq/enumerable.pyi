@@ -476,6 +476,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
         no such element exists.
 
+        If the index is negative, it means counting from the end.
+
         This method always uses a generic list element-finding method (O(n)) regardless the
         implementation of the wrapped iterable.
 
@@ -487,6 +489,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
                 >>> Enumerable(gen()).element_at(1)
                 10
+
+                >>> Enumerable(gen()).element_at(-1)
+                100
         '''
 
     @overload
@@ -494,6 +499,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Returns the element at specified index in the sequence. Default value is returned if no
         such element exists.
+
+        If the index is negative, it means counting from the end.
 
         This method always uses a generic list element-finding method (O(n)) regardless the
         implementation of the wrapped iterable.

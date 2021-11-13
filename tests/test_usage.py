@@ -327,17 +327,27 @@ class TestElementAtMethod:
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         assert en.element_at(0) == 7
+        assert en.element_at(-5) == 7
 
     def test_overload1_end(self):
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         assert en.element_at(4) == 11
+        assert en.element_at(-1) == 11
 
     def test_overload1_out(self):
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         with pytest.raises(IndexOutOfRangeError):
             en.element_at(5)
+        with pytest.raises(IndexOutOfRangeError):
+            en.element_at(-6)
+
+    def test_overload2_within(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        assert en.element_at(2, 0) == 9
+        assert en.element_at(-3, 0) == 9
 
     def test_overload2_out(self):
         gen = lambda: (i for i in range(7, 12))
