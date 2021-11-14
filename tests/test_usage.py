@@ -370,6 +370,10 @@ class TestElementAtMethod:
         with pytest.raises(IndexOutOfRangeError):
             en3[1]
 
+    def test_not_fallback_and_with_default(self):
+        en = Enumerable([])
+        assert en[1, 'haha'] == 'haha'
+
 
     class OnlyHasGetItem(BasicIterable[TSource_co], Sequence[TSource_co]):
         # note: we get into troubles if Sequence is the first superclass

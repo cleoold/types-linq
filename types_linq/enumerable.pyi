@@ -76,6 +76,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
+    def __getitem__(self, __index_and_default: Tuple[int, TDefault]) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the element at specified index in the sequence or returns the default value if it does not
+        exist. Prefers calling `__getitem__()` on the wrapped iterable if available, otherwise, calls
+        `self.element_at()`.
+
+        Example
+            .. code-block:: python
+
+                >>> def gen():
+                ...     yield 1; yield 10; yield 100
+
+                >>> Enumerable(gen())[3, 1000]
+                1000
+        '''
+
+    @overload
     def __getitem__(self, index: slice) -> Enumerable[TSource_co]:
         '''
         Produces a subsequence defined by the given slice notation. Prefers calling `__getitem__()` on the

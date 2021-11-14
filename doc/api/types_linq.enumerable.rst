@@ -86,6 +86,30 @@ Example
 
 ----
 
+instancemethod ``__getitem__[TDefault](__index_and_default)``
+---------------------------------------------------------------
+
+Parameters
+  - `__index_and_default` (``Tuple[int, TDefault]``)
+
+Returns
+  - ``Union[TSource_co, TDefault]``
+
+Returns the element at specified index in the sequence or returns the default value if it does not
+exist. Prefers calling `__getitem__()` on the wrapped iterable if available, otherwise, calls
+`self.element_at()`.
+
+Example
+    .. code-block:: python
+
+        >>> def gen():
+        ...     yield 1; yield 10; yield 100
+
+        >>> Enumerable(gen())[3, 1000]
+        1000
+
+----
+
 instancemethod ``__getitem__(index)``
 ---------------------------------------
 

@@ -126,9 +126,16 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             return Enumerable(inner)
 
     def __getitem__(self,  # type: ignore[override]
-        index: Union[int, slice],
-    ) -> Union[TSource_co, Enumerable[TSource_co]]:
-        return self._getitem_impl(index, fallback=False)
+        index: Union[int, slice, Tuple[int, TDefault]],
+    ) -> Union[TSource_co, Enumerable[TSource_co], TDefault]:
+        if isinstance(index, tuple):
+            idx, default = index
+            try:
+                return self._getitem_impl(idx, fallback=False)
+            except IndexOutOfRangeError:
+                return default
+        else:  # isinstance(index, (int, slice))
+            return self._getitem_impl(index, fallback=False)
 
     def __iter__(self) -> Iterator[TSource_co]:
         return iter(self._get_iterable())

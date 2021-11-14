@@ -43,3 +43,5 @@ Limitations:
 * To deal with overloads, some method parameters are positional-only, e.g. those starting with double
   underscores. Some of them can be improved.
 * ``OrderedEnumerable`` exposing unnecessary type parameter ``TKey``.
+* ``Lookup.__getitem__()``, ``Lookup.contains()``, ``Lookup.count`` are incompatible with the superclass methods they
+  are overriding.
