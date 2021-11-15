@@ -212,6 +212,48 @@ class TestAverageMethod:
         assert avg == 5.8
 
 
+class TestChunkMethod:
+    def test_infinite_exact(self):
+        def source(i):
+            while True:
+                yield i
+                i *= 3
+        en = Enumerable(source(1)).chunk(4).take(3)
+        assert en.to_list() == [
+            [1, 3, 9, 27], [81, 243, 729, 2187], [6561, 19683, 59049, 177147],
+        ]
+
+    def test_sized_last_not_full(self):
+        ints = [1, 3, 9, 27, 81, 243, 729]
+        en = Enumerable(ints).chunk(3)
+        assert en.to_list() == [[1, 3, 9], [27, 81, 243], [729]]
+
+    def test_elements_less_than_size(self):
+        ints = [1, 3, 9, 27]
+        en = Enumerable(ints).chunk(5)
+        assert en.to_list() == [[1, 3, 9, 27]]
+
+    def test_empty(self):
+        en = Enumerable([])
+        assert en.chunk(3).to_list() == []
+
+    def test_mutate_source_before_iteration(self):
+        ints = [1, 3, 9, 27, 81, 243, 729]
+        en = Enumerable(ints).chunk(2)
+        it = iter(en)
+        assert next(it) == [1, 3]
+        ints.remove(27)
+        assert next(it) == [9, 81]
+        assert next(it) == [243, 729]
+
+    def test_invalid_size(self):
+        en = Enumerable([0])
+        with pytest.raises(InvalidOperationError):
+            en.chunk(0)
+        with pytest.raises(InvalidOperationError):
+            en.chunk(-1)
+
+
 class TestConcatMethod:
     def test_concat(self):
         en1 = Enumerable([1, 2, 3])
@@ -371,7 +413,8 @@ class TestElementAtMethod:
             en3[1]
 
     def test_not_fallback_and_with_default(self):
-        en = Enumerable([])
+        en = Enumerable([1])
+        assert en[0, 'haha'] == 1
         assert en[1, 'haha'] == 'haha'
 
 

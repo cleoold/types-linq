@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, MutableSequence, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
@@ -387,6 +387,28 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
                 query: Enumerable[object] = ...
                 same_query: Enumerable[int] = query.cast(int)
+        '''
+
+    # nonstanard: .NET returns fix-size arrays as elements instead
+    def chunk(self, size: int) -> Enumerable[MutableSequence[TSource_co]]:
+        '''
+        Splits the elements of a sequence into chunks of size at most the provided size. Raises
+        `InvalidOperationError` if `size` is less than 1.
+
+        Example
+            .. code-block:: python
+
+                >>> def source(i):
+                ...     while True:
+                ...         yield i
+                ...         i *= 3
+
+                >>> en = Enumerable(source(1)).chunk(4).take(3)
+                >>> for chunk in en:
+                ...     print(chunk)
+                [1, 3, 9, 27]
+                [81, 243, 729, 2187]
+                [6561, 19683, 59049, 177147]
         '''
 
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:

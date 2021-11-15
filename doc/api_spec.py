@@ -52,6 +52,7 @@ modules: list[ModuleSpec] = [
                     'average',
                     'average2',
                     'cast',
+                    'chunk',
                     'concat',
                     'contains',
                     'count',

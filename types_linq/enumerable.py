@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, MutableSequence, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -254,6 +254,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def cast(self, _: Type[TResult]) -> Enumerable[TResult]:
         return self  # type: ignore
+
+    def chunk(self, size: int) -> Enumerable[MutableSequence[TSource_co]]:
+        if size < 1:
+            raise InvalidOperationError('size must be greater than 0')
+        def inner():
+            lst: List[Any] = [1] * size
+            i = 0
+            for elem in self:
+                lst[i] = elem
+                if i == size - 1:
+                    yield lst
+                    i = 0
+                    lst = [1] * size
+                else:
+                    i += 1
+            if i > 0:
+                del lst[i:]
+                yield lst
+        return Enumerable(inner)
 
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():

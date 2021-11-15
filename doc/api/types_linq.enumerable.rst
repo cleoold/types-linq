@@ -506,6 +506,35 @@ Example
 
 ----
 
+instancemethod ``chunk(size)``
+--------------------------------
+
+Parameters
+  - `size` (``int``)
+
+Returns
+  - ``Enumerable[MutableSequence[TSource_co]]``
+
+Splits the elements of a sequence into chunks of size at most the provided size. Raises
+`InvalidOperationError` if `size` is less than 1.
+
+Example
+    .. code-block:: python
+
+        >>> def source(i):
+        ...     while True:
+        ...         yield i
+        ...         i *= 3
+
+        >>> en = Enumerable(source(1)).chunk(4).take(3)
+        >>> for chunk in en:
+        ...     print(chunk)
+        [1, 3, 9, 27]
+        [81, 243, 729, 2187]
+        [6561, 19683, 59049, 177147]
+
+----
+
 instancemethod ``concat(second)``
 -----------------------------------
 
