@@ -1585,6 +1585,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [0, 1, 2, 3, 4, 5, 9, 7]
         '''
 
+    def union_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set union of two sequences: self + second according to a specified key
+        selector.
+
+        Example
+            >>> en = Enumerable([1, 9, -2, -7, 14])
+            >>> en.union_by([15, 2, -26, -7], abs).to_list()
+            [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
+        '''
+
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
         '''
         Filters the sequence of values based on a predicate.

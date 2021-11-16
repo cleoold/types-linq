@@ -2204,6 +2204,26 @@ Example
 
 ----
 
+instancemethod ``union_by(second, key_selector)``
+---------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TSource_co]``)
+  - `key_selector` (``Callable[[TSource_co], object]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces the set union of two sequences: self + second according to a specified key
+selector.
+
+Example
+    >>> en = Enumerable([1, 9, -2, -7, 14])
+    >>> en.union_by([15, 2, -26, -7], abs).to_list()
+    [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
+
+----
+
 instancemethod ``where(predicate)``
 -------------------------------------
 

@@ -1449,6 +1449,19 @@ class TestUnionMethod:
         assert q.to_list() == [1, 2, 7, -1, 8]
 
 
+class TestUnionByMethod:
+    def test_union_by(self):
+        ints = [1, 9, -2, -7, 14]
+        en = Enumerable(ints)
+        q = en.union_by([15, 2, -26, -7], abs)
+        assert q.to_list() == [1, 9, -2, -7, 14, 15, -26]
+
+    def test_self_empty(self):
+        en = Enumerable([])
+        q = en.union_by([1, 2, 3, 4], lambda x: x // 2)
+        assert q.to_list() == [1, 2, 4]
+
+
 class TestWhereMethod:
     def test_where(self):
         gen_func = lambda: (i for i in range(0, 10))

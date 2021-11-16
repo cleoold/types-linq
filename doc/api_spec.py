@@ -105,6 +105,7 @@ modules: list[ModuleSpec] = [
                     'to_list',
                     'to_lookup',
                     'union',
+                    'union_by',
                     'where',
                     'where2',
                     'zip',

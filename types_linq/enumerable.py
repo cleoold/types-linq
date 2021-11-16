@@ -912,13 +912,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return res
 
     def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        # TODO: optimise chained .union() calls
+        return self.union_by(second, lambda x: x)
+
+    def union_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> Enumerable[TSource_co]:
         def inner():
-            # TODO: optimise chained .union() call to reuse s
             s = ComposeSet()
             for elem in self.concat(second):
-                if elem in s:
+                key = key_selector(elem)
+                if key in s:
                     continue
-                s.add(elem)
+                s.add(key)
                 yield elem
         return Enumerable(inner)
 
