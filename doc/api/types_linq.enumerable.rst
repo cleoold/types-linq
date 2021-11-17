@@ -1072,6 +1072,26 @@ Example
 
 ----
 
+instancemethod ``intersect_by[TKey](second, key_selector)``
+-------------------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TKey]``)
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces the set intersection of two sequences: self * second according to a
+specified key selector.
+
+Example
+    >>> strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+    >>> Enumerable(strs).intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x))).to_list()
+    ['+1', '-3', '+5', '+9']
+
+----
+
 instancemethod ``join[TInner, TKey, TResult](inner, outer_key_selector, inner_key_selector, result_selector)``
 ----------------------------------------------------------------------------------------------------------------
 

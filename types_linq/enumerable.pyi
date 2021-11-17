@@ -815,6 +815,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 3, 5]
         '''
 
+    def intersect_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set intersection of two sequences: self * second according to a
+        specified key selector.
+
+        Example
+            >>> strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+            >>> Enumerable(strs).intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x))).to_list()
+            ['+1', '-3', '+5', '+9']
+        '''
+
     def join(self,
         inner: Iterable[TInner],
         outer_key_selector: Callable[[TSource_co], TKey],

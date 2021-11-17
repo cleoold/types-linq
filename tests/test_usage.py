@@ -643,6 +643,14 @@ class TestIntersectMethod:
         assert intersect.to_list() == []
 
 
+class TestIntersectByMethod:
+    def test_intersect_by(self):
+        strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+        en = Enumerable(strs)
+        intersect = en.intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x)))
+        assert intersect.to_list() == ['+1', '-3', '+5', '+9']
+
+
 class TestJoinMethod:
     def test_join(self):
         class Person(NamedTuple):

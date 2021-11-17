@@ -67,6 +67,7 @@ modules: list[ModuleSpec] = [
                     'group_by2',
                     'group_join',
                     'intersect',
+                    'intersect_by',
                     'join',
                     'last',
                     'last2',

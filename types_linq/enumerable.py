@@ -420,12 +420,19 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(inner_gen)
 
     def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        return self.intersect_by(second, lambda x: x)
+
+    def intersect_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
         def inner():
             s = ComposeSet(second)
             for elem in self:
-                if elem not in s:
+                key = key_selector(elem)
+                if key not in s:
                     continue
-                s.remove(elem)
+                s.remove(key)
                 yield elem
         return Enumerable(inner)
 
