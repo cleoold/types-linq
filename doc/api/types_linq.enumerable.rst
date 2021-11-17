@@ -371,6 +371,20 @@ The behavior of this method differs from that of ``CachedEnumerable``.
 
 ----
 
+instancemethod ``as_more()``
+------------------------------
+
+
+Returns
+  - ``MoreEnumerable[TSource_co]``
+
+Returns a MoreEnumerable that has more non-standard query methods available.
+
+Example
+    >>> Enumerable([1, 2, 3]).as_more()
+
+----
+
 instancemethod ``average[TResult]()``
 ---------------------------------------
 

@@ -49,6 +49,7 @@ modules: list[ModuleSpec] = [
                     'any',
                     'append',
                     'as_cached',
+                    'as_more',
                     'average',
                     'average2',
                     'cast',
