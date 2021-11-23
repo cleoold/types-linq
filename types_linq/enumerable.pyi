@@ -1490,6 +1490,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             880
         '''
 
+    @overload
     def take(self, count: int) -> Enumerable[TSource_co]:
         '''
         Returns a specified number of contiguous elements from the start of the sequence.
@@ -1498,6 +1499,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             >>> grades = [98, 92, 85, 82, 70, 59, 56]
             >>> Enumerable(grades).take(3).to_list()
             [98, 92, 85]
+        '''
+
+    @overload
+    def take(self, __index: slice) -> Enumerable[TSource_co]:
+        '''
+        Produces a subsequence defined by the given slice notation.
+
+        This method currently is identical to `elements_in()` when it takes a slice.
+
+        Example
+            .. code-block:: python
+
+                >>> def gen():
+                ...     yield 1; yield 10; yield 100; yield 1000; yield 10000
+
+                >>> Enumerable(gen()).take(slice(1, 3)).to_list()
+                [10, 100]
         '''
 
     def take_last(self, count: int) -> Enumerable[TSource_co]:
@@ -1737,6 +1755,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence defined by the given slice notation.
 
+        This method always uses a generic list slicing method regardless the implementation of the
+        wrapped iterable.
+
         Example
             .. code-block:: python
 
@@ -1752,6 +1773,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence with indices that define a slice.
 
+        This method always uses a generic list slicing method regardless the implementation of the
+        wrapped iterable.
 
         Example
             .. code-block:: python

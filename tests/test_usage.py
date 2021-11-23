@@ -1349,27 +1349,37 @@ class TestSumMethod:
 
 
 class TestTakeMethod:
-    def test_some(self):
+    def test_overload1_some(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(3).to_list() == [1, 4, 6]
         assert en.take(5).to_list() == lst
 
-    def test_more(self):
+    def test_overload1_more(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(6).to_list() == lst
 
-    def test_count_zero_or_negative(self):
+    def test_overload1_count_zero_or_negative(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(0).to_list() == []
         assert en.take(-1).to_list() == []
 
-    def test_id(self):
+    def test_overload1_id(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(4).concat(en.skip(4)).to_list() == lst
+
+    def test_overload2(self):
+        def gen():
+            yield from [1, 10, 100, 1000, 10000]
+        en = Enumerable(gen())
+        assert en.take(slice(1, 3)).to_list() == [10, 100]
+
+    def test_overload2_fallback(self):
+        en = Enumerable(TestElementAtMethod.OnlyHasGetItem(['x']))
+        assert en.elements_in(slice(7)).to_list() == ['x']
 
 
 class TestTakeLastMethod:

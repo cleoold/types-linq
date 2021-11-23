@@ -36,6 +36,10 @@ and its .NET counterpart.
   Some C# methods return such default values if the source sequence is empty, or skip ``null``'s if the source sequence contains
   concrete data too. There are no such notions in Python and the C#-like default semantics are non-existent. So, this usage is
   not supported by this library (Can ``None`` be considered a default value for all cases? Hmm..).
+* C# has `Index <https://docs.microsoft.com/en-us/dotnet/api/system.index>`_ syntaxes, and to be Pythonic, these are
+  negative indices. C# has `Range <https://docs.microsoft.com/en-us/dotnet/api/system.range>`_, which are
+  `slices <https://docs.python.org/3/library/functions.html#slice>`_. This difference can be seen in ``Enumerable.element_at()``
+  and ``Enumerable.take()``.
 * All classes in this library are concrete. There are no interfaces like what are usually done in C#.
 
 Limitations:

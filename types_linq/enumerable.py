@@ -841,15 +841,18 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             selector, default = args
         return self._sum_helper(selector, lambda: default)
 
-    def take(self, count: int) -> Enumerable[TSource_co]:
-        def inner():
-            iterator = iter(self)
-            try:
-                for _ in range(count):
-                    yield next(iterator)
-            except StopIteration:
-                return
-        return Enumerable(inner)
+    def take(self, count: Union[int, slice]) -> Enumerable[TSource_co]:
+        if isinstance(count, int):
+            def inner():
+                iterator = iter(self)
+                try:
+                    for _ in range(count):
+                        yield next(iterator)
+                except StopIteration:
+                    return
+            return Enumerable(inner)
+        else:  # isinstance(count, slice)
+            return self.elements_in(count)
 
     def take_last(self, count: int) -> Enumerable[TSource_co]:
         if count <= 0:

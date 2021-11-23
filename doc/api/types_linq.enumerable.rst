@@ -2061,6 +2061,30 @@ Example
 
 ----
 
+instancemethod ``take(__index)``
+----------------------------------
+
+Parameters
+  - `__index` (``slice``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces a subsequence defined by the given slice notation.
+
+This method currently is identical to `elements_in()` when it takes a slice.
+
+Example
+    .. code-block:: python
+
+        >>> def gen():
+        ...     yield 1; yield 10; yield 100; yield 1000; yield 10000
+
+        >>> Enumerable(gen()).take(slice(1, 3)).to_list()
+        [10, 100]
+
+----
+
 instancemethod ``take_last(count)``
 -------------------------------------
 
@@ -2461,6 +2485,9 @@ Returns
 
 Produces a subsequence defined by the given slice notation.
 
+This method always uses a generic list slicing method regardless the implementation of the
+wrapped iterable.
+
 Example
     .. code-block:: python
 
@@ -2485,6 +2512,8 @@ Returns
 
 Produces a subsequence with indices that define a slice.
 
+This method always uses a generic list slicing method regardless the implementation of the
+wrapped iterable.
 
 Example
     .. code-block:: python
