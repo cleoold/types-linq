@@ -319,6 +319,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def distinct(self) -> Enumerable[TSource_co]:
         return self.except1(())
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> Enumerable[TSource_co]:
+        return self.except_by((), key_selector)
+
     def element_at(self, index: int, *args: TDefault) -> Union[TSource_co, TDefault]:
         if len(args) == 0:
             return self._getitem_impl(index, fallback=True)  # type: ignore
@@ -334,12 +337,19 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(())
 
     def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        return self.except_by(second, lambda x: x)
+
+    def except_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
         def inner():
             s = ComposeSet(second)
             for elem in self:
-                if elem in s:
+                key = key_selector(elem)
+                if key in s:
                     continue
-                s.add(elem)
+                s.add(key)
                 yield elem
         return Enumerable(inner)
 

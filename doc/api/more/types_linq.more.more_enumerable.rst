@@ -12,8 +12,9 @@ MoreEnumerable provides more query methods. Instances of this class can be creat
 constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
 instead of Enumerable.
 
-Some APIs are subject to change as updates to .NET (6) are happening - they will move to Enumerable
-class if one day they appear in the official .NET doc.
+These APIs may have breaking changes more frequently than those in Enumerable class because updates
+in .NET are happening and sometimes ones of these APIs could be moved to Enumerable with modification,
+or changed to accommodate changes to Enumerable.
 
 Bases
 ======
@@ -82,25 +83,6 @@ Returns the original MoreEnumerable reference.
 
 ----
 
-instancemethod ``distinct_by(key_selector)``
-----------------------------------------------
-
-Parameters
-  - `key_selector` (``Callable[[TSource_co], object]``)
-
-Returns
-  - ``MoreEnumerable[TSource_co]``
-
-Returns distinct elements from the sequence where "distinctness" is determined by the value
-returned by the selector.
-
-Example
-    >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
-    >>> MoreEnumerable(ints).distinct_by(lambda x: x // 2).to_list()
-    [1, 4, 6, 3, 99]
-
-----
-
 instancemethod ``enumerate(start=0)``
 ---------------------------------------
 
@@ -120,8 +102,8 @@ Example
 
 ----
 
-instancemethod ``except_by(second, key_selector)``
-----------------------------------------------------
+instancemethod ``except_by2(second, key_selector)``
+-----------------------------------------------------
 
 Parameters
   - `second` (``Iterable[TSource_co]``)
@@ -136,7 +118,7 @@ determines "distinctness". Note the second iterable is homogenous to self.
 Example
     >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
     >>> second = [(24, 'd'), (77, 'y')]
-    >>> MoreEnumerable(first).except_by(second, lambda x: x[1]).to_list()
+    >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
     [(16, 'x'), (16, 't')]
 
 ----

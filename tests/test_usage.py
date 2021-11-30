@@ -344,6 +344,12 @@ class TestDistinctMethod:
         assert distinct == [1, 4, 5, 6, 3, 99]
 
 
+class TestDistinctByMethod:
+    def test_distinct_by(self):
+        en = Enumerable([1, 4, 5, 6, 4, 3, 1, 99])
+        assert en.distinct_by(lambda x: x // 2).to_list() == [1, 4, 6, 3, 99]
+
+
 class TestReverseMethod:
     def test_delayed(self):
         gen = (i for i in range(5))
@@ -450,6 +456,18 @@ class TestExceptMethod:
         en = Enumerable(ints)
         exc = en.except1(Enumerable.empty().cast(int))
         assert exc.to_list() == ints
+
+
+class TestExceptByMethod:
+    def test_except_by1(self):
+        first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+        en = Enumerable(first)
+        exc = en.except_by(['y', 'd'], lambda x: x[1])
+        assert exc.to_list() == [(16, 'x'), (16, 't')]
+
+    def test_no_repeat(self):
+        en = Enumerable(['aaa', 'bb', 'c', 'dddd', 'aaa'])
+        assert en.except_by([2, 1], len).to_list() == ['aaa', 'dddd']
 
 
 class TestFirstMethod:

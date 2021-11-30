@@ -509,6 +509,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 4, 5, 6, 3, 99]
         '''
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> Enumerable[TSource_co]:
+        '''
+        Returns distinct elements from the sequence where "distinctness" is determined by the value
+        returned by the selector.
+
+        Example
+            >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
+            >>> Enumerable(ints).distinct_by(lambda x: x // 2).to_list()
+            [1, 4, 6, 3, 99]
+        '''
+
     @overload
     def element_at(self, index: int) -> TSource_co:
         '''
@@ -576,6 +587,21 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             >>> ints = [1, 2, 3, 4, 5]
             >>> Enumerable(ints).except1([1, 3, 5, 7, 9]).to_list()
             [2, 4]
+        '''
+
+    def except_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set difference of two sequences: self - second, according to a key selector that
+        determines "distinctness".
+
+        Example
+            >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+            >>> second = ['y', 'd']
+            >>> Enumerable(first).except_by(second, lambda x: x[1]).to_list()
+            [(16, 'x'), (16, 't')]
         '''
 
     @overload
