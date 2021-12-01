@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
+from typing import Any, Callable, Container, Deque, Dict, Iterable, Iterator, List, MutableSequence, NoReturn, Optional, Reversible, Sequence, Set, Sized, TYPE_CHECKING, Tuple, Type, Generic, Union
 
 if TYPE_CHECKING:
     from .lookup import Lookup
@@ -55,6 +55,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def __contains__(self, value: object) -> bool:
         return self._contains_impl(value, fallback=False)
 
+    @staticmethod
+    def _raise_not_enough_elements() -> NoReturn:
+        raise IndexOutOfRangeError('Not enough elements in the sequence')
+
     def _every(self, step: int) -> Enumerable[TSource_co]:
         return self.where2(lambda _, i: i % step == 0)
 
@@ -71,20 +75,27 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                     return iterable[index]
                 except IndexError as e:
                     raise IndexOutOfRangeError from e
-            iterator = iter(iterable)
-            try:
-                for _ in range(index):
-                    next(iterator)
-                return next(iterator)
-            except StopIteration:
-                raise IndexOutOfRangeError('Not enough elements in the sequence')
+            if index >= 0:
+                iterator = iter(iterable)
+                try:
+                    for _ in range(index):
+                        next(iterator)
+                    return next(iterator)
+                except StopIteration:
+                    self._raise_not_enough_elements()
+            else:
+                en = iterable if isinstance(iterable, Enumerable) else Enumerable(iterable)
+                last = en.take_last(-index).to_list()
+                if len(last) < -index:
+                    self._raise_not_enough_elements()
+                return last[0]
 
         else:  # isinstance(index, slice)
             if not fallback and isinstance(iterable, Sequence):
                 try:
                     res = iterable[index]
                 except IndexError as e:
-                    raise IndexOutOfRangeError(e)
+                    raise IndexOutOfRangeError from e
                 return res if isinstance(res, Enumerable) else Enumerable(res)
             # we do not enumerate all values if the begin and the end only involve
             # nonnegative indices since in which case the sliced part can be obtained
@@ -115,9 +126,16 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             return Enumerable(inner)
 
     def __getitem__(self,  # type: ignore[override]
-        index: Union[int, slice],
-    ) -> Union[TSource_co, Enumerable[TSource_co]]:
-        return self._getitem_impl(index, fallback=False)
+        index: Union[int, slice, Tuple[int, TDefault]],
+    ) -> Union[TSource_co, Enumerable[TSource_co], TDefault]:
+        if isinstance(index, tuple):
+            idx, default = index
+            try:
+                return self._getitem_impl(idx, fallback=False)
+            except IndexOutOfRangeError:
+                return default
+        else:  # isinstance(index, (int, slice))
+            return self._getitem_impl(index, fallback=False)
 
     def __iter__(self) -> Iterator[TSource_co]:
         return iter(self._get_iterable())
@@ -237,6 +255,25 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def cast(self, _: Type[TResult]) -> Enumerable[TResult]:
         return self  # type: ignore
 
+    def chunk(self, size: int) -> Enumerable[MutableSequence[TSource_co]]:
+        if size < 1:
+            raise InvalidOperationError('size must be greater than 0')
+        def inner():
+            lst: List[Any] = [1] * size
+            i = 0
+            for elem in self:
+                lst[i] = elem
+                if i == size - 1:
+                    yield lst
+                    i = 0
+                    lst = [1] * size
+                else:
+                    i += 1
+            if i > 0:
+                del lst[i:]
+                yield lst
+        return Enumerable(inner)
+
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         def inner():
             yield from self
@@ -282,6 +319,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def distinct(self) -> Enumerable[TSource_co]:
         return self.except1(())
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> Enumerable[TSource_co]:
+        return self.except_by((), key_selector)
+
     def element_at(self, index: int, *args: TDefault) -> Union[TSource_co, TDefault]:
         if len(args) == 0:
             return self._getitem_impl(index, fallback=True)  # type: ignore
@@ -297,12 +337,19 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(())
 
     def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        return self.except_by(second, lambda x: x)
+
+    def except_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
         def inner():
             s = ComposeSet(second)
             for elem in self:
-                if elem in s:
+                key = key_selector(elem)
+                if key in s:
                     continue
-                s.add(elem)
+                s.add(key)
                 yield elem
         return Enumerable(inner)
 
@@ -383,12 +430,19 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(inner_gen)
 
     def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        return self.intersect_by(second, lambda x: x)
+
+    def intersect_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
         def inner():
             s = ComposeSet(second)
             for elem in self:
-                if elem not in s:
+                key = key_selector(elem)
+                if key not in s:
                     continue
-                s.remove(elem)
+                s.remove(key)
                 yield elem
         return Enumerable(inner)
 
@@ -447,6 +501,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             curr = mapped if op(curr, mapped) else curr
         return curr
 
+    def _minmax_by_helper(self, key_selector, op) -> Any:
+        iterator = iter(self)
+        try:
+            curr = next(iterator)
+        except StopIteration:
+            self._raise_empty_sequence()
+        curr_key = key_selector(curr)
+        for elem in iterator:
+            elem_key = key_selector(elem)
+            if op(curr_key, elem_key):
+                curr = elem
+                curr_key = elem_key
+        return curr
+
     def max(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
             result_selector: Any = lambda x: x
@@ -469,6 +537,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             lambda: default,
         )
 
+    def max_by(self,
+        key_selector: Callable[[TSource_co], Any],
+        *args: Callable[[Any, Any], int],
+    ) -> Any:
+        if len(args) == 0:
+            op = lambda l, r: l < r
+        else:  # len(args) == 1
+            comp = args[0]
+            op = lambda l, r: comp(l, r) < 0
+        return self._minmax_by_helper(key_selector, op)
+
     def min(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
             result_selector: Any = lambda x: x
@@ -490,6 +569,17 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             lambda l, r: r < l,
             lambda: default,
         )
+
+    def min_by(self,
+        key_selector: Callable[[TSource_co], Any],
+        *args: Callable[[Any, Any], int],
+    ) -> Any:
+        if len(args) == 0:
+            op = lambda l, r: r < l
+        else:  # len(args) == 1
+            comp = args[0]
+            op = lambda l, r: comp(l, r) > 0
+        return self._minmax_by_helper(key_selector, op)
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
         return self.where(lambda e: isinstance(e, t_result)).cast(t_result)
@@ -761,15 +851,18 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             selector, default = args
         return self._sum_helper(selector, lambda: default)
 
-    def take(self, count: int) -> Enumerable[TSource_co]:
-        def inner():
-            iterator = iter(self)
-            try:
-                for _ in range(count):
-                    yield next(iterator)
-            except StopIteration:
-                return
-        return Enumerable(inner)
+    def take(self, count: Union[int, slice]) -> Enumerable[TSource_co]:
+        if isinstance(count, int):
+            def inner():
+                iterator = iter(self)
+                try:
+                    for _ in range(count):
+                        yield next(iterator)
+                except StopIteration:
+                    return
+            return Enumerable(inner)
+        else:  # isinstance(count, slice)
+            return self.elements_in(count)
 
     def take_last(self, count: int) -> Enumerable[TSource_co]:
         if count <= 0:
@@ -839,13 +932,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return res
 
     def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
+        # TODO: optimise chained .union() calls
+        return self.union_by(second, lambda x: x)
+
+    def union_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> Enumerable[TSource_co]:
         def inner():
-            # TODO: optimise chained .union() call to reuse s
             s = ComposeSet()
             for elem in self.concat(second):
-                if elem in s:
+                key = key_selector(elem)
+                if key in s:
                     continue
-                s.add(elem)
+                s.add(key)
                 yield elem
         return Enumerable(inner)
 

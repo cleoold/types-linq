@@ -86,6 +86,30 @@ Example
 
 ----
 
+instancemethod ``__getitem__[TDefault](__index_and_default)``
+---------------------------------------------------------------
+
+Parameters
+  - `__index_and_default` (``Tuple[int, TDefault]``)
+
+Returns
+  - ``Union[TSource_co, TDefault]``
+
+Returns the element at specified index in the sequence or returns the default value if it does not
+exist. Prefers calling `__getitem__()` on the wrapped iterable if available, otherwise, calls
+`self.element_at()`.
+
+Example
+    .. code-block:: python
+
+        >>> def gen():
+        ...     yield 1; yield 10; yield 100
+
+        >>> Enumerable(gen())[3, 1000]
+        1000
+
+----
+
 instancemethod ``__getitem__(index)``
 ---------------------------------------
 
@@ -496,6 +520,35 @@ Example
 
 ----
 
+instancemethod ``chunk(size)``
+--------------------------------
+
+Parameters
+  - `size` (``int``)
+
+Returns
+  - ``Enumerable[MutableSequence[TSource_co]]``
+
+Splits the elements of a sequence into chunks of size at most the provided size. Raises
+`InvalidOperationError` if `size` is less than 1.
+
+Example
+    .. code-block:: python
+
+        >>> def source(i):
+        ...     while True:
+        ...         yield i
+        ...         i *= 3
+
+        >>> en = Enumerable(source(1)).chunk(4).take(3)
+        >>> for chunk in en:
+        ...     print(chunk)
+        [1, 3, 9, 27]
+        [81, 243, 729, 2187]
+        [6561, 19683, 59049, 177147]
+
+----
+
 instancemethod ``concat(second)``
 -----------------------------------
 
@@ -641,6 +694,25 @@ Example
 
 ----
 
+instancemethod ``distinct_by(key_selector)``
+----------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], object]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Returns distinct elements from the sequence where "distinctness" is determined by the value
+returned by the selector.
+
+Example
+    >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
+    >>> Enumerable(ints).distinct_by(lambda x: x // 2).to_list()
+    [1, 4, 6, 3, 99]
+
+----
+
 instancemethod ``element_at(index)``
 --------------------------------------
 
@@ -653,6 +725,8 @@ Returns
 Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
 no such element exists.
 
+If the index is negative, it means counting from the end.
+
 This method always uses a generic list element-finding method (O(n)) regardless the
 implementation of the wrapped iterable.
 
@@ -664,6 +738,9 @@ Example
 
         >>> Enumerable(gen()).element_at(1)
         10
+
+        >>> Enumerable(gen()).element_at(-1)
+        100
 
 ----
 
@@ -679,6 +756,8 @@ Returns
 
 Returns the element at specified index in the sequence. Default value is returned if no
 such element exists.
+
+If the index is negative, it means counting from the end.
 
 This method always uses a generic list element-finding method (O(n)) regardless the
 implementation of the wrapped iterable.
@@ -728,6 +807,27 @@ Example
     >>> ints = [1, 2, 3, 4, 5]
     >>> Enumerable(ints).except1([1, 3, 5, 7, 9]).to_list()
     [2, 4]
+
+----
+
+instancemethod ``except_by[TKey](second, key_selector)``
+----------------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TKey]``)
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces the set difference of two sequences: self - second, according to a key selector that
+determines "distinctness".
+
+Example
+    >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+    >>> second = ['y', 'd']
+    >>> Enumerable(first).except_by(second, lambda x: x[1]).to_list()
+    [(16, 'x'), (16, 't')]
 
 ----
 
@@ -1026,6 +1126,26 @@ Example
 
 ----
 
+instancemethod ``intersect_by[TKey](second, key_selector)``
+-------------------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TKey]``)
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces the set intersection of two sequences: self * second according to a
+specified key selector.
+
+Example
+    >>> strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+    >>> Enumerable(strs).intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x))).to_list()
+    ['+1', '-3', '+5', '+9']
+
+----
+
 instancemethod ``join[TInner, TKey, TResult](inner, outer_key_selector, inner_key_selector, result_selector)``
 ----------------------------------------------------------------------------------------------------------------
 
@@ -1237,6 +1357,43 @@ Example
 
 ----
 
+instancemethod ``max_by[TSupportsLessThan](key_selector)``
+------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TSupportsLessThan]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the maximal element of the sequence based on the given key selector. Raises
+`InvalidOperationError` if there is no value.
+
+Example
+    >>> strs = ['aaa', 'bb', 'c', 'dddd']
+    >>> Enumerable(strs).max_by(len)
+    'dddd'
+
+----
+
+instancemethod ``max_by[TKey](key_selector, __comparer)``
+-----------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+  - `__comparer` (``Callable[[TKey, TKey], int]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the maximal element of the sequence based on the given key selector and the comparer.
+Raises `InvalidOperationError` if there is no value.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
+
+----
+
 instancemethod ``min[TSupportsLessThan]()``
 ---------------------------------------------
 
@@ -1291,6 +1448,38 @@ Returns
 
 Invokes a transform function on each element of the sequence and returns the minimum of the
 resulting values. Returns the default one if there is no value.
+
+----
+
+instancemethod ``min_by[TSupportsLessThan](key_selector)``
+------------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TSupportsLessThan]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the minimal element of the sequence based on the given key selector. Raises
+`InvalidOperationError` if there is no value.
+
+----
+
+instancemethod ``min_by[TKey](key_selector, __comparer)``
+-----------------------------------------------------------
+
+Parameters
+  - `key_selector` (``Callable[[TSource_co], TKey]``)
+  - `__comparer` (``Callable[[TKey, TKey], int]``)
+
+Returns
+  - ``TSource_co``
+
+Returns the minimal element of the sequence based on the given key selector and the comparer.
+Raises `InvalidOperationError` if there is no value.
+
+Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+if lhs < rhs, and 0 if they are equal.
 
 ----
 
@@ -1926,6 +2115,30 @@ Example
 
 ----
 
+instancemethod ``take(__index)``
+----------------------------------
+
+Parameters
+  - `__index` (``slice``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces a subsequence defined by the given slice notation.
+
+This method currently is identical to `elements_in()` when it takes a slice.
+
+Example
+    .. code-block:: python
+
+        >>> def gen():
+        ...     yield 1; yield 10; yield 100; yield 1000; yield 10000
+
+        >>> Enumerable(gen()).take(slice(1, 3)).to_list()
+        [10, 100]
+
+----
+
 instancemethod ``take_last(count)``
 -------------------------------------
 
@@ -2086,6 +2299,26 @@ Example
     >>> lst = [5, 3, 9, 7, 5, 9, 3, 7]
     >>> Enumerable(gen).union(lst).to_list()
     [0, 1, 2, 3, 4, 5, 9, 7]
+
+----
+
+instancemethod ``union_by(second, key_selector)``
+---------------------------------------------------
+
+Parameters
+  - `second` (``Iterable[TSource_co]``)
+  - `key_selector` (``Callable[[TSource_co], object]``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Produces the set union of two sequences: self + second according to a specified key
+selector.
+
+Example
+    >>> en = Enumerable([1, 9, -2, -7, 14])
+    >>> en.union_by([15, 2, -26, -7], abs).to_list()
+    [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
 
 ----
 
@@ -2306,6 +2539,9 @@ Returns
 
 Produces a subsequence defined by the given slice notation.
 
+This method always uses a generic list slicing method regardless the implementation of the
+wrapped iterable.
+
 Example
     .. code-block:: python
 
@@ -2330,6 +2566,8 @@ Returns
 
 Produces a subsequence with indices that define a slice.
 
+This method always uses a generic list slicing method regardless the implementation of the
+wrapped iterable.
 
 Example
     .. code-block:: python

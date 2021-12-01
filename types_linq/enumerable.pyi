@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Generic, Iterable, Iterator, List, MutableSequence, NoReturn, Optional, Sequence, Set, Tuple, Type, Union, overload
 
 from .lookup import Lookup
 from .grouping import Grouping
@@ -73,6 +73,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
                 >>> Enumerable(gen())[1]
                 10
+        '''
+
+    @overload
+    def __getitem__(self, __index_and_default: Tuple[int, TDefault]) -> Union[TSource_co, TDefault]:
+        '''
+        Returns the element at specified index in the sequence or returns the default value if it does not
+        exist. Prefers calling `__getitem__()` on the wrapped iterable if available, otherwise, calls
+        `self.element_at()`.
+
+        Example
+            .. code-block:: python
+
+                >>> def gen():
+                ...     yield 1; yield 10; yield 100
+
+                >>> Enumerable(gen())[3, 1000]
+                1000
         '''
 
     @overload
@@ -372,6 +389,28 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 same_query: Enumerable[int] = query.cast(int)
         '''
 
+    # nonstanard: .NET returns fix-size arrays as elements instead
+    def chunk(self, size: int) -> Enumerable[MutableSequence[TSource_co]]:
+        '''
+        Splits the elements of a sequence into chunks of size at most the provided size. Raises
+        `InvalidOperationError` if `size` is less than 1.
+
+        Example
+            .. code-block:: python
+
+                >>> def source(i):
+                ...     while True:
+                ...         yield i
+                ...         i *= 3
+
+                >>> en = Enumerable(source(1)).chunk(4).take(3)
+                >>> for chunk in en:
+                ...     print(chunk)
+                [1, 3, 9, 27]
+                [81, 243, 729, 2187]
+                [6561, 19683, 59049, 177147]
+        '''
+
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         '''
         Concatenates two sequences.
@@ -470,11 +509,24 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 4, 5, 6, 3, 99]
         '''
 
+    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> Enumerable[TSource_co]:
+        '''
+        Returns distinct elements from the sequence where "distinctness" is determined by the value
+        returned by the selector.
+
+        Example
+            >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
+            >>> Enumerable(ints).distinct_by(lambda x: x // 2).to_list()
+            [1, 4, 6, 3, 99]
+        '''
+
     @overload
     def element_at(self, index: int) -> TSource_co:
         '''
         Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
         no such element exists.
+
+        If the index is negative, it means counting from the end.
 
         This method always uses a generic list element-finding method (O(n)) regardless the
         implementation of the wrapped iterable.
@@ -487,6 +539,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
                 >>> Enumerable(gen()).element_at(1)
                 10
+
+                >>> Enumerable(gen()).element_at(-1)
+                100
         '''
 
     @overload
@@ -494,6 +549,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Returns the element at specified index in the sequence. Default value is returned if no
         such element exists.
+
+        If the index is negative, it means counting from the end.
 
         This method always uses a generic list element-finding method (O(n)) regardless the
         implementation of the wrapped iterable.
@@ -530,6 +587,21 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             >>> ints = [1, 2, 3, 4, 5]
             >>> Enumerable(ints).except1([1, 3, 5, 7, 9]).to_list()
             [2, 4]
+        '''
+
+    def except_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set difference of two sequences: self - second, according to a key selector that
+        determines "distinctness".
+
+        Example
+            >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+            >>> second = ['y', 'd']
+            >>> Enumerable(first).except_by(second, lambda x: x[1]).to_list()
+            [(16, 'x'), (16, 't')]
         '''
 
     @overload
@@ -769,6 +841,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 3, 5]
         '''
 
+    def intersect_by(self,
+        second: Iterable[TKey],
+        key_selector: Callable[[TSource_co], TKey],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set intersection of two sequences: self * second according to a
+        specified key selector.
+
+        Example
+            >>> strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+            >>> Enumerable(strs).intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x))).to_list()
+            ['+1', '-3', '+5', '+9']
+        '''
+
     def join(self,
         inner: Iterable[TInner],
         outer_key_selector: Callable[[TSource_co], TKey],
@@ -925,6 +1011,31 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
 
     @overload
+    def max_by(self, key_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSource_co:
+        '''
+        Returns the maximal element of the sequence based on the given key selector. Raises
+        `InvalidOperationError` if there is no value.
+
+        Example
+            >>> strs = ['aaa', 'bb', 'c', 'dddd']
+            >>> Enumerable(strs).max_by(len)
+            'dddd'
+        '''
+
+    @overload
+    def max_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> TSource_co:
+        '''
+        Returns the maximal element of the sequence based on the given key selector and the comparer.
+        Raises `InvalidOperationError` if there is no value.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
+        '''
+
+    @overload
     def min(self: Enumerable[TSupportsLessThan]) -> TSupportsLessThan:
         '''
         Returns the minimum value in the sequence. Raises `InvalidOperationError` if there is no value.
@@ -953,6 +1064,26 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Invokes a transform function on each element of the sequence and returns the minimum of the
         resulting values. Returns the default one if there is no value.
+        '''
+
+    @overload
+    def min_by(self, key_selector: Callable[[TSource_co], TSupportsLessThan]) -> TSource_co:
+        '''
+        Returns the minimal element of the sequence based on the given key selector. Raises
+        `InvalidOperationError` if there is no value.
+        '''
+
+    @overload
+    def min_by(self,
+        key_selector: Callable[[TSource_co], TKey],
+        __comparer: Callable[[TKey, TKey], int],
+    ) -> TSource_co:
+        '''
+        Returns the minimal element of the sequence based on the given key selector and the comparer.
+        Raises `InvalidOperationError` if there is no value.
+
+        Such comparer takes two values and return positive ints when lhs > rhs, negative ints
+        if lhs < rhs, and 0 if they are equal.
         '''
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
@@ -1385,6 +1516,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             880
         '''
 
+    @overload
     def take(self, count: int) -> Enumerable[TSource_co]:
         '''
         Returns a specified number of contiguous elements from the start of the sequence.
@@ -1393,6 +1525,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             >>> grades = [98, 92, 85, 82, 70, 59, 56]
             >>> Enumerable(grades).take(3).to_list()
             [98, 92, 85]
+        '''
+
+    @overload
+    def take(self, __index: slice) -> Enumerable[TSource_co]:
+        '''
+        Produces a subsequence defined by the given slice notation.
+
+        This method currently is identical to `elements_in()` when it takes a slice.
+
+        Example
+            .. code-block:: python
+
+                >>> def gen():
+                ...     yield 1; yield 10; yield 100; yield 1000; yield 10000
+
+                >>> Enumerable(gen()).take(slice(1, 3)).to_list()
+                [10, 100]
         '''
 
     def take_last(self, count: int) -> Enumerable[TSource_co]:
@@ -1492,6 +1641,20 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             >>> lst = [5, 3, 9, 7, 5, 9, 3, 7]
             >>> Enumerable(gen).union(lst).to_list()
             [0, 1, 2, 3, 4, 5, 9, 7]
+        '''
+
+    def union_by(self,
+        second: Iterable[TSource_co],
+        key_selector: Callable[[TSource_co], object],
+    ) -> Enumerable[TSource_co]:
+        '''
+        Produces the set union of two sequences: self + second according to a specified key
+        selector.
+
+        Example
+            >>> en = Enumerable([1, 9, -2, -7, 14])
+            >>> en.union_by([15, 2, -26, -7], abs).to_list()
+            [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
         '''
 
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
@@ -1618,6 +1781,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence defined by the given slice notation.
 
+        This method always uses a generic list slicing method regardless the implementation of the
+        wrapped iterable.
+
         Example
             .. code-block:: python
 
@@ -1633,6 +1799,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence with indices that define a slice.
 
+        This method always uses a generic list slicing method regardless the implementation of the
+        wrapped iterable.
 
         Example
             .. code-block:: python

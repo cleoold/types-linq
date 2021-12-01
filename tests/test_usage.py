@@ -212,6 +212,48 @@ class TestAverageMethod:
         assert avg == 5.8
 
 
+class TestChunkMethod:
+    def test_infinite_exact(self):
+        def source(i):
+            while True:
+                yield i
+                i *= 3
+        en = Enumerable(source(1)).chunk(4).take(3)
+        assert en.to_list() == [
+            [1, 3, 9, 27], [81, 243, 729, 2187], [6561, 19683, 59049, 177147],
+        ]
+
+    def test_sized_last_not_full(self):
+        ints = [1, 3, 9, 27, 81, 243, 729]
+        en = Enumerable(ints).chunk(3)
+        assert en.to_list() == [[1, 3, 9], [27, 81, 243], [729]]
+
+    def test_elements_less_than_size(self):
+        ints = [1, 3, 9, 27]
+        en = Enumerable(ints).chunk(5)
+        assert en.to_list() == [[1, 3, 9, 27]]
+
+    def test_empty(self):
+        en = Enumerable([])
+        assert en.chunk(3).to_list() == []
+
+    def test_mutate_source_before_iteration(self):
+        ints = [1, 3, 9, 27, 81, 243, 729]
+        en = Enumerable(ints).chunk(2)
+        it = iter(en)
+        assert next(it) == [1, 3]
+        ints.remove(27)
+        assert next(it) == [9, 81]
+        assert next(it) == [243, 729]
+
+    def test_invalid_size(self):
+        en = Enumerable([0])
+        with pytest.raises(InvalidOperationError):
+            en.chunk(0)
+        with pytest.raises(InvalidOperationError):
+            en.chunk(-1)
+
+
 class TestConcatMethod:
     def test_concat(self):
         en1 = Enumerable([1, 2, 3])
@@ -302,6 +344,12 @@ class TestDistinctMethod:
         assert distinct == [1, 4, 5, 6, 3, 99]
 
 
+class TestDistinctByMethod:
+    def test_distinct_by(self):
+        en = Enumerable([1, 4, 5, 6, 4, 3, 1, 99])
+        assert en.distinct_by(lambda x: x // 2).to_list() == [1, 4, 6, 3, 99]
+
+
 class TestReverseMethod:
     def test_delayed(self):
         gen = (i for i in range(5))
@@ -327,17 +375,27 @@ class TestElementAtMethod:
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         assert en.element_at(0) == 7
+        assert en.element_at(-5) == 7
 
     def test_overload1_end(self):
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         assert en.element_at(4) == 11
+        assert en.element_at(-1) == 11
 
     def test_overload1_out(self):
         gen = lambda: (i for i in range(7, 12))
         en = Enumerable(gen)
         with pytest.raises(IndexOutOfRangeError):
             en.element_at(5)
+        with pytest.raises(IndexOutOfRangeError):
+            en.element_at(-6)
+
+    def test_overload2_within(self):
+        gen = lambda: (i for i in range(7, 12))
+        en = Enumerable(gen)
+        assert en.element_at(2, 0) == 9
+        assert en.element_at(-3, 0) == 9
 
     def test_overload2_out(self):
         gen = lambda: (i for i in range(7, 12))
@@ -359,6 +417,11 @@ class TestElementAtMethod:
             en.element_at(1)
         with pytest.raises(IndexOutOfRangeError):
             en3[1]
+
+    def test_not_fallback_and_with_default(self):
+        en = Enumerable([1])
+        assert en[0, 'haha'] == 1
+        assert en[1, 'haha'] == 'haha'
 
 
     class OnlyHasGetItem(BasicIterable[TSource_co], Sequence[TSource_co]):
@@ -393,6 +456,18 @@ class TestExceptMethod:
         en = Enumerable(ints)
         exc = en.except1(Enumerable.empty().cast(int))
         assert exc.to_list() == ints
+
+
+class TestExceptByMethod:
+    def test_except_by1(self):
+        first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+        en = Enumerable(first)
+        exc = en.except_by(['y', 'd'], lambda x: x[1])
+        assert exc.to_list() == [(16, 'x'), (16, 't')]
+
+    def test_no_repeat(self):
+        en = Enumerable(['aaa', 'bb', 'c', 'dddd', 'aaa'])
+        assert en.except_by([2, 1], len).to_list() == ['aaa', 'dddd']
 
 
 class TestFirstMethod:
@@ -586,6 +661,14 @@ class TestIntersectMethod:
         assert intersect.to_list() == []
 
 
+class TestIntersectByMethod:
+    def test_intersect_by(self):
+        strs = ['+1', '-3', '+5', '-7', '+9', '-11']
+        en = Enumerable(strs)
+        intersect = en.intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x)))
+        assert intersect.to_list() == ['+1', '-3', '+5', '+9']
+
+
 class TestJoinMethod:
     def test_join(self):
         class Person(NamedTuple):
@@ -712,6 +795,30 @@ class TestMaxMethod:
         en = Enumerable(lst)
         assert en.max2(lambda x: x[0], object) == 4
 
+
+class TestMaxByMethod:
+    def test_overload1(self):
+        strings = ['aaa', 'bb', 'c', 'dddd']
+        en = Enumerable(strings)
+        assert en.max_by(len) == 'dddd'
+
+    def test_overload1_empty(self):
+        strings: List[str] = []
+        en = Enumerable(strings)
+        with pytest.raises(InvalidOperationError):
+            en.max_by(len)
+
+    def test_dup_choose_first(self):
+        strings = ['foo', 'cheese', 'baz', 'spam', 'orange', 'string']
+        en = Enumerable(strings)
+        assert en.max_by(len) == 'cheese'
+
+    def test_overload2(self):
+        lst = [['foo'], ['cheese'], ['baz'], ['spam'], ['string']]
+        en = Enumerable(lst)
+        assert en.max_by(lambda x: x[0], lambda x, y: len(x) - len(y)) == ['cheese']
+
+
 class TestMinMethod:
     def test_min_overload1(self):
         nums = (1, 0.4, 2.2, 5, 1, 2)
@@ -755,6 +862,32 @@ class TestMinMethod:
         lst = [[0], [1], [-9], [4], [4], [-11]]
         en = Enumerable(lst)
         assert en.min2(lambda x: x[0], object) == -11
+
+
+class TestMinByMethod:
+    def test_overload1(self):
+        strings = ['aaa', 'bb', 'c', 'dddd']
+        en = Enumerable(strings)
+        assert en.min_by(len) == 'c'
+
+    def test_overload1_empty(self):
+        strings: List[str] = []
+        en = Enumerable(strings)
+        with pytest.raises(InvalidOperationError):
+            en.min_by(len)
+
+    def test_dup_choose_first(self):
+        class MyType:
+            def __init__(self, x: int): self.x = x
+        lst = [MyType(2), MyType(7), MyType(19), MyType(1), MyType(7), MyType(1)]
+        en = Enumerable(lst)
+        assert en.min_by(lambda x: x.x) == lst[3]
+        assert en.min_by(lambda x: x.x) != lst[-1]
+
+    def test_overload2(self):
+        lst = [['foo'], ['cheese'], ['baz'], ['spam'], ['string']]
+        en = Enumerable(lst)
+        assert en.min_by(lambda x: x[0], lambda x, y: len(x) - len(y)) == ['foo']
 
 
 class TestOfTypeMethod:
@@ -1234,27 +1367,37 @@ class TestSumMethod:
 
 
 class TestTakeMethod:
-    def test_some(self):
+    def test_overload1_some(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(3).to_list() == [1, 4, 6]
         assert en.take(5).to_list() == lst
 
-    def test_more(self):
+    def test_overload1_more(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(6).to_list() == lst
 
-    def test_count_zero_or_negative(self):
+    def test_overload1_count_zero_or_negative(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(0).to_list() == []
         assert en.take(-1).to_list() == []
 
-    def test_id(self):
+    def test_overload1_id(self):
         lst = [1, 4, 6, 9, 10]
         en = Enumerable(lst)
         assert en.take(4).concat(en.skip(4)).to_list() == lst
+
+    def test_overload2(self):
+        def gen():
+            yield from [1, 10, 100, 1000, 10000]
+        en = Enumerable(gen())
+        assert en.take(slice(1, 3)).to_list() == [10, 100]
+
+    def test_overload2_fallback(self):
+        en = Enumerable(TestElementAtMethod.OnlyHasGetItem(['x']))
+        assert en.elements_in(slice(7)).to_list() == ['x']
 
 
 class TestTakeLastMethod:
@@ -1340,6 +1483,19 @@ class TestUnionMethod:
         en = Enumerable(lst)
         q = en.union([])
         assert q.to_list() == [1, 2, 7, -1, 8]
+
+
+class TestUnionByMethod:
+    def test_union_by(self):
+        ints = [1, 9, -2, -7, 14]
+        en = Enumerable(ints)
+        q = en.union_by([15, 2, -26, -7], abs)
+        assert q.to_list() == [1, 9, -2, -7, 14, 15, -26]
+
+    def test_self_empty(self):
+        en = Enumerable([])
+        q = en.union_by([1, 2, 3, 4], lambda x: x // 2)
+        assert q.to_list() == [1, 2, 4]
 
 
 class TestWhereMethod:

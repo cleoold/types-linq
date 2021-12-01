@@ -22,8 +22,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
     constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
     instead of Enumerable.
 
-    Some APIs are subject to change as updates to .NET (6) are happening - they will move to Enumerable
-    class if one day they appear in the official .NET doc.
+    These APIs may have breaking changes more frequently than those in Enumerable class because updates
+    in .NET are happening and sometimes ones of these APIs could be moved to Enumerable with modification,
+    or changed to accommodate changes to Enumerable.
     '''
 
     @overload
@@ -66,17 +67,6 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Returns the original MoreEnumerable reference.
         '''
 
-    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
-        '''
-        Returns distinct elements from the sequence where "distinctness" is determined by the value
-        returned by the selector.
-
-        Example
-            >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
-            >>> MoreEnumerable(ints).distinct_by(lambda x: x // 2).to_list()
-            [1, 4, 6, 3, 99]
-        '''
-
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         '''
         Returns a sequence of tuples containing the index and the value from the source sequence. `start`
@@ -88,7 +78,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [(0, 2), (1, 4), (2, 6)]
         '''
 
-    def except_by(self,
+    def except_by2(self,
         second: Iterable[TSource_co],
         key_selector: Callable[[TSource_co], object],
     ) -> MoreEnumerable[TSource_co]:
@@ -99,7 +89,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Example
             >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
             >>> second = [(24, 'd'), (77, 'y')]
-            >>> MoreEnumerable(first).except_by(second, lambda x: x[1]).to_list()
+            >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
             [(16, 'x'), (16, 't')]
         '''
 

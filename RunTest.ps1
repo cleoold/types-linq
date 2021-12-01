@@ -1,4 +1,4 @@
-coverage run -m pytest
+coverage run -m pytest @args
 if ($?)
 {
     coverage report -m

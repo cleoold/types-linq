@@ -37,13 +37,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: reportIncompatibleMethodOverride=false
         return self
 
-    def distinct_by(self, key_selector: Callable[[TSource_co], object]) -> MoreEnumerable[TSource_co]:
-        return self.except_by((), key_selector)
-
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         return MoreEnumerable(lambda: enumerate(self, start))
 
-    def except_by(self,
+    def except_by2(self,
         second: Iterable[TSource_co],
         key_selector: Callable[[TSource_co], object],
     ) -> MoreEnumerable[TSource_co]:
