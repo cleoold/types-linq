@@ -33,6 +33,9 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
 
         Comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
+
+        Revisions:
+            - v0.1.2: Fixed incorrect parameter type of comparer.
         '''
 
     @overload

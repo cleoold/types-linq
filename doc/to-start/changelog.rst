@@ -7,7 +7,7 @@ v0.2.1
 ********
 
 - Add pipe() to MoreEnumerable class
-- Enumerable.distinct(), except1(), .union(), .intersect(), .to_lookup(), .join(), .grooup_join(),
+- Enumerable.distinct(), except1(), .union(), .intersect(), .to_lookup(), .join(), .group_by(), .group_join(),
   MoreEnumerable.distinct_by(), .except_by() now have preliminary support for unhashable keys
 
 v0.2.0

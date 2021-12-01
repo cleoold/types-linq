@@ -108,6 +108,9 @@ Example
         >>> Enumerable(gen())[3, 1000]
         1000
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``__getitem__(index)``
@@ -393,6 +396,9 @@ Raises `InvalidOperationError` if cache_capacity is negative.
 
 The behavior of this method differs from that of ``CachedEnumerable``.
 
+Revisions:
+    - v0.1.1: New.
+
 ----
 
 instancemethod ``as_more()``
@@ -406,6 +412,9 @@ Returns a MoreEnumerable that has more non-standard query methods available.
 
 Example
     >>> Enumerable([1, 2, 3]).as_more()
+
+Revisions:
+    - v0.2.0: New.
 
 ----
 
@@ -546,6 +555,9 @@ Example
         [1, 3, 9, 27]
         [81, 243, 729, 2187]
         [6561, 19683, 59049, 177147]
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -692,6 +704,9 @@ Example
     >>> Enumerable(ints).distinct().to_list()
     [1, 4, 5, 6, 3, 99]
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable values.
+
 ----
 
 instancemethod ``distinct_by(key_selector)``
@@ -710,6 +725,10 @@ Example
     >>> ints = [1, 4, 5, 6, 4, 3, 1, 99]
     >>> Enumerable(ints).distinct_by(lambda x: x // 2).to_list()
     [1, 4, 6, 3, 99]
+
+Revisions:
+    - main: New. The method with same name (but different return type) in MoreEnumerable class
+      was removed.
 
 ----
 
@@ -742,6 +761,9 @@ Example
         >>> Enumerable(gen()).element_at(-1)
         100
 
+Revisions:
+    - main: Added support for negative index.
+
 ----
 
 instancemethod ``element_at[TDefault](index, __default)``
@@ -770,6 +792,9 @@ Example
 
         >>> Enumerable(gen()).element_at(3, 0)
         0
+
+Revisions:
+    - main: Added support for negative index.
 
 ----
 
@@ -808,6 +833,9 @@ Example
     >>> Enumerable(ints).except1([1, 3, 5, 7, 9]).to_list()
     [2, 4]
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable values.
+
 ----
 
 instancemethod ``except_by[TKey](second, key_selector)``
@@ -828,6 +856,10 @@ Example
     >>> second = ['y', 'd']
     >>> Enumerable(first).except_by(second, lambda x: x[1]).to_list()
     [(16, 'x'), (16, 't')]
+
+Revisions:
+    - main: New. The method with same name (but different usage) in MoreEnumerable class was
+      renamed as ``except_by2()`` to accommodate this.
 
 ----
 
@@ -958,6 +990,9 @@ Example
         (1, {'Roll', 'Whiskers'})
         (2, {'Roam'})
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
+
 ----
 
 instancemethod ``group_by[TKey, TValue](key_selector, value_selector)``
@@ -986,6 +1021,9 @@ Example
         4 {'Boots', 'Daisy'}
         1 {'Roll', 'Whiskers'}
         2 {'Roam'}
+
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
 
 ----
 
@@ -1017,6 +1055,9 @@ Example
         (1, [('Whiskers', 1.5), ('Roll', 1.4)])
         (2, [('Roam', 2.2)])
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
+
 ----
 
 instancemethod ``group_by2[TKey](key_selector)``
@@ -1043,6 +1084,9 @@ Example
         4 [('Boots', 4.9), ('Daisy', 4.3)]
         1 [('Whiskers', 1.5), ('Roll', 1.4)]
         2 [('Roam', 2.2)]
+
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
 
 ----
 
@@ -1106,6 +1150,9 @@ Example
         ('Weiss, Charlotte', {'Whiskers'})
         ('Animal, No', set())
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
+
 ----
 
 instancemethod ``intersect(second)``
@@ -1123,6 +1170,9 @@ Example
     >>> ints = [1, 3, 5, 7, 9, 11]
     >>> Enumerable(ints).intersect([1, 2, 3, 4, 5]).to_list()
     [1, 3, 5]
+
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable values.
 
 ----
 
@@ -1143,6 +1193,9 @@ Example
     >>> strs = ['+1', '-3', '+5', '-7', '+9', '-11']
     >>> Enumerable(strs).intersect_by([1, 2, 3, 5, 9], lambda x: abs(int(x))).to_list()
     ['+1', '-3', '+5', '+9']
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -1185,6 +1238,9 @@ Example
         ('Adams, Terry', 'Boots')
         ('Adams, Terry', 'Roman')
         ('Weiss, Charlotte', 'Whiskers')
+
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
 
 ----
 
@@ -1374,6 +1430,9 @@ Example
     >>> Enumerable(strs).max_by(len)
     'dddd'
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``max_by[TKey](key_selector, __comparer)``
@@ -1391,6 +1450,9 @@ Raises `InvalidOperationError` if there is no value.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -1463,6 +1525,9 @@ Returns
 Returns the minimal element of the sequence based on the given key selector. Raises
 `InvalidOperationError` if there is no value.
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``min_by[TKey](key_selector, __comparer)``
@@ -1480,6 +1545,9 @@ Raises `InvalidOperationError` if there is no value.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -1858,6 +1926,9 @@ Example
     >>> Enumerable(ints).sequence_equal(strs, lambda x, y: str(x) == y)
     True
 
+Revisions:
+    - v0.1.2: New.
+
 ----
 
 instancemethod ``single()``
@@ -2137,6 +2208,9 @@ Example
         >>> Enumerable(gen()).take(slice(1, 3)).to_list()
         [10, 100]
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``take_last(count)``
@@ -2267,6 +2341,9 @@ Example
     ...     print(lookup['side'].to_list())
     ['chicken', 'apples', 'orange']
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
+
 ----
 
 instancemethod ``to_lookup[TKey](key_selector)``
@@ -2280,6 +2357,9 @@ Returns
 
 Enumerates all values and returns a lookup containing them according to the specified
 key selector. The values within each group are in the same order as in self.
+
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable keys.
 
 ----
 
@@ -2300,6 +2380,9 @@ Example
     >>> Enumerable(gen).union(lst).to_list()
     [0, 1, 2, 3, 4, 5, 9, 7]
 
+Revisions:
+    - v0.2.1: Added preliminary support for unhashable values.
+
 ----
 
 instancemethod ``union_by(second, key_selector)``
@@ -2319,6 +2402,9 @@ Example
     >>> en = Enumerable([1, 9, -2, -7, 14])
     >>> en.union_by([15, 2, -26, -7], abs).to_list()
     [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -2388,7 +2474,8 @@ Parameters
 Returns
   - ``Enumerable[Tuple[TSource_co, TOther, TOther2]]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2403,7 +2490,8 @@ Parameters
 Returns
   - ``Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3]]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2419,7 +2507,8 @@ Parameters
 Returns
   - ``Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3, TOther4]]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2437,7 +2526,8 @@ Parameters
 Returns
   - ``Enumerable[Tuple[Any, ...]]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2473,7 +2563,8 @@ Parameters
 Returns
   - ``Enumerable[TResult]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2489,7 +2580,8 @@ Parameters
 Returns
   - ``Enumerable[TResult]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2506,7 +2598,8 @@ Parameters
 Returns
   - ``Enumerable[TResult]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2524,7 +2617,8 @@ Parameters
 Returns
   - ``Enumerable[Any]``
 
-
+Revisions
+    - v0.1.1: New.
 
 ----
 
@@ -2588,5 +2682,8 @@ Returns
   - ``Tuple[TSource_co, ...]``
 
 Enumerates all values and returns a tuple containing them.
+
+Revisions:
+    - v0.1.2: New.
 
 

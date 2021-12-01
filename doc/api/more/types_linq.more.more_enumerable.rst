@@ -16,6 +16,9 @@ These APIs may have breaking changes more frequently than those in Enumerable cl
 in .NET are happening and sometimes ones of these APIs could be moved to Enumerable with modification,
 or changed to accommodate changes to Enumerable.
 
+Revisions:
+    - v0.2.0: New.
+
 Bases
 ======
 - ``Enumerable[TSource_co]``
@@ -100,6 +103,9 @@ Example
     >>> MoreEnumerable(ints).enumerate().to_list()
     [(0, 2), (1, 4), (2, 6)]
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``except_by2(second, key_selector)``
@@ -120,6 +126,10 @@ Example
     >>> second = [(24, 'd'), (77, 'y')]
     >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
     [(16, 'x'), (16, 't')]
+
+Revisions:
+    - main: Renamed from ``except_by()`` to this name to accommodate the update to Enumerable class.
+    - v0.2.1: Added preliminary support for unhashable keys.
 
 ----
 
@@ -314,6 +324,9 @@ Example
     >>> store
     {1, 2}
 
+Revisions:
+    - v0.2.1: New.
+
 ----
 
 instancemethod ``rank[TSupportsLessThan]()``
@@ -332,6 +345,9 @@ Example
     >>> MoreEnumerable(scores).rank().to_list()
     [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``rank(__comparer)``
@@ -347,6 +363,9 @@ Ranks each item in the sequence in descending order using the given comparer.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
+
+Revisions:
+    - main: New.
 
 ----
 
@@ -377,6 +396,9 @@ Example
         ...     .to_dict(lambda g: g.key, lambda g: g.to_list())
         {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
 
+Revisions:
+    - main: New.
+
 ----
 
 instancemethod ``rank_by[TKey](key_selector, __comparer)``
@@ -393,6 +415,9 @@ Ranks each item in the sequence in descending order using the given selector and
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
+
+Revisions:
+    - main: New.
 
 ----
 

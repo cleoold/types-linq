@@ -25,6 +25,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
     These APIs may have breaking changes more frequently than those in Enumerable class because updates
     in .NET are happening and sometimes ones of these APIs could be moved to Enumerable with modification,
     or changed to accommodate changes to Enumerable.
+
+    Revisions:
+        - v0.2.0: New.
     '''
 
     @overload
@@ -76,6 +79,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
             >>> ints = [2, 4, 6]
             >>> MoreEnumerable(ints).enumerate().to_list()
             [(0, 2), (1, 4), (2, 6)]
+
+        Revisions:
+            - main: New.
         '''
 
     def except_by2(self,
@@ -91,6 +97,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
             >>> second = [(24, 'd'), (77, 'y')]
             >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
             [(16, 'x'), (16, 't')]
+
+        Revisions:
+            - main: Renamed from ``except_by()`` to this name to accommodate the update to Enumerable class.
+            - v0.2.1: Added preliminary support for unhashable keys.
         '''
 
     @overload
@@ -212,6 +222,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [2, 2]
             >>> store
             {1, 2}
+
+        Revisions:
+            - v0.2.1: New.
         '''
 
     @overload
@@ -223,6 +236,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
             >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
             >>> MoreEnumerable(scores).rank().to_list()
             [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+
+        Revisions:
+            - main: New.
         '''
 
     @overload
@@ -232,6 +248,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
+
+        Revisions:
+            - main: New.
         '''
 
     @overload
@@ -254,6 +273,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 ...     .group_by(lambda t: t[0], lambda t: t[1]['name']) \\
                 ...     .to_dict(lambda g: g.key, lambda g: g.to_list())
                 {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
+
+        Revisions:
+            - main: New.
         '''
 
     @overload
@@ -266,6 +288,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
+
+        Revisions:
+            - main: New.
         '''
 
     @staticmethod

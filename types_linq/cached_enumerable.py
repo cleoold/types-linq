@@ -18,6 +18,9 @@ class CachedEnumerable(Enumerable[TSource_co]):
     Enumerable that stores the enumerated results which can be accessed repeatedly.
 
     Users should not construct instances of this class directly. Use ``Enumerable.as_cached()`` instead.
+
+    Revisions:
+        - v0.1.1: New.
     '''
 
     _iter: Iterator[TSource_co]

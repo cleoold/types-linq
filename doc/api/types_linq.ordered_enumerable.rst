@@ -35,6 +35,9 @@ Performs a subsequent ordering on the elements of the sequence according to a ke
 Comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
 
+Revisions:
+    - v0.1.2: Fixed incorrect parameter type of comparer.
+
 ----
 
 instancemethod ``then_by[TSupportsLessThan](key_selector)``
