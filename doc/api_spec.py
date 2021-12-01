@@ -195,6 +195,8 @@ modules: list[ModuleSpec] = [
                     'maxima_by',
                     'minima_by',
                     'pipe',
+                    'rank',
+                    'rank_by',
                     'traverse_breath_first',
                     'traverse_depth_first',
                 },

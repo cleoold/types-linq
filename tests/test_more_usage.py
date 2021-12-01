@@ -373,6 +373,51 @@ class TestPipeMethod:
         assert q.to_list() == []
 
 
+class TestRankMethod:
+    def test_overload1(self):
+        def gen():
+            yield from [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
+        en = MoreEnumerable(gen())
+        assert en.rank().to_list() == [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]
+
+    def test_overload1_empty(self):
+        assert MoreEnumerable([]).rank().to_list() == []
+
+    def test_overload1_sorted(self):
+        ints = [444, 190, 129, 122, 100]
+        assert MoreEnumerable(ints).rank().to_list() == [1, 2, 3, 4, 5]
+        assert MoreEnumerable(reversed(ints)).rank().to_list() == [5, 4, 3, 2, 1]
+
+    def test_overload1_same(self):
+        en = MoreEnumerable([8, 8, 8])
+        assert en.rank().to_list() == [1, 1, 1]
+
+    def test_overload2(self):
+        en = MoreEnumerable([(1, ''), (1, ''), (4, ''), (4, ''), (3, '')])
+        assert en.rank(lambda lhs, rhs: lhs[0] - rhs[0]).to_list() == [3, 3, 1, 1, 2]
+
+
+# majority is already tested by rank test
+class TestRankByMethod:
+    def test_overload1(self):
+        def gen():
+            yield from ['aaa', 'xyz', 'carbon', 'emission', 'statistics', 'somany']
+        en = MoreEnumerable(gen())
+        assert en.rank_by(len).to_list() == [4, 4, 3, 2, 1, 3]
+
+    def test_overload2(self):
+        en = MoreEnumerable([
+            ['aaa'], ['xyz'], ['carbon'], ['emission'], ['statistics'], ['somany']
+        ])
+        assert en.rank_by(lambda x: x[0], lambda lhs, rhs: len(lhs) - len(rhs)) \
+            .to_list() == [4, 4, 3, 2, 1, 3]
+
+    def test_overload2_empty(self):
+        en = MoreEnumerable([])
+        assert en.rank_by(lambda x: x[0], lambda lhs, rhs: len(lhs) - len(rhs)) \
+            .to_list() == []
+
+
 class TestTraverseBreathFirstMethod:
     tree = Tree \
     (
