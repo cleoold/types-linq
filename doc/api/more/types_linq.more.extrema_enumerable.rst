@@ -36,6 +36,22 @@ Returns a specified number of contiguous elements from the start of the sequence
 
 ----
 
+instancemethod ``take(__index)``
+----------------------------------
+
+Parameters
+  - `__index` (``slice``)
+
+Returns
+  - ``Enumerable[TSource_co]``
+
+Identical to parent.
+
+Revisions:
+    - main: Fixed incorrect override of Enumerable.take() when it takes a slice.
+
+----
+
 instancemethod ``take_last(count)``
 -------------------------------------
 

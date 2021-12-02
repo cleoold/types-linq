@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Deque, Generic, Iterable, Optional, Union
+from typing import Any, Callable, Deque, Generic, Iterable, Optional, Union
 
 from .more_enumerable import MoreEnumerable
 from ..more_typing import (
@@ -76,12 +76,16 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
         else:  # len(args) == 2
             return super().single2(*args)
 
-    def take(self, count: int) -> MoreEnumerable[TSource_co]:
-        if count <= 0:
-            return MoreEnumerable(())
-        it = super()._get_iterable()
-        getter = lambda: _FirstExtrema(count)
-        return _extrema_by(it, getter, self._selector, self._comparer, self._for_min)
+    # please maintain same overloads
+    def take(self, count: Union[int, slice]) -> Any:
+        if isinstance(count, int):
+            if count <= 0:
+                return MoreEnumerable(())
+            it = super()._get_iterable()
+            getter = lambda: _FirstExtrema(count)
+            return _extrema_by(it, getter, self._selector, self._comparer, self._for_min)
+        else:  # isinstance(count, slice)
+            return super().take(count)
 
     def take_last(self, count: int) -> MoreEnumerable[TSource_co]:
         if count <= 0:

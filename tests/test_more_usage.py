@@ -334,9 +334,13 @@ class TestExtremaEnumerableTakeMethod:
         (3, ['cheese', 'orange', 'toasts']),
         (4, ['cheese', 'orange', 'toasts']),
     ])
-    def test_take(self, count: int, expected: List[str]):
+    def test_take_overload1(self, count: int, expected: List[str]):
         en = MoreEnumerable(TestMaximaByMethod.strings).maxima_by(len).take(count)
         assert en.to_list() == expected
+
+    def test_take_call_parent_overload2(self):
+        en = MoreEnumerable(TestMaximaByMethod.strings).maxima_by(len)
+        assert en.take(slice(1, None)).to_list() == ['orange', 'toasts']
 
 
 class TestExtremaEnumerableTakeLastMethod:

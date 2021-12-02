@@ -1,6 +1,7 @@
-from typing import Callable, Generic, Iterable, Optional
+from typing import Callable, Generic, Iterable, Optional, overload
 
 from .more_enumerable import MoreEnumerable
+from ..enumerable import Enumerable
 from ..more_typing import (
     TKey,
     TSource_co,
@@ -29,9 +30,19 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
         for_min: bool,
     ) -> None: ...  # internal
 
+    @overload
     def take(self, count: int) -> MoreEnumerable[TSource_co]:
         '''
         Returns a specified number of contiguous elements from the start of the sequence.
+        '''
+
+    @overload
+    def take(self, __index: slice) -> Enumerable[TSource_co]:
+        '''
+        Identical to parent.
+
+        Revisions:
+            - main: Fixed incorrect override of Enumerable.take() when it takes a slice.
         '''
 
     def take_last(self, count: int) -> MoreEnumerable[TSource_co]:
