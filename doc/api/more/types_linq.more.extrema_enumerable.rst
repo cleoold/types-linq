@@ -13,6 +13,9 @@ Specialization for manipulating extrema.
 Users should not construct instances of this class directly. Use ``MoreEnumerable.maxima_by()``
 instead.
 
+Revisions:
+    - v0.2.0: New.
+
 Bases
 ======
 - ``MoreEnumerable[TSource_co]``

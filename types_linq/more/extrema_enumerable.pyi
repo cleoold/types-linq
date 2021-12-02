@@ -17,6 +17,9 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
 
     Users should not construct instances of this class directly. Use ``MoreEnumerable.maxima_by()``
     instead.
+
+    Revisions:
+        - v0.2.0: New.
     '''
 
     def __init__(self,
