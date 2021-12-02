@@ -92,7 +92,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 1000
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -420,7 +420,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 [6561, 19683, 59049, 177147]
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def concat(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
@@ -535,7 +535,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 4, 6, 3, 99]
 
         Revisions:
-            - main: New. The method with same name (but different return type) in MoreEnumerable class
+            - v1.0.0: New. The method with same name (but different return type) in MoreEnumerable class
               was removed.
         '''
 
@@ -563,7 +563,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 100
 
         Revisions:
-            - main: Added support for negative index.
+            - v1.0.0: Added support for negative index.
         '''
 
     @overload
@@ -587,7 +587,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 0
 
         Revisions:
-            - main: Added support for negative index.
+            - v1.0.0: Added support for negative index.
         '''
 
     @staticmethod
@@ -632,7 +632,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [(16, 'x'), (16, 't')]
 
         Revisions:
-            - main: New. The method with same name (but different usage) in MoreEnumerable class was
+            - v1.0.0: New. The method with same name (but different usage) in MoreEnumerable class was
               renamed as ``except_by2()`` to accommodate this.
         '''
 
@@ -905,7 +905,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             ['+1', '-3', '+5', '+9']
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def join(self,
@@ -1078,7 +1078,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             'dddd'
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -1094,7 +1094,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -1135,7 +1135,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         `InvalidOperationError` if there is no value.
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -1151,7 +1151,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def of_type(self, t_result: Type[TResult]) -> Enumerable[TResult]:
@@ -1603,6 +1603,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Produces a subsequence defined by the given slice notation.
 
+        This method always uses a generic list slicing method regardless the implementation of the
+        wrapped iterable.
+
         This method currently is identical to `elements_in()` when it takes a slice.
 
         Example
@@ -1615,7 +1618,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
                 [10, 100]
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def take_last(self, count: int) -> Enumerable[TSource_co]:
@@ -1740,7 +1743,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def where(self, predicate: Callable[[TSource_co], bool]) -> Enumerable[TSource_co]:
@@ -1901,6 +1904,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
         This method always uses a generic list slicing method regardless the implementation of the
         wrapped iterable.
+
+        This method currently is identical to `take()` when it takes a slice.
 
         Example
             .. code-block:: python

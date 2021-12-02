@@ -109,7 +109,7 @@ Example
         1000
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -557,7 +557,7 @@ Example
         [6561, 19683, 59049, 177147]
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -727,7 +727,7 @@ Example
     [1, 4, 6, 3, 99]
 
 Revisions:
-    - main: New. The method with same name (but different return type) in MoreEnumerable class
+    - v1.0.0: New. The method with same name (but different return type) in MoreEnumerable class
       was removed.
 
 ----
@@ -762,7 +762,7 @@ Example
         100
 
 Revisions:
-    - main: Added support for negative index.
+    - v1.0.0: Added support for negative index.
 
 ----
 
@@ -794,7 +794,7 @@ Example
         0
 
 Revisions:
-    - main: Added support for negative index.
+    - v1.0.0: Added support for negative index.
 
 ----
 
@@ -858,7 +858,7 @@ Example
     [(16, 'x'), (16, 't')]
 
 Revisions:
-    - main: New. The method with same name (but different usage) in MoreEnumerable class was
+    - v1.0.0: New. The method with same name (but different usage) in MoreEnumerable class was
       renamed as ``except_by2()`` to accommodate this.
 
 ----
@@ -1195,7 +1195,7 @@ Example
     ['+1', '-3', '+5', '+9']
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -1431,7 +1431,7 @@ Example
     'dddd'
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -1452,7 +1452,7 @@ Such comparer takes two values and return positive ints when lhs > rhs, negative
 if lhs < rhs, and 0 if they are equal.
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -1526,7 +1526,7 @@ Returns the minimal element of the sequence based on the given key selector. Rai
 `InvalidOperationError` if there is no value.
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -1547,7 +1547,7 @@ Such comparer takes two values and return positive ints when lhs > rhs, negative
 if lhs < rhs, and 0 if they are equal.
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -2197,6 +2197,9 @@ Returns
 
 Produces a subsequence defined by the given slice notation.
 
+This method always uses a generic list slicing method regardless the implementation of the
+wrapped iterable.
+
 This method currently is identical to `elements_in()` when it takes a slice.
 
 Example
@@ -2209,7 +2212,7 @@ Example
         [10, 100]
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -2404,7 +2407,7 @@ Example
     [1, 9, -2, -7, 14, 15, -26]  # abs(-2) == abs(2)
 
 Revisions:
-    - main: New.
+    - v1.0.0: New.
 
 ----
 
@@ -2635,6 +2638,8 @@ Produces a subsequence defined by the given slice notation.
 
 This method always uses a generic list slicing method regardless the implementation of the
 wrapped iterable.
+
+This method currently is identical to `take()` when it takes a slice.
 
 Example
     .. code-block:: python

@@ -81,7 +81,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [(0, 2), (1, 4), (2, 6)]
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     def except_by2(self,
@@ -99,7 +99,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [(16, 'x'), (16, 't')]
 
         Revisions:
-            - main: Renamed from ``except_by()`` to this name to accommodate the update to Enumerable class.
+            - v1.0.0: Renamed from ``except_by()`` to this name to accommodate the update to Enumerable class.
             - v0.2.1: Added preliminary support for unhashable keys.
         '''
 
@@ -238,7 +238,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -250,7 +250,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -275,7 +275,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @overload
@@ -290,7 +290,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions:
-            - main: New.
+            - v1.0.0: New.
         '''
 
     @staticmethod

@@ -3,6 +3,20 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v1.0.0
+********
+
+- Add enumerate(), rank() and rank_by() to MoreEnumerable class
+- Add chunk(), max_by(), min_by(), intersect_by() and union_by() to Enumerable class
+- Enumerable.element_at() now supports negative index
+- Enumerable.take() now supports taking a slice (which is same as Enumerable.elements_in()) to be consistent with
+  .NET 6
+- Enumerable.__getitem__() now supports providing a default value
+- **Breaking**: Add Enumerable.distinct_by() that returns an Enumerable instance. MoreEnumerable.distinct_by() that
+  returned a MoreEnumerable instance is removed
+- **Breaking**: Add Enumerable.except_by(). The previous MoreEnumerable.except_by() that took homogeneous values as
+  the second iterable is now renamed as MoreEnumerable.except_by2()
+
 v0.2.1
 ********
 
