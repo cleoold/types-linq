@@ -79,6 +79,21 @@ class MoreEnumerable(Enumerable[TSource_co]):
             - main: New.
         '''
 
+    def cycle(self, count: Optional[int] = None) -> MoreEnumerable[TSource_co]:
+        '''
+        Repeats the sequence `count` times.
+
+        If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+        is negative.
+
+        Example
+            >>> MoreEnumerable([1, 2, 3]).cycle(3).to_list()
+            [1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+        Revisions:
+            - main: New.
+        '''
+
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         '''
         Returns a sequence of tuples containing the index and the value from the source sequence. `start`

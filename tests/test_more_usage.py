@@ -429,6 +429,35 @@ class TestRankByMethod:
             .to_list() == []
 
 
+class TestCycleMethod:
+    def test_repeat(self):
+        en = MoreEnumerable([1, 2, 3])
+        assert en.cycle(3).to_list() == [1, 2, 3] * 3
+
+    def test_no_elem(self):
+        en = MoreEnumerable([])
+        assert en.cycle(3).to_list() == []
+
+    def test_zero_count(self):
+        en = MoreEnumerable([1, 2, 3])
+        assert en.cycle(0).to_list() == []
+
+    def test_one_count(self):
+        en = MoreEnumerable([1, 2, 3])
+        assert en.cycle(1).to_list() == en.to_list()
+
+    def test_infinite_count(self):
+        def gen():
+            yield from [1, 2]
+        en = MoreEnumerable(gen())
+        assert en.cycle(None).take(11).to_list() == [1, 2] * 5 + [1]
+
+    def test_invalid(self):
+        en = MoreEnumerable([1, 2, 3])
+        with pytest.raises(InvalidOperationError):
+            en.cycle(-1)
+
+
 class TestTraverseBreathFirstMethod:
     tree = Tree \
     (

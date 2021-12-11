@@ -101,6 +101,29 @@ Revisions:
 
 ----
 
+instancemethod ``cycle(count=None)``
+--------------------------------------
+
+Parameters
+  - `count` (``Optional[int]``)
+
+Returns
+  - ``MoreEnumerable[TSource_co]``
+
+Repeats the sequence `count` times.
+
+If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+is negative.
+
+Example
+    >>> MoreEnumerable([1, 2, 3]).cycle(3).to_list()
+    [1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+Revisions:
+    - main: New.
+
+----
+
 instancemethod ``enumerate(start=0)``
 ---------------------------------------
 

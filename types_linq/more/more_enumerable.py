@@ -41,6 +41,26 @@ class MoreEnumerable(Enumerable[TSource_co]):
         for _ in self:
             ...
 
+    def cycle(self, count: Optional[int] = None) -> MoreEnumerable[TSource_co]:
+        if count is not None:
+            if count < 0:
+                self._raise_count_negative()  # type: ignore
+            elif count == 0:
+                return MoreEnumerable(())
+            elif count == 1:
+                return self
+
+        def inner(cnt=count):
+            memo: List[TSource_co] = []
+            for elem in self:
+                memo.append(elem)
+                yield elem
+            while cnt is None or cnt > 1:
+                yield from memo
+                if cnt is not None:
+                    cnt -= 1
+        return MoreEnumerable(inner)
+
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         return MoreEnumerable(lambda: enumerate(self, start))
 
