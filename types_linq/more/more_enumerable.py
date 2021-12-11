@@ -37,6 +37,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: reportIncompatibleMethodOverride=false
         return self
 
+    def consume(self) -> None:
+        for _ in self:
+            ...
+
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         return MoreEnumerable(lambda: enumerate(self, start))
 

@@ -61,6 +61,19 @@ class TestAggregateRightMethod:
         assert sole == 87
 
 
+class TestConsumeMethod:
+    def test_consume(self):
+        counter = 0
+        def gen():
+            nonlocal counter
+            for _ in range(5):
+                counter += 1
+                yield None
+        en = MoreEnumerable(gen())
+        en.consume()
+        assert counter == 5
+
+
 class TestEnumerateMethod:
     def test_enumerate(self):
         en = MoreEnumerable(['2', '4', '6'])

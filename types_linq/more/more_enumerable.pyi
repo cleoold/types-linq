@@ -70,6 +70,15 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Returns the original MoreEnumerable reference.
         '''
 
+    def consume(self) -> None:
+        '''
+        Consumes the sequence completely. This method iterates the sequence immediately and does not save
+        any intermediate data.
+
+        Revisions:
+            - main: New.
+        '''
+
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
         '''
         Returns a sequence of tuples containing the index and the value from the source sequence. `start`

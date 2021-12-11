@@ -86,6 +86,21 @@ Returns the original MoreEnumerable reference.
 
 ----
 
+instancemethod ``consume()``
+------------------------------
+
+
+Returns
+  - ``None``
+
+Consumes the sequence completely. This method iterates the sequence immediately and does not save
+any intermediate data.
+
+Revisions:
+    - main: New.
+
+----
+
 instancemethod ``enumerate(start=0)``
 ---------------------------------------
 

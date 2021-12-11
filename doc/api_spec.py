@@ -191,6 +191,7 @@ modules: list[ModuleSpec] = [
                 'methods': {
                     'aggregate_right',
                     'as_more',
+                    'consume',
                     'enumerate',
                     'except_by2',
                     'flatten',
