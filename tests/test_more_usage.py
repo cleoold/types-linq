@@ -429,6 +429,35 @@ class TestRankByMethod:
             .to_list() == []
 
 
+class TestRunLengthEncodeMethod:
+    def test_overload1(self):
+        en = MoreEnumerable('abbcaeeeaa')
+        assert en.run_length_encode().to_list() \
+            == [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
+
+    def test_overload1_empty(self):
+        en = MoreEnumerable(())
+        assert en.run_length_encode().to_list() == []
+
+    def test_overload1_one_run(self):
+        en = MoreEnumerable('AAAAA')
+        assert en.run_length_encode().to_list() == [('A', 5)]
+
+    def test_overload1_one_elem(self):
+        en = MoreEnumerable('A')
+        assert en.run_length_encode().to_list() == [('A', 1)]
+
+    def test_overload1_no_run(self):
+        en = MoreEnumerable('abcdefghijklmnopqrstuvwxyz')
+        assert en.run_length_encode().to_list() == \
+            en.select(lambda x: (x, 1)).to_list()
+
+    def test_overload2(self):
+        en = MoreEnumerable('abBBbcaEeeff')
+        assert en.run_length_encode(lambda x, y: x.lower() == y.lower()).to_list() \
+            == [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
+
+
 class TestCycleMethod:
     def test_repeat(self):
         en = MoreEnumerable([1, 2, 3])

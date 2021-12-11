@@ -192,6 +192,34 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 yield rank_map[key]
         return MoreEnumerable(inner)
 
+    def run_length_encode(self,
+        *args: Callable[[TSource_co, TSource_co], bool],
+    ) -> MoreEnumerable[Tuple[TSource_co, int]]:
+        if len(args) == 0:
+            comparer = lambda x, y: x == y
+        else:
+            comparer = args[0]
+        def inner():
+            iterator = iter(self)
+            try:
+                prev_elem = next(iterator)
+            except StopIteration:
+                return
+            count = 1
+            while True:
+                try:
+                    elem = next(iterator)
+                except StopIteration:
+                    break
+                if comparer(prev_elem, elem):
+                    count += 1
+                else:
+                    yield (prev_elem, count)
+                    prev_elem = elem
+                    count = 1
+            yield (prev_elem, count)
+        return MoreEnumerable(inner)
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,

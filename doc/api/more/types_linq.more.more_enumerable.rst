@@ -459,6 +459,49 @@ Revisions:
 
 ----
 
+instancemethod ``run_length_encode()``
+----------------------------------------
+
+
+Returns
+  - ``MoreEnumerable[Tuple[TSource_co, int]]``
+
+Run-length encodes the sequence into a sequence of tuples where each tuple contains an
+(the first) element and its number of contingent occurrences, where equality is based on
+`==`.
+
+Example
+    >>> MoreEnumerable('abbcaeeeaa').run_length_encode().to_list()
+    [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
+
+Revisions:
+    - main: New.
+
+----
+
+instancemethod ``run_length_encode(__comparer)``
+--------------------------------------------------
+
+Parameters
+  - `__comparer` (``Callable[[TSource_co, TSource_co], bool]``)
+
+Returns
+  - ``MoreEnumerable[Tuple[TSource_co, int]]``
+
+Run-length encodes the sequence into a sequence of tuples where each tuple contains an
+(the first) element and its number of contingent occurrences, where equality is determined by
+the comparer.
+
+Example
+    >>> MoreEnumerable('abBBbcaEeeff') \
+    >>>     .run_length_encode(lambda x, y: x.lower() == y.lower()).to_list()
+    [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
+
+Revisions:
+    - main: New.
+
+----
+
 staticmethod ``traverse_breath_first[TSource](root, children_selector)``
 --------------------------------------------------------------------------
 

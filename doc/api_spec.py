@@ -205,6 +205,7 @@ modules: list[ModuleSpec] = [
                     'pipe',
                     'rank',
                     'rank_by',
+                    'run_length_encode',
                     'traverse_breath_first',
                     'traverse_depth_first',
                 },
