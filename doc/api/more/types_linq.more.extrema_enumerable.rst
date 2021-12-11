@@ -48,7 +48,7 @@ Returns
 Identical to parent.
 
 Revisions:
-    - main: Fixed incorrect override of Enumerable.take() when it takes a slice.
+    - v1.1.0: Fixed incorrect override of Enumerable.take() when it takes a slice.
 
 ----
 

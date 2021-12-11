@@ -3,6 +3,12 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v1.1.0
+********
+
+- Add consume(), cycle(), and run_length_encode() to MoreEnumerable class
+- Fix error in ExtremaEnumerable.take() when it takes a slice
+
 v1.0.0
 ********
 

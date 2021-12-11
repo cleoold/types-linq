@@ -97,7 +97,7 @@ Consumes the sequence completely. This method iterates the sequence immediately 
 any intermediate data.
 
 Revisions:
-    - main: New.
+    - v1.1.0: New.
 
 ----
 
@@ -120,7 +120,7 @@ Example
     [1, 2, 3, 1, 2, 3, 1, 2, 3]
 
 Revisions:
-    - main: New.
+    - v1.1.0: New.
 
 ----
 
@@ -475,7 +475,7 @@ Example
     [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
 
 Revisions:
-    - main: New.
+    - v1.1.0: New.
 
 ----
 
@@ -498,7 +498,7 @@ Example
     [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
 
 Revisions:
-    - main: New.
+    - v1.1.0: New.
 
 ----
 

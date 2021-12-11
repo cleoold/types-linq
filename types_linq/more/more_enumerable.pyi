@@ -76,7 +76,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         any intermediate data.
 
         Revisions:
-            - main: New.
+            - v1.1.0: New.
         '''
 
     def cycle(self, count: Optional[int] = None) -> MoreEnumerable[TSource_co]:
@@ -91,7 +91,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [1, 2, 3, 1, 2, 3, 1, 2, 3]
 
         Revisions:
-            - main: New.
+            - v1.1.0: New.
         '''
 
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
@@ -329,7 +329,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
 
         Revisions:
-            - main: New.
+            - v1.1.0: New.
         '''
 
     @overload
@@ -347,7 +347,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
 
         Revisions:
-            - main: New.
+            - v1.1.0: New.
         '''
 
     @staticmethod
