@@ -6,7 +6,12 @@ if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
 from ..enumerable import Enumerable
-from ..util import ComposeMap, ComposeSet
+from ..util import (
+    ComposeMap,
+    ComposeSet,
+    default_equal,
+    identity,
+)
 from ..more_typing import (
     TKey,
     TSource,
@@ -22,9 +27,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if len(args) == 3:
             seed, func, result_selector = args
         elif len(args) == 2:
-            seed, func, result_selector = args[0], args[1], lambda x: x
+            seed, func, result_selector = args[0], args[1], identity
         else:  # len(args) == 1
-            func, result_selector = args[0], lambda x: x
+            func, result_selector = args[0], identity
             try:
                 seed = next(it)
             except StopIteration:
@@ -158,7 +163,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         return MoreEnumerable(inner)
 
     def rank(self, *args: Callable[[TSource_co, TSource_co], int]) -> MoreEnumerable[int]:
-        return self.rank_by(lambda x: x, *args)
+        return self.rank_by(identity, *args)
 
     def rank_by(self,
         key_selector: Callable[[TSource_co], TKey],
@@ -172,7 +177,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             # avoid enumerating twice
             copy = MoreEnumerable(self.select(key_selector).to_list())
             ordered = copy.distinct() \
-                .order_by_descending(lambda x: x, *args)
+                .order_by_descending(identity, *args)
             if comparer is None:
                 # replaces .enumerate()
                 rank_map = ComposeMap(ordered.select2(lambda x, i: (x, i + 1)))
@@ -196,7 +201,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         *args: Callable[[TSource_co, TSource_co], bool],
     ) -> MoreEnumerable[Tuple[TSource_co, int]]:
         if len(args) == 0:
-            comparer = lambda x, y: x == y
+            comparer = default_equal
         else:
             comparer = args[0]
         def inner():

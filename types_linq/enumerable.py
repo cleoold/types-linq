@@ -9,7 +9,14 @@ if TYPE_CHECKING:
     from .more import MoreEnumerable
 
 from .types_linq_error import InvalidOperationError, IndexOutOfRangeError
-from .util import ComposeSet
+from .util import (
+    ComposeSet,
+    default_equal,
+    default_gt,
+    default_lt,
+    identity,
+    return_second,
+)
 from .more_typing import (
     TCollection,
     TDefault,
@@ -240,14 +247,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def average(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
-            selector = lambda x: x
+            selector = identity
         else: # len(args) == 1
             selector = args[0]
         return self._average_helper(selector, self._raise_empty_sequence)
 
     def average2(self, *args):
         if len(args) == 1:
-            selector, default = lambda x: x, args[0]
+            selector, default = identity, args[0]
         else: # len(args) == 2
             selector, default = args
         return self._average_helper(selector, lambda: default)
@@ -337,7 +344,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         return Enumerable(())
 
     def except1(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
-        return self.except_by(second, lambda x: x)
+        return self.except_by(second, identity)
 
     def except_by(self,
         second: Iterable[TKey],
@@ -408,11 +415,11 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         from .lookup import Lookup
         if len(args) == 1:
             result_selector = args[0]
-            inner = lambda: Lookup(self, key_selector, lambda x: x) \
+            inner = lambda: Lookup(self, key_selector, identity) \
                 .apply_result_selector(result_selector)  # type: ignore
             return Enumerable(inner)
         else:  # len(args) == 0:
-            inner = lambda: Lookup(self, key_selector, lambda x: x)
+            inner = lambda: Lookup(self, key_selector, identity)
             return Enumerable(inner)
 
     def group_join(self,
@@ -423,14 +430,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Enumerable[TResult]:
         from .lookup import Lookup
         def inner_gen():
-            lookup = Lookup(inner, inner_key_selector, lambda x: x)
+            lookup = Lookup(inner, inner_key_selector, identity)
             for outer_item in self:
                 group = lookup[outer_key_selector(outer_item)]
                 yield result_selector(outer_item, group)  # type: ignore
         return Enumerable(inner_gen)
 
     def intersect(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
-        return self.intersect_by(second, lambda x: x)
+        return self.intersect_by(second, identity)
 
     def intersect_by(self,
         second: Iterable[TKey],
@@ -454,7 +461,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Enumerable[TResult]:
         from .lookup import Lookup
         def inner_gen():
-            lookup = Lookup(inner, inner_key_selector, lambda x: x)
+            lookup = Lookup(inner, inner_key_selector, identity)
             for outer_item in self:
                 for inner_item in lookup[outer_key_selector(outer_item)]:
                     yield result_selector(outer_item, inner_item)
@@ -517,23 +524,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def max(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
-            result_selector: Any = lambda x: x
+            result_selector: Any = identity
         else:  # len(args) == 1
             result_selector = args[0]
         return self._minmax_helper(
             result_selector,
-            lambda l, r: l < r,
+            default_lt,
             self._raise_empty_sequence,
         )
 
     def max2(self, *args) -> Any:
         if len(args) == 1:
-            result_selector, default = lambda x: x, args[0]
+            result_selector, default = identity, args[0]
         else:  # len(args) == 2
             result_selector, default = args
         return self._minmax_helper(
             result_selector,
-            lambda l, r: l < r,
+            default_lt,
             lambda: default,
         )
 
@@ -542,7 +549,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[[Any, Any], int],
     ) -> Any:
         if len(args) == 0:
-            op = lambda l, r: l < r
+            op = default_lt
         else:  # len(args) == 1
             comp = args[0]
             op = lambda l, r: comp(l, r) < 0
@@ -550,23 +557,23 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def min(self, *args: Callable[[TSource_co], Any]) -> Any:
         if len(args) == 0:
-            result_selector: Any = lambda x: x
+            result_selector: Any = identity
         else:  # len(args) == 1
             result_selector = args[0]
         return self._minmax_helper(
             result_selector,
-            lambda l, r: r < l,
+            default_gt,
             self._raise_empty_sequence,
         )
 
     def min2(self, *args) -> Any:
         if len(args) == 1:
-            result_selector, default = lambda x: x, args[0]
+            result_selector, default = identity, args[0]
         else:  # len(args) == 2
             result_selector, default = args
         return self._minmax_helper(
             result_selector,
-            lambda l, r: r < l,
+            default_gt,
             lambda: default,
         )
 
@@ -575,7 +582,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[[Any, Any], int],
     ) -> Any:
         if len(args) == 0:
-            op = lambda l, r: r < l
+            op = default_gt
         else:  # len(args) == 1
             comp = args[0]
             op = lambda l, r: comp(l, r) > 0
@@ -681,7 +688,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[[TSource_co, TCollection], TResult],
     ) -> Union[Enumerable[TCollection], Enumerable[TResult]]:
         if len(args) == 0:
-            result_selector: Any = lambda _, x: x
+            result_selector: Any = return_second
         else:  # len(args) == 1
             result_selector = args[0]
         def inner():
@@ -695,7 +702,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[[TSource_co, TCollection], TResult],
     ) -> Union[Enumerable[TCollection], Enumerable[TResult]]:
         if len(args) == 0:
-            result_selector: Any = lambda _, x: x
+            result_selector: Any = return_second
         else:  # len(args) == 1
             result_selector = args[0]
         def inner():
@@ -709,7 +716,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[..., bool],
     ) -> bool:
         if len(args) == 0:
-            comparer = lambda x, y: x == y
+            comparer = default_equal
         else:  # len(args) == 1
             comparer = args[0]
 
@@ -839,14 +846,14 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def sum(self, *args) -> Any:
         if len(args) == 0:
-            selector: Any = lambda x: x
+            selector: Any = identity
         else:  # len(args) == 1
             selector = args[0]
         return self._sum_helper(selector, lambda: 0)
 
     def sum2(self, *args) -> Any:
         if len(args) == 1:
-            selector, default = lambda x: x, args[0]
+            selector, default = identity, args[0]
         else: # len(args) == 2
             selector, default = args
         return self._sum_helper(selector, lambda: default)
@@ -908,7 +915,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         *args: Callable[[TSource_co], TValue],
     ) -> Union[Dict[TKey, TValue], Dict[TKey, TSource_co]]:
         if len(args) == 0:
-            value_selector: Any = lambda x: x
+            value_selector: Any = identity
         else:  # len(args) == 1
             value_selector = args[0]
         return {key_selector(e): value_selector(e) for e in self}
@@ -925,7 +932,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Union[Lookup[TKey, TValue], Lookup[TKey, TSource_co]]:
         from .lookup import Lookup
         if len(args) == 0:
-            value_selector: Any = lambda x: x
+            value_selector: Any = identity
         else:  # len(args) == 1
             value_selector = args[0]
         res = Lookup(self, key_selector, value_selector)
@@ -933,7 +940,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def union(self, second: Iterable[TSource_co]) -> Enumerable[TSource_co]:
         # TODO: optimise chained .union() calls
-        return self.union_by(second, lambda x: x)
+        return self.union_by(second, identity)
 
     def union_by(self,
         second: Iterable[TSource_co],

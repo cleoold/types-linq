@@ -1,10 +1,32 @@
 from __future__ import annotations
-from typing import Tuple, Iterator, Hashable, List, Dict, Iterable, Set, Optional, MutableMapping, MutableSet
+from typing import Any, Tuple, Iterator, Hashable, List, Dict, Iterable, Set, Optional, MutableMapping, MutableSet
 
 from .more_typing import (
     TKey,
+    TSupportsLessThan,
     TValue
 )
+
+
+def identity(x: Any) -> Any:
+    return x
+
+
+def return_second(x: Any, y: TValue) -> TValue:
+    return y
+
+
+def default_equal(x: TValue, y: TValue) -> bool:
+    return x == y
+
+
+def default_lt(x: TSupportsLessThan, y: TSupportsLessThan) -> bool:
+    return x < y
+
+
+def default_gt(x: TSupportsLessThan, y: TSupportsLessThan) -> bool:
+    return y < x
+
 
 class _ListMap(MutableMapping[TKey, TValue]):
 
