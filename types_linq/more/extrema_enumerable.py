@@ -82,7 +82,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
             if count <= 0:
                 return MoreEnumerable(())
             it = super()._get_iterable()
-            getter = lambda: _FirstExtrema(count)
+            getter = lambda c=count: _FirstExtrema(c)
             return _extrema_by(it, getter, self._selector, self._comparer, self._for_min)
         else:  # isinstance(count, slice)
             return super().take(count)

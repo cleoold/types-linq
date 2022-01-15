@@ -860,10 +860,10 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     def take(self, count: Union[int, slice]) -> Enumerable[TSource_co]:
         if isinstance(count, int):
-            def inner():
+            def inner(c: int = count):
                 iterator = iter(self)
                 try:
-                    for _ in range(count):
+                    for _ in range(c):
                         yield next(iterator)
                 except StopIteration:
                     return
