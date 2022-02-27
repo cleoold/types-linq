@@ -512,6 +512,46 @@ class TestScanMethod:
         assert q.to_list() == [-1]
 
 
+class TestScanRightMethod:
+    def test_overload1(self):
+        strs = ['9', '4', '2', '5']
+        en = MoreEnumerable(strs)
+        q = en.scan_right(lambda e, rr: f'({e}+{rr})')
+        assert q.to_list() == ['(9+(4+(2+5)))', '(4+(2+5))', '(2+5)', '5']
+
+    def test_overload1_one_elem(self):
+        strs = ['-1']
+        en = MoreEnumerable(strs)
+        q = en.scan_right(lambda e, rr: f'({e}+{rr})')
+        assert q.to_list() == ['-1']
+
+    def test_overload1_empty(self):
+        q = MoreEnumerable([]).scan_right(lambda e, rr: f'({e}+{rr})')
+        assert q.to_list() == []
+
+    def test_overload2(self):
+        ints = [9, 4, 2]
+        en = MoreEnumerable(ints)
+        q = en.scan_right('null', lambda e, rr: f'(cons {e} {rr})')
+        assert q.to_list() == [
+            '(cons 9 (cons 4 (cons 2 null)))',
+            '(cons 4 (cons 2 null))',
+            '(cons 2 null)',
+            'null',
+        ]
+
+    def test_overload2_one_elem(self):
+        ints = [9]
+        en = MoreEnumerable(ints)
+        q = en.scan_right('nil', lambda e, rr: f'(cons {e} {rr})')
+        assert q.to_list() == ['(cons 9 nil)', 'nil']
+
+    def test_overload2_empty(self):
+        en = MoreEnumerable([])
+        q = en.scan_right('nil', lambda e, rr: f'(cons {e} {rr})')
+        assert q.to_list() == ['nil']
+
+
 class TestCycleMethod:
     def test_repeat(self):
         en = MoreEnumerable([1, 2, 3])

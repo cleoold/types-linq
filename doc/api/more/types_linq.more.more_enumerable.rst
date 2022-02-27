@@ -580,6 +580,52 @@ Revisions:
 
 ----
 
+instancemethod ``scan_right(__func)``
+---------------------------------------
+
+Parameters
+  - `__func` (``Callable[[TSource_co, TSource_co], TSource_co]``)
+
+Returns
+  - ``MoreEnumerable[TSource_co]``
+
+Performs a right-associative inclusive prefix sum over the sequence. This is the
+right-associative version of MoreEnumerable.scan(func).
+
+Example
+    >>> values = ['9', '4', '2', '5']
+    >>> MoreEnumerable(values).scan_right(lambda e, rr: f'({e}+{rr})').to_list()
+    ['(9+(4+(2+5)))', '(4+(2+5))', '(2+5)', '5']
+    >>> MoreEnumerable([]).scan_right(lambda e, rr: e + rr).to_list()
+    []
+
+Revisions:
+    - main: New.
+
+----
+
+instancemethod ``scan_right[TAccumulate](__seed, __func)``
+------------------------------------------------------------
+
+Parameters
+  - `__seed` (``TAccumulate``)
+  - `__func` (``Callable[[TSource_co, TAccumulate], TAccumulate]``)
+
+Returns
+  - ``MoreEnumerable[TAccumulate]``
+
+The right-associative version of MoreEnumerable.scan(seed, func).
+
+Example
+    >>> values = [9, 4, 2]
+    >>> MoreEnumerable(values).scan_right('null', lambda e, rr: f'(cons {e} {rr})').to_list()
+    ['(cons 9 (cons 4 (cons 2 null)))', '(cons 4 (cons 2 null))', '(cons 2 null)', 'null']
+
+Revisions:
+    - main: New.
+
+----
+
 staticmethod ``traverse_breath_first[TSource](root, children_selector)``
 --------------------------------------------------------------------------
 

@@ -208,6 +208,7 @@ modules: list[ModuleSpec] = [
                     'rank_by',
                     'run_length_encode',
                     'scan',
+                    'scan_right',
                     'traverse_breath_first',
                     'traverse_depth_first',
                 },

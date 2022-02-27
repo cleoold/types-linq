@@ -262,6 +262,28 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 yield seed
         return MoreEnumerable(inner)
 
+    def scan_right(self, *args) -> Any:
+        if len(args) == 2:
+            seed, func = args
+        else:  # len(args) == 1
+            func = args[0]
+        def inner():
+            # NOTE: a copy of the sequence is made in this call because it falls back
+            it = iter(self.reverse())
+            nonlocal seed
+            if len(args) == 1:
+                try:
+                    seed = next(it)
+                except StopIteration:
+                    return
+            results = []
+            results.append(seed)
+            for elem in it:
+                seed = func(elem, seed)
+                results.append(seed)
+            yield from reversed(results)
+        return MoreEnumerable(inner)
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,
