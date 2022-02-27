@@ -384,6 +384,26 @@ class TestPipeMethod:
         assert q.to_list() == []
 
 
+class TestPreScanMethod:
+    def test_pre_scan(self):
+        ints = [9, 4, 2, 5, 7]
+        en = MoreEnumerable(ints)
+        sums = en.pre_scan(0, lambda acc, e: acc + e)
+        assert sums.to_list() == [0, 9, 13, 15, 20]
+        exprs = en.pre_scan('', lambda acc, e: f'{acc}+{e}')
+        assert exprs.to_list() == ['', '+9', '+9+4', '+9+4+2', '+9+4+2+5']
+
+    def test_one_elem(self):
+        ints = [9]
+        en = MoreEnumerable(ints)
+        q = en.pre_scan(10, lambda acc, e: acc + e)
+        assert q.to_list() == [10]
+
+    def test_empty(self):
+        q = MoreEnumerable([]).pre_scan(0, lambda acc, e: acc + e)
+        assert q.to_list() == []
+
+
 class TestRankMethod:
     def test_overload1(self):
         def gen():
@@ -456,6 +476,40 @@ class TestRunLengthEncodeMethod:
         en = MoreEnumerable('abBBbcaEeeff')
         assert en.run_length_encode(lambda x, y: x.lower() == y.lower()).to_list() \
             == [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
+
+
+class TestScanMethod:
+    def test_overload1(self):
+        ints = [9, 4, 2, 5, 7]
+        en = MoreEnumerable(ints)
+        sums = en.scan(lambda acc, e: acc + e)
+        assert sums.to_list() == [9, 13, 15, 20, 27]
+
+    def test_overload1_one_elem(self):
+        ints = [9]
+        en = MoreEnumerable(ints)
+        q = en.scan(lambda acc, e: acc + e)
+        assert q.to_list() == [9]
+
+    def test_overload1_empty(self):
+        q = MoreEnumerable([]).scan(lambda acc, e: acc + e)
+        assert q.to_list() == []
+
+    def test_overload2(self):
+        ints = [9, 4, 2, 5, 7]
+        en = MoreEnumerable(ints)
+        sums = en.scan('', lambda acc, e: f'{acc}+{e}')
+        assert sums.to_list() == ['', '+9', '+9+4', '+9+4+2', '+9+4+2+5', '+9+4+2+5+7']
+
+    def test_overload2_one_elem(self):
+        ints = [9]
+        en = MoreEnumerable(ints)
+        q = en.scan(10, lambda acc, e: acc + e)
+        assert q.to_list() == [10, 19]
+
+    def test_overload2_empty(self):
+        q = MoreEnumerable([]).scan(-1, lambda acc, e: acc + e)
+        assert q.to_list() == [-1]
 
 
 class TestCycleMethod:

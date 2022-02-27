@@ -251,6 +251,27 @@ class MoreEnumerable(Enumerable[TSource_co]):
             - v0.2.1: New.
         '''
 
+    # note: diffrent from morelinq: identity is first parameter
+    def pre_scan(self,
+        identity: TAccumulate,
+        transformation: Callable[[TAccumulate, TSource_co], TAccumulate],
+    ) -> MoreEnumerable[TAccumulate]:
+        '''
+        Performs a pre-scan (exclusive prefix sum) over the sequence. Such scan returns an
+        equal-length sequence where the first element is the identity, and i-th element (i>1) is
+        the sum of the first i-1 (and identity) elements in the original sequence.
+
+        Example
+            >>> values = [9, 4, 2, 5, 7]
+            >>> MoreEnumerable(values).pre_scan(0, lambda acc, e: acc + e).to_list()
+            [0, 9, 13, 15, 20]
+            >>> MoreEnumerable([]).pre_scan(0, lambda acc, e: acc + e).to_list()
+            []
+
+        Revisions:
+            - main: New.
+        '''
+
     @overload
     def rank(self: MoreEnumerable[TSupportsLessThan]) -> MoreEnumerable[int]:
         '''
@@ -348,6 +369,48 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
         Revisions:
             - v1.1.0: New.
+        '''
+
+    @overload
+    def scan(self,
+        __transformation: Callable[[TSource_co, TSource_co], TSource_co],
+    ) -> MoreEnumerable[TSource_co]:
+        '''
+        Performs a inclusive prefix sum over the sequence. Such scan returns an equal-length sequence
+        where the i-th element is the sum of the first i elements in the original sequence.
+
+        Example
+            >>> values = [9, 4, 2, 5, 7]
+            >>> MoreEnumerable(values).scan(lambda acc, e: acc + e).to_list()
+            [9, 13, 15, 20, 27]
+            >>> MoreEnumerable([]).scan(lambda acc, e: acc + e).to_list()
+            []
+
+        Example
+            >>> # running max
+            >>> fruits = ['apple', 'mango', 'orange', 'passionfruit', 'grape']
+            >>> MoreEnumerable(fruits).scan(lambda acc, e: e if len(e) > len(acc) else acc).to_list()
+            ['apple', 'apple', 'orange', 'passionfruit', 'passionfruit']
+
+        Revisions:
+            - main: New.
+        '''
+
+    @overload
+    def scan(self,
+        __seed: TAccumulate,
+        __transformation: Callable[[TAccumulate, TSource_co], TAccumulate],
+    ) -> MoreEnumerable[TAccumulate]:
+        '''
+        Like Enumerable.aggregate(seed, transformation) except that the intermediate results are
+        included in the result sequence.
+
+        Example
+            >>> Enumerable.range(1, 5).as_more().scan(-1, lambda acc, e: acc * e).to_list()
+            [-1, -1, -2, -6, -24, -120]
+
+        Revisions:
+            - main: New.
         '''
 
     @staticmethod

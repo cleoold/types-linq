@@ -13,6 +13,7 @@ from ..util import (
     identity,
 )
 from ..more_typing import (
+    TAccumulate,
     TKey,
     TSource,
     TSource_co,
@@ -162,6 +163,23 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 yield elem
         return MoreEnumerable(inner)
 
+    def pre_scan(self,
+        identity: TAccumulate,
+        transformation: Callable[[TAccumulate, TSource_co], TAccumulate],
+    ) -> MoreEnumerable[TAccumulate]:
+        def inner(aggregator: TAccumulate = identity):
+            it = iter(self)
+            try:
+                past = next(it)
+            except StopIteration:
+                return
+            yield identity
+            for elem in it:
+                aggregator = transformation(aggregator, past)
+                yield aggregator
+                past = elem
+        return MoreEnumerable(inner)
+
     def rank(self, *args: Callable[[TSource_co, TSource_co], int]) -> MoreEnumerable[int]:
         return self.rank_by(identity, *args)
 
@@ -223,6 +241,25 @@ class MoreEnumerable(Enumerable[TSource_co]):
                     prev_elem = elem
                     count = 1
             yield (prev_elem, count)
+        return MoreEnumerable(inner)
+
+    def scan(self, *args) -> Any:
+        if len(args) == 2:
+            seed, transformation = args
+        else:  # len(args) == 1
+            transformation = args[0]
+        def inner():
+            it = iter(self)
+            nonlocal seed
+            if len(args) == 1:
+                try:
+                    seed = next(it)
+                except StopIteration:
+                    return
+            yield seed
+            for elem in it:
+                seed = transformation(seed, elem)
+                yield seed
         return MoreEnumerable(inner)
 
     @staticmethod
