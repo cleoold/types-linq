@@ -246,14 +246,14 @@ Example
 
 ----
 
-instancemethod ``aggregate[TAccumulate](__func)``
----------------------------------------------------
+instancemethod ``aggregate(__func)``
+--------------------------------------
 
 Parameters
-  - `__func` (``Callable[[TAccumulate, TSource_co], TAccumulate]``)
+  - `__func` (``Callable[[TSource_co, TSource_co], TSource_co]``)
 
 Returns
-  - ``TAccumulate``
+  - ``TSource_co``
 
 Applies an accumulator function over the sequence. Raises `InvalidOperationError` if
 there is no value in the sequence.
@@ -266,6 +266,9 @@ Example
 Example
     >>> Enumerable.range(1, 10).aggregate(lambda acc, e: acc * e)
     3628800
+
+Revisions:
+    - main: Fixed annotation for __func.
 
 ----
 

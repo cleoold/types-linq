@@ -33,36 +33,50 @@ class MoreEnumerable(Enumerable[TSource_co]):
     @overload
     def aggregate_right(self,
         __seed: TAccumulate,
-        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
+        __func: Callable[[TSource_co, TAccumulate], TAccumulate],
         __result_selector: Callable[[TAccumulate], TResult],
     ) -> TResult:
         '''
         Applies a right-associative accumulator function over the sequence. The seed is used as
         the initial accumulator value, and the result_selector is used to select the result value.
+
+        Revisions:
+            - main: Fixed annotation for __func.
         '''
 
     @overload
     def aggregate_right(self,
         __seed: TAccumulate,
-        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
+        __func: Callable[[TSource_co, TAccumulate], TAccumulate],
     ) -> TAccumulate:
         '''
         Applies a right-associative accumulator function over the sequence. The seed is used as the
         initial accumulator value.
+
+        Example:
+            >>> values = [9, 4, 2]
+            >>> MoreEnumerable(values).aggregate_right('null', lambda e, rr: f'(cons {e} {rr})')
+            '(cons 9 (cons 4 (cons 2 null)))'
+
+        Revisions:
+            - main: Fixed annotation for __func.
         '''
 
     @overload
     def aggregate_right(self,
-        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
-    ) -> TAccumulate:
+        __func: Callable[[TSource_co, TSource_co], TSource_co],
+    ) -> TSource_co:
         '''
         Applies a right-associative accumulator function over the sequence. Raises `InvalidOperationError`
         if there is no value in the sequence.
 
         Example
-            >>> things = [4, 16, 'x', object(), 'uv']
-            >>> MoreEnumerable(things).aggregate_right(lambda e, rr: f'(cons {repr(e)} {rr})')
-            '(cons 4 (cons 16 (cons 'x' (cons <object object at 0x000000000B000000> 'uv'))))'
+            >>> values = ['9', '4', '2', '5']
+            >>> MoreEnumerable(values).aggregate_right(lambda e, rr: f'({e}+{rr})')
+            '(9+(4+(2+5)))'
+
+        Revisions:
+            - main: Fixed annotation for __func.
         '''
 
     def as_more(self) -> MoreEnumerable[TSource_co]:

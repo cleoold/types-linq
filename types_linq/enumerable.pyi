@@ -198,8 +198,8 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
 
     @overload
     def aggregate(self,
-        __func: Callable[[TAccumulate, TSource_co], TAccumulate],
-    ) -> TAccumulate:
+        __func: Callable[[TSource_co, TSource_co], TSource_co],
+    ) -> TSource_co:
         '''
         Applies an accumulator function over the sequence. Raises `InvalidOperationError` if
         there is no value in the sequence.
@@ -212,6 +212,9 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Example
             >>> Enumerable.range(1, 10).aggregate(lambda acc, e: acc * e)
             3628800
+
+        Revisions:
+            - main: Fixed annotation for __func.
         '''
 
     def all(self, predicate: Callable[[TSource_co], bool]) -> bool:

@@ -39,14 +39,14 @@ class TestAggregateRightMethod:
         assert st == 'BANANA'
 
     def test_overload2(self):
-        en = MoreEnumerable(range(0, 5))
-        expr = en.aggregate_right('5', lambda e, rr: f'(cons {e} {rr})')
-        assert expr == '(cons 0 (cons 1 (cons 2 (cons 3 (cons 4 5)))))'
+        en = MoreEnumerable([9, 4, 2])
+        expr = en.aggregate_right('null', lambda e, rr: f'(cons {e} {rr})')
+        assert expr == '(cons 9 (cons 4 (cons 2 null)))'
 
     def test_overload3(self):
-        en = MoreEnumerable(range(0, 5))
-        expr = en.aggregate_right(lambda e, rr: f'(cons {e} {rr})')
-        assert expr == '(cons 0 (cons 1 (cons 2 (cons 3 4))))'
+        en = MoreEnumerable(['9', '4', '2', '5'])
+        expr = en.aggregate_right(lambda e, rr: f'({e}+{rr})')
+        assert expr == '(9+(4+(2+5)))'
 
     def test_overload3_empty(self):
         ints: List[int] = []
