@@ -463,6 +463,59 @@ class MoreEnumerable(Enumerable[TSource_co]):
             - main: New.
         '''
 
+    def segment(self,
+        new_segment_predicate: Callable[[TSource_co], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        '''
+        Splits the sequence into segments by using a detector function that returns True to signal a
+        new segment.
+
+        Example
+            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+            >>> MoreEnumerable(values).segment(lambda x: x < 0).select(lambda x: x.to_list()).to_list()
+            [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
+
+        Revisions:
+            - main: New.
+        '''
+
+    def segment2(self,
+        new_segment_predicate: Callable[[TSource_co, int], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        '''
+        Splits the sequence into segments by using a detector function that returns True to signal a
+        new segment. The element's index is used in the detector function.
+
+        Example
+            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+            >>> MoreEnumerable(values).segment2(lambda x, i: x < 0 or i % 3 == 0) \\
+            ...     .select(lambda x: x.to_list()) \\
+            ...     .to_list()
+            [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
+
+        Revisions:
+            - main: New.
+        '''
+
+    def segment3(self,
+        new_segment_predicate: Callable[[TSource_co, TSource_co, int], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        '''
+        Splits the sequence into segments by using a detector function that returns True to signal a
+        new segment. The last element and the current element's index are used in the detector
+        function.
+
+        Example
+            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+            >>> MoreEnumerable(values).segment3(lambda curr, prev, i: curr * prev < 0) \\
+            ...     .select(lambda x: x.to_list()) \\
+            ...     .to_list()
+            [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]
+
+        Revisions:
+            - main: New.
+        '''
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,

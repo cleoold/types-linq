@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, cast
+from typing import Any, Callable, List, Optional, cast
 
 import pytest
 
@@ -550,6 +550,63 @@ class TestScanRightMethod:
         en = MoreEnumerable([])
         q = en.scan_right('nil', lambda e, rr: f'(cons {e} {rr})')
         assert q.to_list() == ['nil']
+
+
+class TestSegmentMethod:
+    def test_segment(self):
+        ints = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        en = MoreEnumerable(ints)
+        q = en.segment(lambda x: x < 0).select(lambda x: x.to_list())
+        assert q.to_list() == [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
+
+    def test_segment_empty(self):
+        en = MoreEnumerable([])
+        q = en.segment(lambda x: x < 0).select(lambda x: x.to_list())
+        assert q.to_list() == []
+
+    def test_segment_always_split(self):
+        ints = [1, 2, 3]
+        en = MoreEnumerable(ints)
+        q = en.segment(lambda x: True).select(lambda x: x.to_list())
+        assert q.to_list() == [[1], [2], [3]]
+
+    def test_segment_no_splitting(self):
+        ints = [1, 2, 3]
+        en = MoreEnumerable(ints)
+        q = en.segment(lambda x: False).select(lambda x: x.to_list())
+        assert q.to_list() == [ints]
+
+    def test_segment_one_elem(self):
+        def pred(_: str): raise Exception
+        en = MoreEnumerable([''])
+        q = en.segment(pred).select(lambda x: x.to_list())
+        assert q.to_list() == [['']]
+
+    def test_segment_reiterate(self):
+        ints = [1, 2, 3]
+        en = MoreEnumerable(ints)
+        q = en.segment(lambda x: True)
+        for segment in q:
+            assert segment.to_list() == segment.to_list()
+
+    def test_segment2_split_on_first(self):
+        ints = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        en = MoreEnumerable(ints)
+        q = en.segment2(lambda x, i: x < 0 or i % 3 == 0) \
+            .select(Enumerable.to_list)
+        assert q.to_list() == [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
+
+    @pytest.mark.parametrize('func,expected', [
+        (lambda curr, prev, _: curr * prev < 0,
+            [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]),
+        (lambda curr, prev, i: curr < 0 and prev >= 0 or i == 1,
+            [[0], [1, 2, 4], [-4, -2, 6, 2], [-2]]),
+    ])
+    def test_segment3(self, func: Callable[[int, int, int], bool], expected: List[List[int]]):
+        ints = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        en = MoreEnumerable(ints)
+        q = en.segment3(func).select(Enumerable.to_list)
+        assert q.to_list() == expected
 
 
 class TestCycleMethod:

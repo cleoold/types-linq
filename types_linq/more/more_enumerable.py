@@ -284,6 +284,36 @@ class MoreEnumerable(Enumerable[TSource_co]):
             yield from reversed(results)
         return MoreEnumerable(inner)
 
+    def segment(self,
+        new_segment_predicate: Callable[[TSource_co], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        return self.segment3(lambda x, p, i: new_segment_predicate(x))
+
+    def segment2(self,
+        new_segment_predicate: Callable[[TSource_co, int], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        return self.segment3(lambda x, _, i: new_segment_predicate(x, i))
+
+    def segment3(self,
+        new_segment_predicate: Callable[[TSource_co, TSource_co, int], bool],
+    ) -> MoreEnumerable[MoreEnumerable[TSource_co]]:
+        def inner():
+            it = iter(self)
+            try:
+                prev = next(it)
+            except StopIteration:
+                return
+            segment = [prev]
+            for i, elem in enumerate(it, 1):
+                if new_segment_predicate(elem, prev, i):
+                    yield MoreEnumerable(segment)
+                    segment = [elem]
+                else:
+                    segment.append(elem)
+                prev = elem
+            yield MoreEnumerable(segment)
+        return MoreEnumerable(inner)
+
     @staticmethod
     def traverse_breath_first(
         root: TSource,
