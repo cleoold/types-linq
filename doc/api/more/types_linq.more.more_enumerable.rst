@@ -40,7 +40,7 @@ Applies a right-associative accumulator function over the sequence. The seed is 
 the initial accumulator value, and the result_selector is used to select the result value.
 
 Revisions:
-    - main: Fixed annotation for __func.
+    - v1.2.0: Fixed annotation for __func.
 
 ----
 
@@ -63,7 +63,7 @@ Example:
     '(cons 9 (cons 4 (cons 2 null)))'
 
 Revisions:
-    - main: Fixed annotation for __func.
+    - v1.2.0: Fixed annotation for __func.
 
 ----
 
@@ -85,7 +85,7 @@ Example
     '(9+(4+(2+5)))'
 
 Revisions:
-    - main: Fixed annotation for __func.
+    - v1.2.0: Fixed annotation for __func.
 
 ----
 
@@ -403,7 +403,7 @@ Example
     []
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -568,7 +568,7 @@ Example
     ['apple', 'apple', 'orange', 'passionfruit', 'passionfruit']
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -590,7 +590,7 @@ Example
     [-1, -1, -2, -6, -24, -120]
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -614,7 +614,7 @@ Example
     []
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -636,7 +636,7 @@ Example
     ['(cons 9 (cons 4 (cons 2 null)))', '(cons 4 (cons 2 null))', '(cons 2 null)', 'null']
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -658,7 +658,7 @@ Example
     [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -682,7 +682,7 @@ Example
     [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 
@@ -707,7 +707,7 @@ Example
     [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]
 
 Revisions:
-    - main: New.
+    - v1.2.0: New.
 
 ----
 

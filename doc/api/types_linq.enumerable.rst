@@ -268,7 +268,7 @@ Example
     3628800
 
 Revisions:
-    - main: Fixed annotation for __func.
+    - v1.2.0: Fixed annotation for __func.
 
 ----
 

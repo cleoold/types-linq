@@ -3,6 +3,13 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v1.2.0
+********
+
+- Add pre_scan(), scan(), scan_right() and segment() to MoreEnumerable class
+- Fix type annotation mistake in Enumerable.aggregate(__func)
+- Fix type annotation mistakes in MoreEnumerable.aggregate_right()
+
 v1.1.0
 ********
 

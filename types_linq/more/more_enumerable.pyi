@@ -41,7 +41,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         the initial accumulator value, and the result_selector is used to select the result value.
 
         Revisions:
-            - main: Fixed annotation for __func.
+            - v1.2.0: Fixed annotation for __func.
         '''
 
     @overload
@@ -59,7 +59,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             '(cons 9 (cons 4 (cons 2 null)))'
 
         Revisions:
-            - main: Fixed annotation for __func.
+            - v1.2.0: Fixed annotation for __func.
         '''
 
     @overload
@@ -76,7 +76,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             '(9+(4+(2+5)))'
 
         Revisions:
-            - main: Fixed annotation for __func.
+            - v1.2.0: Fixed annotation for __func.
         '''
 
     def as_more(self) -> MoreEnumerable[TSource_co]:
@@ -283,7 +283,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             []
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     @overload
@@ -407,7 +407,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             ['apple', 'apple', 'orange', 'passionfruit', 'passionfruit']
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     @overload
@@ -424,7 +424,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [-1, -1, -2, -6, -24, -120]
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     @overload
@@ -443,7 +443,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             []
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     @overload
@@ -460,7 +460,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             ['(cons 9 (cons 4 (cons 2 null)))', '(cons 4 (cons 2 null))', '(cons 2 null)', 'null']
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     def segment(self,
@@ -476,7 +476,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     def segment2(self,
@@ -494,7 +494,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     def segment3(self,
@@ -513,7 +513,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]
 
         Revisions:
-            - main: New.
+            - v1.2.0: New.
         '''
 
     @staticmethod

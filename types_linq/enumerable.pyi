@@ -214,7 +214,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
             3628800
 
         Revisions:
-            - main: Fixed annotation for __func.
+            - v1.2.0: Fixed annotation for __func.
         '''
 
     def all(self, predicate: Callable[[TSource_co], bool]) -> bool:
