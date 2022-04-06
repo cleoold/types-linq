@@ -76,6 +76,21 @@ class TestAsCachedMethod:
         assert en.take(110).to_list() == [*range(5, 115)]
         assert en.take(100).to_list() == [*range(15, 115)]
 
+    def test_multiple_branches_race(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=5)
+        b1 = en.take(100)
+        b2 = en.take(100)
+        assert b1.take(3).to_list() == [0, 1, 2]
+        assert b2.take(3).to_list() == [0, 1, 2]
+        assert b1.take(6).to_list() == [0, 1, 2, 3, 4, 5]
+        assert b2.take(4).to_list() == [1, 2, 3, 4]
+        assert b1.take(4).to_list() == [1, 2, 3, 4]
+        assert b1.take(7).to_list() == [1, 2, 3, 4, 5, 6, 7]
+        assert b2.take(7).to_list() == [3, 4, 5, 6, 7, 8, 9]
+        b3 = en.take(100)
+        assert b3.to_list() == [*range(5, 105)]
+        assert b1.take(2).to_list() == [100, 101]
+
     def test_zero_capacity(self):
         en = Enumerable(naturals()).as_cached(cache_capacity=0)
         assert en.take(1).to_list() == [0]
@@ -93,8 +108,16 @@ class TestAsCachedMethod:
         en = Enumerable(naturals()).as_cached(cache_capacity=0)
         en.take(3).to_list()
         en.as_cached(cache_capacity=1)
-        en.take(1).to_list() == [3]
-        en.take(2).to_list() == [3, 4]
+        assert en.take(1).to_list() == [3]
+        assert en.take(2).to_list() == [3, 4]
+
+    def test_original_iter_after_capacity_change(self):
+        en = Enumerable(naturals()).as_cached(cache_capacity=0)
+        existing = Enumerable(iter(en.take(9)))
+        existing.take(3).to_list()
+        en.as_cached(cache_capacity=2)
+        assert existing.take(3).to_list() == [3, 4, 5]
+        assert existing.to_list() == [6, 7, 8]
 
     def test_capacity_grow_from_one(self):
         en = Enumerable(naturals()).as_cached(cache_capacity=1)

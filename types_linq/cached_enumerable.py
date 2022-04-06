@@ -51,6 +51,9 @@ class CachedEnumerable(Enumerable[TSource_co]):
                 res = next(self._iter)
             except StopIteration:
                 break
+            if self._cache_capacity == 0:
+                yield res
+                continue
             len_ = len(self._enumerated_values)
             if self._cache_capacity is not None and \
                 len_ > 0 and len_ == self._cache_capacity:
