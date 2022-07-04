@@ -557,22 +557,23 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    @staticmethod
-    def traverse_topological(
-        roots: Iterable[TSource],
-        children_selector: Callable[[TSource], Iterable[TSource]],
-    ) -> MoreEnumerable[TSource]:
+    def traverse_topological(self,
+        children_selector: Callable[[TSource_co], Iterable[TSource_co]],
+    ) -> MoreEnumerable[TSource_co]:
         '''
         Traverses the graph in topological order, A selector is used to select children of each
         node. The ordering created from this method is a variant of depth-first traversal and ensures
         duplicate nodes are output once.
+
+        To invoke this method, the self sequence contains nodes with zero in-degrees to start the
+        iteration. Passing a list of all nodes is allowed although not required.
 
         Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
         topological ordering cannot be produced.
 
         Example
             >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1] }
-            >>> MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, [])) \\
+            >>> MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
             >>>     .to_list()
             [5, 2, 3, 4, 0, 1]
 
@@ -581,17 +582,18 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    @staticmethod
-    def traverse_topological(
-        roots: Iterable[TSource],
-        children_selector: Callable[[TSource], Iterable[TSource]],
-        __key_selector: Callable[[TSource], object],
-    ) -> MoreEnumerable[TSource]:
+    def traverse_topological(self,
+        children_selector: Callable[[TSource_co], Iterable[TSource_co]],
+        __key_selector: Callable[[TSource_co], object],
+    ) -> MoreEnumerable[TSource_co]:
         '''
         Traverses the graph in topological order, A selector is used to select children of each
         node. The ordering created from this method is a variant of depth-first traversal and
         ensures duplicate nodes are output once. A key selector is used to determine equality
         between nodes.
+
+        To invoke this method, the self sequence contains nodes with zero in-degrees to start the
+        iteration. Passing a list of all nodes is allowed although not required.
 
         Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
         topological ordering cannot be produced.

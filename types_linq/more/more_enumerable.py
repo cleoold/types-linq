@@ -344,24 +344,22 @@ class MoreEnumerable(Enumerable[TSource_co]):
                     stack.append(child)
         return MoreEnumerable(inner)
 
-    @staticmethod
-    def traverse_topological(
-        roots: Iterable[TSource],
-        children_selector: Callable[[TSource], Iterable[TSource]],
-        *args: Callable[[TSource], object],
-    ) -> MoreEnumerable[TSource]:
+    def traverse_topological(self,
+        children_selector: Callable[[TSource_co], Iterable[TSource_co]],
+        *args: Callable[[TSource_co], object],
+    ) -> MoreEnumerable[TSource_co]:
         if len(args) == 0:
             key_selector = identity
         else:  # len(args) == 1
             key_selector = args[0]
 
         def inner():
-            stack: List[Tuple[TSource, bool]] = []
+            stack: List[Tuple[TSource_co, bool]] = []
             visited = ComposeMap()
-            result: List[TSource] = []  # post order
+            result: List[TSource_co] = []  # post order
             result_keys = ComposeSet()
-            roots_list = [*roots]
-            for root in reversed(roots_list):
+            # NOTE: a copy of the sequence is made in this call because it falls back
+            for root in self.reverse():
                 if not visited.get(key_selector(root)):
                     stack.append((root, False))
                 while stack:

@@ -698,14 +698,12 @@ class TestTraverseTopologicalMethod:
             2: [3],
             3: [1],
         }
-        en = MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, ()))
+        en = MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, ()))
         assert en.to_list() == [5, 2, 3, 4, 0, 1]
 
     def test_overload1_linear_dfs(self):
-        en = MoreEnumerable.traverse_topological(
-            [TestTraverseBreathFirstMethod.tree],
-            TestTraverseBreathFirstMethod.selector,
-        )
+        en = MoreEnumerable([TestTraverseBreathFirstMethod.tree]) \
+            .traverse_topological(TestTraverseBreathFirstMethod.selector)
         assert en.select(lambda n: n.val).to_list() == [3, 1, 0, 2, 4, 5]
 
     def test_overload1_all_nodes(self):
@@ -715,11 +713,11 @@ class TestTraverseTopologicalMethod:
             [1, 3],
             [],
         ]
-        en = MoreEnumerable.traverse_topological(range(4), adj.__getitem__)
+        en = MoreEnumerable(range(4)).traverse_topological(adj.__getitem__)
         assert en.to_list() == [0, 2, 1, 3]
 
     def test_overload1_single(self):
-        en = MoreEnumerable.traverse_topological([0], lambda _: ())
+        en = MoreEnumerable([0]).traverse_topological(lambda _: ())
         assert en.to_list() == [0]
 
     def test_overload1_cycle(self):
@@ -729,7 +727,7 @@ class TestTraverseTopologicalMethod:
             2: [3],
             3: [1, 5],
         }
-        en = MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, ()))
+        en = MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, ()))
         with pytest.raises(DirectedGraphNotAcyclicError) as excinfo:
             en.to_list()
         assert excinfo.value.cycle == (3, 5)
@@ -740,7 +738,7 @@ class TestTraverseTopologicalMethod:
             3: [4],
             4: [5, 6, 4, 7],
         }
-        en = MoreEnumerable.traverse_topological([1], lambda x: adj.get(x, ()))
+        en = MoreEnumerable([1]).traverse_topological(lambda x: adj.get(x, ()))
         with pytest.raises(DirectedGraphNotAcyclicError) as excinfo:
             en.to_list()
         assert excinfo.value.cycle == (4, 4)
@@ -763,8 +761,8 @@ class TestTraverseTopologicalMethod:
             13: [4],
             6: [7, 8, 9],
         }
-        en = MoreEnumerable.traverse_topological(
-            map(self.Node, [0, 3, 4, 10, 11]),
+        roots = map(self.Node, [0, 3, 4, 10, 11])
+        en = MoreEnumerable(roots).traverse_topological(
             lambda x: map(self.Node, adj.get(x.val, ())),
             lambda x: x.val,
         )
@@ -783,8 +781,8 @@ class TestTraverseTopologicalMethod:
             7: [8],
             8: [],
         }
-        en = MoreEnumerable.traverse_topological(
-            map(self.Node, [0, 1]),
+        roots = map(self.Node, [0, 1])
+        en = MoreEnumerable(roots).traverse_topological(
             lambda x: map(self.Node, adj[x.val]),
             lambda x: x.val,
         )
@@ -806,8 +804,8 @@ class TestTraverseTopologicalMethod:
             6: [7, 9],
             9: [3],
         }
-        en = MoreEnumerable.traverse_topological(
-            map(self.Node, [0, 3, 4, 10, 11]),
+        roots = map(self.Node, [0, 3, 4, 10, 11])
+        en = MoreEnumerable(roots).traverse_topological(
             lambda x: map(self.Node, adj.get(x.val, ())),
             lambda x: x.val,
         )
@@ -816,5 +814,5 @@ class TestTraverseTopologicalMethod:
             for node in en:
                 count.add(node.val)
         A, B = excinfo.value.cycle
-        assert [A.val, B.val] == [2, 4]
+        assert [A.val, B.val] == [2, 4]  # type: ignore
         assert len(count) < 14

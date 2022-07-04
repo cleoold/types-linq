@@ -30,7 +30,7 @@ class DirectedGraphNotAcyclicError(InvalidOperationError):
         Example
             >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1, 5] }
             >>> try:
-            >>>     MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, [])) \\
+            >>>     MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
             >>>         .consume()
             >>> except DirectedGraphNotAcyclicError as e:
             >>>     print(e.cycle)
