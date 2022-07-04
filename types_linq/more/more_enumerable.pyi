@@ -525,8 +525,15 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Traverses the tree (graph) from the root node in a breath-first fashion. A selector is used to
         select children of each node.
 
-        Graphs are not checked for cycles. If the resulting sequence needs to be finite then it is the
-        responsibility of children_selector to ensure that duplicate nodes are not visited.
+        Graphs are not checked for cycles or duplicates visits. If the resulting sequence needs to be
+        finite then it is the responsibility of children_selector to ensure that duplicate nodes are not
+        visited.
+
+        Example
+            >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
+            >>> MoreEnumerable.traverse_breath_first(3, lambda x: tree.get(x, [])) \\
+            >>>     .to_list()
+            [3, 1, 4, 0, 2, 5]
         '''
 
     @staticmethod
@@ -538,6 +545,57 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Traverses the tree (graph) from the root node in a depth-first fashion. A selector is used to
         select children of each node.
 
-        Graphs are not checked for cycles. If the resulting sequence needs to be finite then it is the
-        responsibility of children_selector to ensure that duplicate nodes are not visited.
+        Graphs are not checked for cycles or duplicates visits. If the resulting sequence needs to be
+        finite then it is the responsibility of children_selector to ensure that duplicate nodes are not
+        visited.
+
+        Example
+            >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
+            >>> MoreEnumerable.traverse_depth_first(3, lambda x: tree.get(x, [])) \\
+            >>>     .to_list()
+            [3, 1, 0, 2, 4, 5]
+        '''
+
+    @overload
+    @staticmethod
+    def traverse_topological(
+        roots: Iterable[TSource],
+        children_selector: Callable[[TSource], Iterable[TSource]],
+    ) -> MoreEnumerable[TSource]:
+        '''
+        Traverses the graph in topological order, A selector is used to select children of each
+        node. The ordering created from this method is a variant of depth-first traversal and ensures
+        duplicate nodes are output once.
+
+        Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
+        topological ordering cannot be produced.
+
+        Example
+            >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1] }
+            >>> MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, [])) \\
+            >>>     .to_list()
+            [5, 2, 3, 4, 0, 1]
+
+        Revisions:
+            - main: New.
+        '''
+
+    @overload
+    @staticmethod
+    def traverse_topological(
+        roots: Iterable[TSource],
+        children_selector: Callable[[TSource], Iterable[TSource]],
+        __key_selector: Callable[[TSource], object],
+    ) -> MoreEnumerable[TSource]:
+        '''
+        Traverses the graph in topological order, A selector is used to select children of each
+        node. The ordering created from this method is a variant of depth-first traversal and
+        ensures duplicate nodes are output once. A key selector is used to determine equality
+        between nodes.
+
+        Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
+        topological ordering cannot be produced.
+
+        Revisions:
+            - main: New.
         '''

@@ -4,7 +4,7 @@ from typing import Any, Callable, List, Optional, cast
 import pytest
 
 from types_linq import Enumerable, InvalidOperationError
-from types_linq.more import MoreEnumerable
+from types_linq.more import MoreEnumerable, DirectedGraphNotAcyclicError
 
 
 @dataclass
@@ -668,6 +668,10 @@ class TestTraverseBreathFirstMethod:
         en = MoreEnumerable.traverse_breath_first(0, lambda i: [*range(1, 10)] if i == 0 else [])
         assert en.to_list() == [*range(10)]
 
+    def test_single(self):
+        en = MoreEnumerable.traverse_breath_first(0, lambda _: ())
+        assert en.to_list() == [0]
+
 
 class TestTraverseDepthFirstMethod:
     def test_traverse_tree(self):
@@ -680,3 +684,137 @@ class TestTraverseDepthFirstMethod:
     def test_preserve_children_order(self):
         en = MoreEnumerable.traverse_depth_first(0, lambda i: [*range(1, 10)] if i == 0 else [])
         assert en.to_list() == [*range(10)]
+
+    def test_single(self):
+        en = MoreEnumerable.traverse_depth_first(0, lambda _: ())
+        assert en.to_list() == [0]
+
+
+class TestTraverseTopologicalMethod:
+    def test_overload1_simple(self):
+        adj = {
+            5: [2, 0],
+            4: [0, 1],
+            2: [3],
+            3: [1],
+        }
+        en = MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, ()))
+        assert en.to_list() == [5, 2, 3, 4, 0, 1]
+
+    def test_overload1_linear_dfs(self):
+        en = MoreEnumerable.traverse_topological(
+            [TestTraverseBreathFirstMethod.tree],
+            TestTraverseBreathFirstMethod.selector,
+        )
+        assert en.select(lambda n: n.val).to_list() == [3, 1, 0, 2, 4, 5]
+
+    def test_overload1_all_nodes(self):
+        adj = [
+            [1, 2, 3],
+            [3],
+            [1, 3],
+            [],
+        ]
+        en = MoreEnumerable.traverse_topological(range(4), adj.__getitem__)
+        assert en.to_list() == [0, 2, 1, 3]
+
+    def test_overload1_single(self):
+        en = MoreEnumerable.traverse_topological([0], lambda _: ())
+        assert en.to_list() == [0]
+
+    def test_overload1_cycle(self):
+        adj = {
+            5: [2, 0],
+            4: [0, 1],
+            2: [3],
+            3: [1, 5],
+        }
+        en = MoreEnumerable.traverse_topological([5, 4], lambda x: adj.get(x, ()))
+        with pytest.raises(DirectedGraphNotAcyclicError) as excinfo:
+            en.to_list()
+        assert excinfo.value.cycle == (3, 5)
+
+    def test_overload1_self_loop(self):
+        adj = {
+            1: [2, 3],
+            3: [4],
+            4: [5, 6, 4, 7],
+        }
+        en = MoreEnumerable.traverse_topological([1], lambda x: adj.get(x, ()))
+        with pytest.raises(DirectedGraphNotAcyclicError) as excinfo:
+            en.to_list()
+        assert excinfo.value.cycle == (4, 4)
+
+    class Node:
+        def __init__(self, val: int) -> None:
+            self.val = val
+
+    def test_overload2_big(self):
+        adj = {
+            0: [1, 2],
+            3: [2],
+            10: [12],
+            11: [12],
+            1: [5, 4],
+            2: [4],
+            12: [13],
+            5: [6],
+            4: [9],
+            13: [4],
+            6: [7, 8, 9],
+        }
+        en = MoreEnumerable.traverse_topological(
+            map(self.Node, [0, 3, 4, 10, 11]),
+            lambda x: map(self.Node, adj.get(x.val, ())),
+            lambda x: x.val,
+        )
+        assert en.select(lambda x: x.val).to_list() \
+            == [0, 1, 5, 6, 7, 8, 3, 2, 10, 11, 12, 13, 4, 9]
+
+    def test_overload2_diamond(self):
+        adj = {
+            0: [2],
+            1: [2, 3, 8],
+            2: [4, 5],
+            3: [7],
+            4: [6],
+            5: [6],
+            6: [],
+            7: [8],
+            8: [],
+        }
+        en = MoreEnumerable.traverse_topological(
+            map(self.Node, [0, 1]),
+            lambda x: map(self.Node, adj[x.val]),
+            lambda x: x.val,
+        )
+        assert en.select(lambda x: x.val).to_list() \
+            == [0, 1, 2, 4, 5, 6, 3, 7, 8]
+
+    def test_overload2_two_cycles_get_first(self):
+        adj = {
+            0: [1, 2],
+            3: [2],
+            10: [12],
+            11: [12],
+            1: [5, 4],
+            2: [4],
+            12: [13],
+            5: [6],
+            4: [9],
+            13: [4, 12],
+            6: [7, 9],
+            9: [3],
+        }
+        en = MoreEnumerable.traverse_topological(
+            map(self.Node, [0, 3, 4, 10, 11]),
+            lambda x: map(self.Node, adj.get(x.val, ())),
+            lambda x: x.val,
+        )
+        count = set()
+        with pytest.raises(DirectedGraphNotAcyclicError) as excinfo:
+            for node in en:
+                count.add(node.val)
+        A, B = excinfo.value.cycle
+        assert [A.val, B.val] == [2, 4]
+        assert len(count) < 14

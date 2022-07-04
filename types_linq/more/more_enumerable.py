@@ -5,6 +5,7 @@ from typing import Any, Callable, Deque, Iterable, Iterator, List, Optional, TYP
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
+from .more_error import DirectedGraphNotAcyclicError
 from ..enumerable import Enumerable
 from ..util import (
     ComposeMap,
@@ -339,6 +340,47 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 elem = stack.pop()
                 yield elem
                 children = [*children_selector(elem)]
-                for children in reversed(children):
-                    stack.append(children)
+                for child in reversed(children):
+                    stack.append(child)
+        return MoreEnumerable(inner)
+
+    @staticmethod
+    def traverse_topological(
+        roots: Iterable[TSource],
+        children_selector: Callable[[TSource], Iterable[TSource]],
+        *args: Callable[[TSource], object],
+    ) -> MoreEnumerable[TSource]:
+        if len(args) == 0:
+            key_selector = identity
+        else:  # len(args) == 1
+            key_selector = args[0]
+
+        def inner():
+            stack: List[Tuple[TSource, bool]] = []
+            visited = ComposeMap()
+            result: List[TSource] = []  # post order
+            result_keys = ComposeSet()
+            roots_list = [*roots]
+            for root in reversed(roots_list):
+                if not visited.get(key_selector(root)):
+                    stack.append((root, False))
+                while stack:
+                    node, done = stack.pop()
+                    if done:
+                        # detect cycle. normally edges from node will go to nodes in the
+                        # result list. otherwise we found cycle
+                        for child in children_selector(node):
+                            if key_selector(child) not in result_keys:
+                                raise DirectedGraphNotAcyclicError((node, child))
+                        # good
+                        result.append(node)
+                        result_keys.add(key_selector(node))
+                        continue
+                    visited[key_selector(node)] = True
+                    stack.append((node, True))
+                    for child in children_selector(node):
+                        if not visited.get(key_selector(child)):
+                            stack.append((child, False))
+            while result:
+                yield result.pop()
         return MoreEnumerable(inner)

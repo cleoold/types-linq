@@ -214,6 +214,7 @@ modules: list[ModuleSpec] = [
                     'segment3',
                     'traverse_breath_first',
                     'traverse_depth_first',
+                    'traverse_topological',
                 },
                 'readonly_properties': {*()},
             },
@@ -231,5 +232,17 @@ modules: list[ModuleSpec] = [
                 'readonly_properties': {*()},
             },
         },
-    }
+    },
+    {
+        'file_path': f'{_path}/more/more_error.py',
+        'name': f'{_project}.more.more_error',
+        'classes': {
+            'DirectedGraphNotAcyclicError': {
+                'methods': {*()},
+                'readonly_properties': {
+                    'cycle',
+                },
+            },
+        },
+    },
 ]
