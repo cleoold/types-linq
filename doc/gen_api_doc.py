@@ -316,7 +316,6 @@ for module in api_spec.modules:
     sub_folder = ''
     if m_name.count('.') > 1:
         sub_folder = re.search(r'^\w+\.(.+)\.\w+$', m_name).group(1).replace('.', '/')
-        print(sub_folder)
     os.makedirs(f'api/{sub_folder}', exist_ok=True)
     with open(module['file_path']) as fin, open(f'api/{sub_folder}/{m_name}.rst', 'w') as fout:
         code = fin.read()
