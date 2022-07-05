@@ -7,6 +7,11 @@ from types_linq import Enumerable, InvalidOperationError
 from types_linq.more import MoreEnumerable, DirectedGraphNotAcyclicError
 
 
+class Node:
+    def __init__(self, val: int) -> None:
+        self.val = val
+
+
 @dataclass
 class Tree:
     val: int
@@ -427,6 +432,11 @@ class TestRankMethod:
         en = MoreEnumerable([(1, ''), (1, ''), (4, ''), (4, ''), (3, '')])
         assert en.rank(lambda lhs, rhs: lhs[0] - rhs[0]).to_list() == [3, 3, 1, 1, 2]
 
+    def test_overload2_default_obj_eq_dont_use(self):
+        en = MoreEnumerable([Node(1), Node(1), Node(4), Node(4), Node(3), Node(4)])
+        assert en.rank(lambda lhs, rhs: lhs.val - rhs.val).to_list() \
+            == [3, 3, 1, 1, 2, 1]
+
 
 # majority is already tested by rank test
 class TestRankByMethod:
@@ -743,10 +753,6 @@ class TestTraverseTopologicalMethod:
             en.to_list()
         assert excinfo.value.cycle == (4, 4)
 
-    class Node:
-        def __init__(self, val: int) -> None:
-            self.val = val
-
     def test_overload2_big(self):
         adj = {
             0: [1, 2],
@@ -761,9 +767,9 @@ class TestTraverseTopologicalMethod:
             13: [4],
             6: [7, 8, 9],
         }
-        roots = map(self.Node, [0, 3, 4, 10, 11])
+        roots = map(Node, [0, 3, 4, 10, 11])
         en = MoreEnumerable(roots).traverse_topological(
-            lambda x: map(self.Node, adj.get(x.val, ())),
+            lambda x: map(Node, adj.get(x.val, ())),
             lambda x: x.val,
         )
         assert en.select(lambda x: x.val).to_list() \
@@ -781,9 +787,9 @@ class TestTraverseTopologicalMethod:
             7: [8],
             8: [],
         }
-        roots = map(self.Node, [0, 1])
+        roots = map(Node, [0, 1])
         en = MoreEnumerable(roots).traverse_topological(
-            lambda x: map(self.Node, adj[x.val]),
+            lambda x: map(Node, adj[x.val]),
             lambda x: x.val,
         )
         assert en.select(lambda x: x.val).to_list() \
@@ -804,9 +810,9 @@ class TestTraverseTopologicalMethod:
             6: [7, 9],
             9: [3],
         }
-        roots = map(self.Node, [0, 3, 4, 10, 11])
+        roots = map(Node, [0, 3, 4, 10, 11])
         en = MoreEnumerable(roots).traverse_topological(
-            lambda x: map(self.Node, adj.get(x.val, ())),
+            lambda x: map(Node, adj.get(x.val, ())),
             lambda x: x.val,
         )
         count = set()

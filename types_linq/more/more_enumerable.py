@@ -188,30 +188,25 @@ class MoreEnumerable(Enumerable[TSource_co]):
         key_selector: Callable[[TSource_co], TKey],
         *args: Callable[[TKey, TKey], int]) -> MoreEnumerable[int]:
         if len(args) == 0:
-            comparer = None
+            # it is sufficient to have only equality
+            comparer = lambda l, r: 0 if l == r else 1
         else:  # len(args) == 1
             comparer = args[0]
 
         def inner():
             # avoid enumerating twice
             copy = MoreEnumerable(self.select(key_selector).to_list())
-            ordered = copy.distinct() \
-                .order_by_descending(identity, *args)
-            if comparer is None:
-                # replaces .enumerate()
-                rank_map = ComposeMap(ordered.select2(lambda x, i: (x, i + 1)))
-            else:
-                # this is different from morelinq
-                ordered = ordered.to_list()
-                if not ordered:
-                    return
-                rank_map = ComposeMap()
-                rank_map[ordered[0]] = 1
-                rank = 1
-                for i in range(1, len(ordered)):
-                    if comparer(ordered[i - 1], ordered[i]) != 0:
-                        rank += 1
-                    rank_map[ordered[i]] = rank
+            # this is different from morelinq
+            ordered = copy.order_by_descending(identity, *args).to_list()
+            if not ordered:
+                return
+            rank_map = ComposeMap()
+            rank_map[ordered[0]] = 1
+            rank = 1
+            for i in range(1, len(ordered)):
+                if comparer(ordered[i - 1], ordered[i]) != 0:
+                    rank += 1
+                rank_map[ordered[i]] = rank
             for key in copy:
                 yield rank_map[key]
         return MoreEnumerable(inner)

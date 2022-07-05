@@ -16,6 +16,11 @@ class BasicIterable(Generic[TSource_co]):
         yield from self._it
 
 
+class Node:
+    def __init__(self, val: int):
+        self.val = val
+
+
 class TestIterMethod:
     def test_list(self):
         'repeatable iterable.'
@@ -774,11 +779,9 @@ class TestMaxMethod:
     def test_max_overload2(self):
         # ok. list objects have __lt__() so use another type.
         # hover mouse over 'max' to see that first overload is missing
-        class MyType:
-            def __init__(self, x: int): self.x = x
-        lst = [MyType(2), MyType(7), MyType(-1), MyType(9), MyType(1)]
+        lst = [Node(2), Node(7), Node(-1), Node(9), Node(1)]
         en = Enumerable(lst)
-        assert en.max(lambda x: x.x) == 9
+        assert en.max(lambda x: x.val) == 9
 
     def test_max2_overload1(self):
         nums = (1, 5, 2.2, 5, 1, 2, 2)
@@ -842,11 +845,9 @@ class TestMinMethod:
         assert en.min() == 0.9
 
     def test_min_overload2(self):
-        class MyType:
-            def __init__(self, x: int): self.x = x
-        lst = [MyType(2), MyType(7), MyType(19), MyType(1), MyType(9)]
+        lst = [Node(2), Node(7), Node(19), Node(1), Node(9)]
         en = Enumerable(lst)
-        assert en.min(lambda x: x.x) == 1
+        assert en.min(lambda x: x.val) == 1
 
     def test_min2_overload1(self):
         nums = (1, 0.4, 2.2, 5, 1, 2, 2)
@@ -877,12 +878,10 @@ class TestMinByMethod:
             en.min_by(len)
 
     def test_dup_choose_first(self):
-        class MyType:
-            def __init__(self, x: int): self.x = x
-        lst = [MyType(2), MyType(7), MyType(19), MyType(1), MyType(7), MyType(1)]
+        lst = [Node(2), Node(7), Node(19), Node(1), Node(7), Node(1)]
         en = Enumerable(lst)
-        assert en.min_by(lambda x: x.x) == lst[3]
-        assert en.min_by(lambda x: x.x) != lst[-1]
+        assert en.min_by(lambda x: x.val) == lst[3]
+        assert en.min_by(lambda x: x.val) != lst[-1]
 
     def test_overload2(self):
         lst = [['foo'], ['cheese'], ['baz'], ['spam'], ['string']]
@@ -958,6 +957,15 @@ class TestOrderByMethod:
         assert q.to_list() == [
             'Barley', 'Roman', 'Boots', 'Daisy', 'Whiskers', 
         ]
+
+    def test_order_by_descending_overload2_default_obj_eq_dont_use(self):
+        nodes = [Node(p.age) for p in self.pets()]
+        en = Enumerable(nodes)
+        q = en.order_by_descending(
+            lambda p: p,
+            lambda t_lhs, t_rhs: t_lhs.val - t_rhs.val
+        )
+        assert q.to_list() == [nodes[i] for i in [0, 4, 1, 3, 2]]
 
 
 class TestPrependMethod:
