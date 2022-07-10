@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'types-linq'
-copyright = '2021, cleoold'
+copyright = '2022, cleoold'
 author = 'cleoold'
 
 
@@ -28,6 +28,7 @@ author = 'cleoold'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'myst_parser',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -53,4 +54,8 @@ html_static_path = ['_static']
 
 html_css_files = [
     'override.css',
+]
+
+myst_enable_extensions = [
+    'deflist',
 ]

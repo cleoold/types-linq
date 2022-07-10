@@ -13,13 +13,13 @@ from .more_typing import (
 # is really treated as an internal method
 class Grouping(Enumerable[TValue_co], Generic[TKey_co, TValue_co]):
     '''
-    .. code-block:: python
-
-        from types_linq.grouping import Grouping
+    ```py
+    from types_linq.grouping import Grouping
+    ```
 
     Represents a collection of objects that have a common key.
 
-    Users should not construct instances of this class directly. Use ``Enumerable.group_by()`` instead.
+    Users should not construct instances of this class directly. Use `Enumerable.group_by()` instead.
     '''
 
     _key: TKey_co

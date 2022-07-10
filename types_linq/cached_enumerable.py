@@ -11,16 +11,16 @@ from .more_typing import (
 
 class CachedEnumerable(Enumerable[TSource_co]):
     '''
-    .. code-block:: python
-
-        from types_linq.cached_enumerable import CachedEnumerable
+    ```py
+    from types_linq.cached_enumerable import CachedEnumerable
+    ```
 
     Enumerable that stores the enumerated results which can be accessed repeatedly.
 
-    Users should not construct instances of this class directly. Use ``Enumerable.as_cached()`` instead.
+    Users should not construct instances of this class directly. Use `Enumerable.as_cached()` instead.
 
-    Revisions:
-        - v0.1.1: New.
+    Revisions
+        ~ v0.1.1: New.
     '''
 
     _iter: Iterator[TSource_co]

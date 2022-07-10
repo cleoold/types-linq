@@ -12,13 +12,13 @@ from .more_typing import (
 
 class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
     '''
-    .. code-block:: python
-
-        from types_linq.ordered_enumerable import OrderedEnumerable
+    ```py
+    from types_linq.ordered_enumerable import OrderedEnumerable
+    ```
 
     Represents a sorted Enumerable sequence that is sorted by some key.
 
-    Users should not construct instances of this class directly. Use ``Enumerable.order_by()`` instead.
+    Users should not construct instances of this class directly. Use `Enumerable.order_by()` instead.
     '''
 
     def __init__(self, *args): ...
@@ -34,8 +34,8 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
         Comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
 
-        Revisions:
-            - v0.1.2: Fixed incorrect parameter type of comparer.
+        Revisions
+            ~ v0.1.2: Fixed incorrect parameter type of comparer.
         '''
 
     @overload
@@ -46,18 +46,18 @@ class OrderedEnumerable(Enumerable[TSource_co], Generic[TSource_co, TKey]):
         Performs a subsequent ordering of the elements in ascending order according to key.
 
         Example
-            .. code-block:: python
+        ```py
+        >>> class Pet(NamedTuple):
+        ...     name: str
+        ...     age: int
 
-                >>> class Pet(NamedTuple):
-                ...     name: str
-                ...     age: int
-
-                >>> pets = [Pet('Barley', 8), Pet('Boots', 4), Pet('Roman', 5), Pet('Daisy', 4)]
-                >>> Enumerable(pets).order_by(lambda p: p.age) \\
-                ...     .then_by(lambda p: p.name)             \\
-                ...     .select(lambda p: p.name)              \\
-                ...     .to_list()
-                ['Boots', 'Daisy', 'Roman', 'Barley']
+        >>> pets = [Pet('Barley', 8), Pet('Boots', 4), Pet('Roman', 5), Pet('Daisy', 4)]
+        >>> Enumerable(pets).order_by(lambda p: p.age) \\
+        ...     .then_by(lambda p: p.name)             \\
+        ...     .select(lambda p: p.name)              \\
+        ...     .to_list()
+        ['Boots', 'Daisy', 'Roman', 'Barley']
+        ```
         '''
 
     @overload

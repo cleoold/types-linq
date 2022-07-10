@@ -17,13 +17,13 @@ from .more_typing import (
 # weird.
 class Lookup(Enumerable[Grouping[TKey_co, TValue_co]]):
     '''
-    .. code-block:: python
-
-        from types_linq.lookup import Lookup
+    ```py
+    from types_linq.lookup import Lookup
+    ```
 
     A lookup is a one-to-many dictionary. It maps keys to Enumerable sequences of values.
 
-    Users should not construct instances of this class directly. Use ``Enumerable.to_lookup()``
+    Users should not construct instances of this class directly. Use `Enumerable.to_lookup()`
     instead.
     '''
 

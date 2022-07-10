@@ -7,14 +7,14 @@ from ..types_linq_error import InvalidOperationError
 
 class DirectedGraphNotAcyclicError(InvalidOperationError):
     '''
-    .. code-block:: python
-
-        from types_linq.more import DirectedGraphNotAcyclicError
+    ```py
+    from types_linq.more import DirectedGraphNotAcyclicError
+    ```
 
     Exception raised when a cycle exists in a graph.
 
-    Revisions:
-        - main: New.
+    Revisions
+        ~ main: New.
     '''
 
     def __init__(self, cycle: Tuple[object, object]) -> None:
@@ -28,12 +28,14 @@ class DirectedGraphNotAcyclicError(InvalidOperationError):
         and a path from B back to A. A and B may be identical.
 
         Example
-            >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1, 5] }
-            >>> try:
-            >>>     MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
-            >>>         .consume()
-            >>> except DirectedGraphNotAcyclicError as e:
-            >>>     print(e.cycle)
-            (3, 5)  # 3 -> 5 -> 2 -> 3
+        ```py
+        >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1, 5] }
+        >>> try:
+        >>>     MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
+        >>>         .consume()
+        >>> except DirectedGraphNotAcyclicError as e:
+        >>>     print(e.cycle)
+        (3, 5)  # 3 -> 5 -> 2 -> 3
+        ```
         '''
         return self._cycle

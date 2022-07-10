@@ -3,7 +3,7 @@ import os
 import re
 from itertools import chain
 from dataclasses import dataclass
-from textwrap import dedent
+from textwrap import dedent, indent
 from typing import Any, Optional, Union
 
 import api_spec
@@ -32,13 +32,13 @@ class MyMethodDef:
     comment: str
     is_static: bool
 
-    def rst(self):
-        builder = []
+    def markdown(self):
+        builder = ['#### ']
         if self.is_static:
             builder.append('staticmethod ')
         else:
             builder.append('instancemethod ')
-        builder.append(f'``{self.name}')
+        builder.append(f'`{self.name}')
         if self.tparams:
             builder.append(f'[{", ".join(t for t in self.tparams)}]')
         builder.append('(')
@@ -52,24 +52,22 @@ class MyMethodDef:
                 builder.append(', *, ')
         for p in self.kwonlyparams:
             builder.append(', '.join(p.decl() for p in self.kwonlyparams))
-        builder.append(')``\n')
+        builder.append(')`\n\n')
 
         builder = [''.join(builder)]
-        builder.append('-' * (len(builder[0]) + 1))
-        builder.append('\n\n')
 
         if self.self_type:
             builder.append('Constraint\n')
-            builder.append(f'  - `self`: ``{self.self_type}``\n')
+            builder.append(f'  ~ *self*: `{self.self_type}`\n\n')
 
         if self.params or self.kwonlyparams:
             builder.append('Parameters\n')
         for p in chain(self.params, self.kwonlyparams):
-            builder.append(f'  - `{p.name}` (``{p.tp}``)\n')
+            builder.append(f'  ~ *{p.name}* (`{p.tp}`)\n')
         builder.append('\n')
 
         builder.append('Returns\n')
-        builder.append(f'  - ``{self.return_type}``\n\n')
+        builder.append(f'  ~ `{self.return_type}`\n\n')
         builder.append(f'{self.comment}\n\n')
         return ''.join(builder)
 
@@ -80,14 +78,12 @@ class MyPropertyDef:
     return_type: str
     comment: str
 
-    def rst(self):
+    def markdown(self):
         builder = []
-        builder.append(f'instanceproperty ``{self.name}``\n')
-        builder.append('-' * (len(builder[0]) + 1))
-        builder.append('\n\n')
+        builder.append(f'#### instanceproperty `{self.name}`\n\n')
 
         builder.append('Returns\n')
-        builder.append(f'  - ``{self.return_type}``\n\n')
+        builder.append(f'  ~ `{self.return_type}`\n\n')
         builder.append(f'{self.comment}\n\n')
         return ''.join(builder)
 
@@ -107,28 +103,23 @@ class MyClassDef:
             builder.append(f'[{", ".join(self.tparams)}]')
         return ''.join(builder)
 
-    def rst(self):
+    def markdown(self):
         builder = []
-        builder.append(f'class ``{self.typename()}``\n')
-        builder.append('*' * (len(builder[0]) + 1))
-        builder.append('\n\n')
+        builder.append(f'## class `{self.typename()}`\n\n')
 
         builder.append(f'{self.comment}\n\n')
 
-        builder.append('Bases\n')
-        builder.append('======\n')
+        builder.append('### Bases\n\n')
         for base in self.bases:
-            builder.append(f'- ``{base}``\n')
+            builder.append(f'- `{base}`\n')
         builder.append('\n')
 
-        builder.append('Members\n')
-        builder.append('========\n')
+        builder.append(title := '### Members\n\n')
         for method in chain(self.properties, self.methods):
-            builder.append(method.rst())
-            builder.append('----\n\n')
-        if builder[-1] == '----\n\n':
+            builder.append(method.markdown())
+            builder.append('---\n\n')
+        if builder[-1] == '---\n\n' or builder[-1] == title:
             builder.pop()
-        builder.append('\n')
         return ''.join(builder)
 
 
@@ -155,7 +146,7 @@ class ModuleVisitor(ast.NodeVisitor):
             name=classname,
             tparams=class_tparams,
             bases=[ast.unparse(n) for n in node.bases],
-            comment=strip_comments(get_docstring(node)),
+            comment=rewrite_comments(get_docstring(node)),
             methods=[],
             properties=[],
         )
@@ -239,7 +230,7 @@ def get_method(fun_def: ast.FunctionDef, class_tparams: list[str]):
         kwonlyparams=kwonlyargs,
         self_type=self_type,
         return_type=ast.unparse(fun_def.returns),
-        comment=strip_comments(get_docstring(fun_def)),
+        comment=rewrite_comments(get_docstring(fun_def)),
         is_static=is_static,
     )
 
@@ -248,7 +239,7 @@ def get_property(fun_def: ast.FunctionDef):
     return MyPropertyDef(
         name=fun_def.name,
         return_type=ast.unparse(fun_def.returns),
-        comment=strip_comments(get_docstring(fun_def)),
+        comment=rewrite_comments(get_docstring(fun_def)),
     )
 
 
@@ -289,8 +280,16 @@ def get_tparam_for_method(fun_def: ast.FunctionDef, class_tparams: list[str]):
     return tparams
 
 
-def strip_comments(s: str):
-    return dedent(s).strip()
+def rewrite_comments(s: str):
+    s = dedent(s).strip()
+    # rewrite the code Example blocks from markdown to myst's deflist
+    eight = ' ' * 8
+    return re.sub(
+        r'^Example\s```(.*?)\n(.*?)```$',
+        lambda mat: f'Example\n    ~   ```{mat.group(1)}\n{indent(mat.group(2), eight)}{eight}```',
+        s,
+        flags=re.DOTALL | re.MULTILINE,
+    )
 
 tparams = {*()}
 
@@ -307,7 +306,7 @@ with open(api_spec.type_file) as f:
                 tparams.add(name)
     _().visit(ast.parse(f.read()))
 
-# write api rst for each module
+# write api markdown for each module
 for module in api_spec.modules:
     m_name = module['name']
     print(f'Processing module {m_name}')
@@ -317,15 +316,15 @@ for module in api_spec.modules:
     if m_name.count('.') > 1:
         sub_folder = re.search(r'^\w+\.(.+)\.\w+$', m_name).group(1).replace('.', '/')
     os.makedirs(f'api/{sub_folder}', exist_ok=True)
-    with open(module['file_path']) as fin, open(f'api/{sub_folder}/{m_name}.rst', 'w') as fout:
+    with open(module['file_path']) as fin, open(f'api/{sub_folder}/{m_name}.md', 'w') as fout:
         code = fin.read()
         v = ModuleVisitor(module)
         v.visit(ast.parse(code))
         v.report_found_globals()
 
-        fout.write(f'module ``{m_name}``\n')
-        fout.write('#' * (len(m_name) + 12))
-        fout.write('\n\n')
+        fout.write(f'# module ``{m_name}``\n\n')
 
-        for c in v.classes:
-            fout.write(c.rst())
+        for i, c in enumerate(v.classes):
+            fout.write(c.markdown())
+            if i < len(v.classes) - 1:
+                fout.write('---\n\n')

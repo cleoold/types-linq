@@ -61,10 +61,10 @@ execute the following commands:
 
     $ cd doc
     $ pip install -r requirements.txt
-    # generate api rst files
+    # generate api md files
     $ python ./gen_api_doc.py
     # create html pages, contents are available in _build/html folder
     $ make html
 
-Note to generate api files, one must have Python version 3.9 or above. The api rst files
-are commited to the repository.
+Note to generate api files, one must have Python version 3.9 or above. The api md files
+are committed to the repository.

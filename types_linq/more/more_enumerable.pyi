@@ -14,20 +14,20 @@ from ..more_typing import (
 
 class MoreEnumerable(Enumerable[TSource_co]):
     '''
-    .. code-block:: python
-
-        from types_linq.more import MoreEnumerable
+    ```py
+    from types_linq.more import MoreEnumerable
+    ```
 
     MoreEnumerable provides more query methods. Instances of this class can be created by directly
-    constructing, using as_more(), or invoking MoreEnumerable methods that return MoreEnumerable
+    constructing, using `as_more()`, or invoking MoreEnumerable methods that return MoreEnumerable
     instead of Enumerable.
 
     These APIs may have breaking changes more frequently than those in Enumerable class because updates
     in .NET are happening and sometimes ones of these APIs could be moved to Enumerable with modification,
     or changed to accommodate changes to Enumerable.
 
-    Revisions:
-        - v0.2.0: New.
+    Revisions
+        ~ v0.2.0: New.
     '''
 
     @overload
@@ -40,8 +40,8 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Applies a right-associative accumulator function over the sequence. The seed is used as
         the initial accumulator value, and the result_selector is used to select the result value.
 
-        Revisions:
-            - v1.2.0: Fixed annotation for __func.
+        Revisions
+            ~ v1.2.0: Fixed annotation for __func.
         '''
 
     @overload
@@ -53,13 +53,15 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Applies a right-associative accumulator function over the sequence. The seed is used as the
         initial accumulator value.
 
-        Example:
-            >>> values = [9, 4, 2]
-            >>> MoreEnumerable(values).aggregate_right('null', lambda e, rr: f'(cons {e} {rr})')
-            '(cons 9 (cons 4 (cons 2 null)))'
+        Example
+        ```py
+        >>> values = [9, 4, 2]
+        >>> MoreEnumerable(values).aggregate_right('null', lambda e, rr: f'(cons {e} {rr})')
+        '(cons 9 (cons 4 (cons 2 null)))'
+        ```
 
-        Revisions:
-            - v1.2.0: Fixed annotation for __func.
+        Revisions
+            ~ v1.2.0: Fixed annotation for __func.
         '''
 
     @overload
@@ -71,12 +73,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if there is no value in the sequence.
 
         Example
-            >>> values = ['9', '4', '2', '5']
-            >>> MoreEnumerable(values).aggregate_right(lambda e, rr: f'({e}+{rr})')
-            '(9+(4+(2+5)))'
+        ```py
+        >>> values = ['9', '4', '2', '5']
+        >>> MoreEnumerable(values).aggregate_right(lambda e, rr: f'({e}+{rr})')
+        '(9+(4+(2+5)))'
+        ```
 
-        Revisions:
-            - v1.2.0: Fixed annotation for __func.
+        Revisions
+            ~ v1.2.0: Fixed annotation for __func.
         '''
 
     def as_more(self) -> MoreEnumerable[TSource_co]:
@@ -89,8 +93,8 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Consumes the sequence completely. This method iterates the sequence immediately and does not save
         any intermediate data.
 
-        Revisions:
-            - v1.1.0: New.
+        Revisions
+            ~ v1.1.0: New.
         '''
 
     def cycle(self, count: Optional[int] = None) -> MoreEnumerable[TSource_co]:
@@ -101,11 +105,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
         is negative.
 
         Example
-            >>> MoreEnumerable([1, 2, 3]).cycle(3).to_list()
-            [1, 2, 3, 1, 2, 3, 1, 2, 3]
+        ```py
+        >>> MoreEnumerable([1, 2, 3]).cycle(3).to_list()
+        [1, 2, 3, 1, 2, 3, 1, 2, 3]
+        ```
 
-        Revisions:
-            - v1.1.0: New.
+        Revisions
+            ~ v1.1.0: New.
         '''
 
     def enumerate(self, start: int = 0) -> MoreEnumerable[Tuple[int, TSource_co]]:
@@ -114,12 +120,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         is used to specify the starting index.
 
         Example
-            >>> ints = [2, 4, 6]
-            >>> MoreEnumerable(ints).enumerate().to_list()
-            [(0, 2), (1, 4), (2, 6)]
+        ```py
+        >>> ints = [2, 4, 6]
+        >>> MoreEnumerable(ints).enumerate().to_list()
+        [(0, 2), (1, 4), (2, 6)]
+        ```
 
-        Revisions:
-            - v1.0.0: New.
+        Revisions
+            ~ v1.0.0: New.
         '''
 
     def except_by2(self,
@@ -131,14 +139,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         determines "distinctness". Note the second iterable is homogenous to self.
 
         Example
-            >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
-            >>> second = [(24, 'd'), (77, 'y')]
-            >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
-            [(16, 'x'), (16, 't')]
+        ```py
+        >>> first = [(16, 'x'), (9, 'y'), (12, 'd'), (16, 't')]
+        >>> second = [(24, 'd'), (77, 'y')]
+        >>> MoreEnumerable(first).except_by2(second, lambda x: x[1]).to_list()
+        [(16, 'x'), (16, 't')]
+        ```
 
-        Revisions:
-            - v1.0.0: Renamed from ``except_by()`` to this name to accommodate the update to Enumerable class.
-            - v0.2.1: Added preliminary support for unhashable keys.
+        Revisions
+            ~ v1.0.0: Renamed from `except_by()` to this name to accommodate an update to Enumerable class.
+            ~ v0.2.1: Added preliminary support for unhashable keys.
         '''
 
     @overload
@@ -150,9 +160,11 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Instances of `str` or `bytes` are not flattened.
 
         Example
-            >>> lst = ['apple', ['orange', ['juice', 'mango'], 'delta function']]
-            >>> MoreEnumerable(lst).flatten().to_list()
-            ['apple', 'orange', 'juice', 'mango', 'delta function']
+        ```py
+        >>> lst = ['apple', ['orange', ['juice', 'mango'], 'delta function']]
+        >>> MoreEnumerable(lst).flatten().to_list()
+        ['apple', 'orange', 'juice', 'mango', 'delta function']
+        ```
         '''
 
     @overload
@@ -176,14 +188,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Executes the given function on each element in the source sequence. The return values are discarded.
 
         Example
-            .. code-block:: python
+        ```py
+        >>> def gen():
+        ...     yield 116; yield 35; yield -9
 
-                >>> def gen():
-                ...     yield 116; yield 35; yield -9
-
-                >>> Enumerable(gen()).where(lambda x: x > 0).as_more().for_each(print)
-                116
-                35
+        >>> Enumerable(gen()).where(lambda x: x > 0).as_more().for_each(print)
+        116
+        35
+        ```
         '''
 
     def for_each2(self, action: Callable[[TSource_co, int], object]) -> None:
@@ -198,8 +210,10 @@ class MoreEnumerable(Enumerable[TSource_co]):
         are consumed.
 
         Example
-            >>> MoreEnumerable(['1', '2']).interleave(['4', '5', '6'], ['7', '8', '9']).to_list()
-            ['1', '4', '7', '2', '5', '8', '6', '9']
+        ```py
+        >>> MoreEnumerable(['1', '2']).interleave(['4', '5', '6'], ['7', '8', '9']).to_list()
+        ['1', '4', '7', '2', '5', '8', '6', '9']
+        ```
         '''
 
     @overload
@@ -210,11 +224,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Returns the maximal elements of the sequence based on the given selector.
 
         Example
-            >>> strings = ['foo', 'bar', 'cheese', 'orange', 'baz', 'spam', 'egg', 'toasts', 'dish']
-            >>> MoreEnumerable(strings).maxima_by(len).to_list()
-            ['cheese', 'orange', 'toasts']
-            >>> MoreEnumerable(strings).maxima_by(lambda x: x.count('e')).first()
-            'cheese'
+        ```py
+        >>> strings = ['foo', 'bar', 'cheese', 'orange', 'baz', 'spam', 'egg', 'toasts', 'dish']
+        >>> MoreEnumerable(strings).maxima_by(len).to_list()
+        ['cheese', 'orange', 'toasts']
+        >>> MoreEnumerable(strings).maxima_by(lambda x: x.count('e')).first()
+        'cheese'
+        ```
         '''
 
     @overload
@@ -255,14 +271,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         action are discarded.
 
         Example
-            >>> store = set()
-            >>> MoreEnumerable([1, 2, 2, 1]).pipe(store.add).where(lambda x: x % 2 == 0).to_list()
-            [2, 2]
-            >>> store
-            {1, 2}
+        ```py
+        >>> store = set()
+        >>> MoreEnumerable([1, 2, 2, 1]).pipe(store.add).where(lambda x: x % 2 == 0).to_list()
+        [2, 2]
+        >>> store
+        {1, 2}
+        ```
 
-        Revisions:
-            - v0.2.1: New.
+        Revisions
+            ~ v0.2.1: New.
         '''
 
     # note: diffrent from morelinq: identity is first parameter
@@ -276,14 +294,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         the sum of the first i-1 (and identity) elements in the original sequence.
 
         Example
-            >>> values = [9, 4, 2, 5, 7]
-            >>> MoreEnumerable(values).pre_scan(0, lambda acc, e: acc + e).to_list()
-            [0, 9, 13, 15, 20]
-            >>> MoreEnumerable([]).pre_scan(0, lambda acc, e: acc + e).to_list()
-            []
+        ```py
+        >>> values = [9, 4, 2, 5, 7]
+        >>> MoreEnumerable(values).pre_scan(0, lambda acc, e: acc + e).to_list()
+        [0, 9, 13, 15, 20]
+        >>> MoreEnumerable([]).pre_scan(0, lambda acc, e: acc + e).to_list()
+        []
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     @overload
@@ -292,12 +312,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Ranks each item in the sequence in descending order.
 
         Example
-            >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
-            >>> MoreEnumerable(scores).rank().to_list()
-            [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+        ```py
+        >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
+        >>> MoreEnumerable(scores).rank().to_list()
+        [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+        ```
 
-        Revisions:
-            - v1.0.0: New.
+        Revisions
+            ~ v1.0.0: New.
         '''
 
     @overload
@@ -308,8 +330,8 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
 
-        Revisions:
-            - v1.0.0: New.
+        Revisions
+            ~ v1.0.0: New.
         '''
 
     @overload
@@ -318,23 +340,23 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Ranks each item in the sequence in descending order using the given selector.
 
         Example
-            .. code-block:: python
+        ```py
+        >>> scores = [
+        ...     {'name': 'Frank', 'score': 75},
+        ...     {'name': 'Alica', 'score': 90},
+        ...     {'name': 'Erika', 'score': 99},
+        ...     {'name': 'Rogers', 'score': 90},
+        ... ]
 
-                >>> scores = [
-                ...     {'name': 'Frank', 'score': 75},
-                ...     {'name': 'Alica', 'score': 90},
-                ...     {'name': 'Erika', 'score': 99},
-                ...     {'name': 'Rogers', 'score': 90},
-                ... ]
+        >>> MoreEnumerable(scores).rank_by(lambda x: x['score']) \\
+        ...     .zip(scores) \\
+        ...     .group_by(lambda t: t[0], lambda t: t[1]['name']) \\
+        ...     .to_dict(lambda g: g.key, lambda g: g.to_list())
+        {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
+        ```
 
-                >>> MoreEnumerable(scores).rank_by(lambda x: x['score']) \\
-                ...     .zip(scores) \\
-                ...     .group_by(lambda t: t[0], lambda t: t[1]['name']) \\
-                ...     .to_dict(lambda g: g.key, lambda g: g.to_list())
-                {3: ['Frank'], 2: ['Alica', 'Rogers'], 1: ['Erika']}
-
-        Revisions:
-            - v1.0.0: New.
+        Revisions
+            ~ v1.0.0: New.
         '''
 
     @overload
@@ -348,8 +370,8 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
 
-        Revisions:
-            - v1.0.0: New.
+        Revisions
+            ~ v1.0.0: New.
         '''
 
     @overload
@@ -360,11 +382,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
         `==`.
 
         Example
-            >>> MoreEnumerable('abbcaeeeaa').run_length_encode().to_list()
-            [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
+        ```py
+        >>> MoreEnumerable('abbcaeeeaa').run_length_encode().to_list()
+        [('a', 1), ('b', 2), ('c', 1), ('a', 1), ('e', 3), ('a', 2)]
+        ```
 
-        Revisions:
-            - v1.1.0: New.
+        Revisions
+            ~ v1.1.0: New.
         '''
 
     @overload
@@ -377,12 +401,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         the comparer.
 
         Example
-            >>> MoreEnumerable('abBBbcaEeeff') \\
-            >>>     .run_length_encode(lambda x, y: x.lower() == y.lower()).to_list()
-            [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
+        ```py
+        >>> MoreEnumerable('abBBbcaEeeff') \\
+        >>>     .run_length_encode(lambda x, y: x.lower() == y.lower()).to_list()
+        [('a', 1), ('b', 4), ('c', 1), ('a', 1), ('E', 3), ('f', 2)]
+        ```
 
-        Revisions:
-            - v1.1.0: New.
+        Revisions
+            ~ v1.1.0: New.
         '''
 
     @overload
@@ -394,20 +420,24 @@ class MoreEnumerable(Enumerable[TSource_co]):
         where the i-th element is the sum of the first i elements in the original sequence.
 
         Example
-            >>> values = [9, 4, 2, 5, 7]
-            >>> MoreEnumerable(values).scan(lambda acc, e: acc + e).to_list()
-            [9, 13, 15, 20, 27]
-            >>> MoreEnumerable([]).scan(lambda acc, e: acc + e).to_list()
-            []
+        ```py
+        >>> values = [9, 4, 2, 5, 7]
+        >>> MoreEnumerable(values).scan(lambda acc, e: acc + e).to_list()
+        [9, 13, 15, 20, 27]
+        >>> MoreEnumerable([]).scan(lambda acc, e: acc + e).to_list()
+        []
+        ```
 
         Example
-            >>> # running max
-            >>> fruits = ['apple', 'mango', 'orange', 'passionfruit', 'grape']
-            >>> MoreEnumerable(fruits).scan(lambda acc, e: e if len(e) > len(acc) else acc).to_list()
-            ['apple', 'apple', 'orange', 'passionfruit', 'passionfruit']
+        ```py
+        >>> # running max
+        >>> fruits = ['apple', 'mango', 'orange', 'passionfruit', 'grape']
+        >>> MoreEnumerable(fruits).scan(lambda acc, e: e if len(e) > len(acc) else acc).to_list()
+        ['apple', 'apple', 'orange', 'passionfruit', 'passionfruit']
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     @overload
@@ -420,11 +450,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
         included in the result sequence.
 
         Example
-            >>> Enumerable.range(1, 5).as_more().scan(-1, lambda acc, e: acc * e).to_list()
-            [-1, -1, -2, -6, -24, -120]
+        ```py
+        >>> Enumerable.range(1, 5).as_more().scan(-1, lambda acc, e: acc * e).to_list()
+        [-1, -1, -2, -6, -24, -120]
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     @overload
@@ -436,14 +468,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         right-associative version of MoreEnumerable.scan(func).
 
         Example
-            >>> values = ['9', '4', '2', '5']
-            >>> MoreEnumerable(values).scan_right(lambda e, rr: f'({e}+{rr})').to_list()
-            ['(9+(4+(2+5)))', '(4+(2+5))', '(2+5)', '5']
-            >>> MoreEnumerable([]).scan_right(lambda e, rr: e + rr).to_list()
-            []
+        ```py
+        >>> values = ['9', '4', '2', '5']
+        >>> MoreEnumerable(values).scan_right(lambda e, rr: f'({e}+{rr})').to_list()
+        ['(9+(4+(2+5)))', '(4+(2+5))', '(2+5)', '5']
+        >>> MoreEnumerable([]).scan_right(lambda e, rr: e + rr).to_list()
+        []
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     @overload
@@ -455,12 +489,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         The right-associative version of MoreEnumerable.scan(seed, func).
 
         Example
-            >>> values = [9, 4, 2]
-            >>> MoreEnumerable(values).scan_right('null', lambda e, rr: f'(cons {e} {rr})').to_list()
-            ['(cons 9 (cons 4 (cons 2 null)))', '(cons 4 (cons 2 null))', '(cons 2 null)', 'null']
+        ```py
+        >>> values = [9, 4, 2]
+        >>> MoreEnumerable(values).scan_right('null', lambda e, rr: f'(cons {e} {rr})').to_list()
+        ['(cons 9 (cons 4 (cons 2 null)))', '(cons 4 (cons 2 null))', '(cons 2 null)', 'null']
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     def segment(self,
@@ -471,12 +507,14 @@ class MoreEnumerable(Enumerable[TSource_co]):
         new segment.
 
         Example
-            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
-            >>> MoreEnumerable(values).segment(lambda x: x < 0).select(lambda x: x.to_list()).to_list()
-            [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
+        ```py
+        >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        >>> MoreEnumerable(values).segment(lambda x: x < 0).select(lambda x: x.to_list()).to_list()
+        [[0, 1, 2, 4], [-4], [-2, 6, 2], [-2]]
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     def segment2(self,
@@ -487,14 +525,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         new segment. The element's index is used in the detector function.
 
         Example
-            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
-            >>> MoreEnumerable(values).segment2(lambda x, i: x < 0 or i % 3 == 0) \\
-            ...     .select(lambda x: x.to_list()) \\
-            ...     .to_list()
-            [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
+        ```py
+        >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        >>> MoreEnumerable(values).segment2(lambda x, i: x < 0 or i % 3 == 0) \\
+        ...     .select(lambda x: x.to_list()) \\
+        ...     .to_list()
+        [[0, 1, 2], [4], [-4], [-2], [6, 2], [-2]]
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     def segment3(self,
@@ -506,14 +546,16 @@ class MoreEnumerable(Enumerable[TSource_co]):
         function.
 
         Example
-            >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
-            >>> MoreEnumerable(values).segment3(lambda curr, prev, i: curr * prev < 0) \\
-            ...     .select(lambda x: x.to_list()) \\
-            ...     .to_list()
-            [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]
+        ```py
+        >>> values = [0, 1, 2, 4, -4, -2, 6, 2, -2]
+        >>> MoreEnumerable(values).segment3(lambda curr, prev, i: curr * prev < 0) \\
+        ...     .select(lambda x: x.to_list()) \\
+        ...     .to_list()
+        [[0, 1, 2, 4], [-4, -2], [6, 2], [-2]]
+        ```
 
-        Revisions:
-            - v1.2.0: New.
+        Revisions
+            ~ v1.2.0: New.
         '''
 
     @staticmethod
@@ -530,10 +572,12 @@ class MoreEnumerable(Enumerable[TSource_co]):
         visited.
 
         Example
-            >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
-            >>> MoreEnumerable.traverse_breath_first(3, lambda x: tree.get(x, [])) \\
-            >>>     .to_list()
-            [3, 1, 4, 0, 2, 5]
+        ```py
+        >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
+        >>> MoreEnumerable.traverse_breath_first(3, lambda x: tree.get(x, [])) \\
+        >>>     .to_list()
+        [3, 1, 4, 0, 2, 5]
+        ```
         '''
 
     @staticmethod
@@ -550,10 +594,12 @@ class MoreEnumerable(Enumerable[TSource_co]):
         visited.
 
         Example
-            >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
-            >>> MoreEnumerable.traverse_depth_first(3, lambda x: tree.get(x, [])) \\
-            >>>     .to_list()
-            [3, 1, 0, 2, 4, 5]
+        ```py
+        >>> tree = { 3: [1, 4], 1: [0, 2], 4: [5] }
+        >>> MoreEnumerable.traverse_depth_first(3, lambda x: tree.get(x, [])) \\
+        >>>     .to_list()
+        [3, 1, 0, 2, 4, 5]
+        ```
         '''
 
     @overload
@@ -572,13 +618,15 @@ class MoreEnumerable(Enumerable[TSource_co]):
         topological ordering cannot be produced.
 
         Example
-            >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1] }
-            >>> MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
-            >>>     .to_list()
-            [5, 2, 3, 4, 0, 1]
+        ```py
+        >>> adj = { 5: [2, 0], 4: [0, 1], 2: [3], 3: [1] }
+        >>> MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, [])) \\
+        >>>     .to_list()
+        [5, 2, 3, 4, 0, 1]
+        ```
 
-        Revisions:
-            - main: New.
+        Revisions
+            ~ main: New.
         '''
 
     @overload
@@ -598,6 +646,6 @@ class MoreEnumerable(Enumerable[TSource_co]):
         Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
         topological ordering cannot be produced.
 
-        Revisions:
-            - main: New.
+        Revisions
+            ~ main: New.
         '''

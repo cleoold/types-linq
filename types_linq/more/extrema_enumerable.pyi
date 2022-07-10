@@ -10,17 +10,17 @@ from ..more_typing import (
 
 class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
     '''
-    .. code-block:: python
-
-        from types_linq.more.extrema_enumerable import ExtremaEnumerable
+    ```py
+    from types_linq.more.extrema_enumerable import ExtremaEnumerable
+    ```
 
     Specialization for manipulating extrema.
 
-    Users should not construct instances of this class directly. Use ``MoreEnumerable.maxima_by()``
+    Users should not construct instances of this class directly. Use `MoreEnumerable.maxima_by()`
     instead.
 
-    Revisions:
-        - v0.2.0: New.
+    Revisions
+        ~ v0.2.0: New.
     '''
 
     def __init__(self,
@@ -42,7 +42,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
         Identical to parent.
 
         Revisions:
-            - v1.1.0: Fixed incorrect override of Enumerable.take() when it takes a slice.
+            ~ v1.1.0: Fixed incorrect override of `Enumerable.take()` when it takes a slice.
         '''
 
     def take_last(self, count: int) -> MoreEnumerable[TSource_co]:
