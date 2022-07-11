@@ -361,13 +361,10 @@ def is_tparam(s: str):
 
 
 # fill in project tparams
-with open(api_spec.type_file) as f:
-    class _(ast.NodeVisitor):
-        def visit_Assign(self, node: ast.Assign) -> Any:
-            name = node.targets[0].id
-            if isinstance(node.value, ast.Call) and node.value.func.id == 'TypeVar':
-                tparams.add(name)
-    _().visit(ast.parse(f.read()))
+for module in api_spec.modules:
+    if module['file_path'] == api_spec.type_file:
+        tparams.update(v for v in module['gvs'] if v.startswith('T'))
+        break
 
 # write api markdown for each module
 for module in api_spec.modules:
