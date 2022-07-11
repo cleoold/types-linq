@@ -31,9 +31,12 @@ class MyMethodDef:
     return_type: str
     comment: str
     is_static: bool
+    is_abstract: bool
 
     def markdown(self):
         builder = ['#### ']
+        if self.is_abstract:
+            builder.append('abstract ')
         if self.is_static:
             builder.append('staticmethod ')
         else:
@@ -123,13 +126,66 @@ class MyClassDef:
         return ''.join(builder)
 
 
+@dataclass
+class MyVariableDef:
+    name: str
+    comment: str
+    value: str  # currently module constants are only used as type variables... so value is fine
+
+    def markdown(self):
+        builder = []
+        builder.append(f'### `{self.name}`\n\n')
+        builder.append('Equals\n')
+        builder.append(f'  ~ `{self.value}`\n\n')
+        builder.append(f'{self.comment}\n\n')
+        return ''.join(builder)
+
+
 class ModuleVisitor(ast.NodeVisitor):
     def __init__(self, mspec: api_spec.ModuleSpec) -> None:
         super().__init__()
         self.mspec = mspec
+        self.module_string = ''
+        self.global_vars: list[MyVariableDef] = []
         self.classes: list[MyClassDef] = []
 
+        self.found_gvs: set[str] = {*()}
         self.found_classes: set[str] = {*()}
+
+    def visit_root(self, root: ast.Module):
+        # the first node may be a docstring
+        if doc := get_def_docstring(root):
+            self.module_string = rewrite_comments(doc)
+
+        # report assignments (with trailing docstring)
+        for i in range(len(root.body)):
+            if isinstance(assign := root.body[i], ast.Assign):
+                doc = ''
+                if i + 1 < len(root.body) and (s := node_is_constant_str(root.body[i + 1])):
+                    doc = s
+                self.visit_Assign_with_doc_non_override(assign, doc)
+
+        # report classes
+        classdefs = (c for c in root.body if isinstance(c, ast.ClassDef))
+        for classdef in classdefs:
+            self.visit_ClassDef(classdef)
+
+    def visit_Assign_with_doc_non_override(self, assign: ast.Assign, doc: str):
+        assert len(assign.targets) == 1
+        target = assign.targets[0]
+        assert isinstance(target, ast.Name)
+        name = target.id
+        print(f'  Found assignment {name}')
+        self.found_gvs.add(name)
+        if name not in self.mspec['gvs']:
+            return
+        
+        self.global_vars.append(MyVariableDef(
+            name=name,
+            comment=rewrite_comments(doc),
+            value=ast.unparse(assign.value),
+        ))
+
 
     # top level class definition
     def visit_ClassDef(self, node: ast.ClassDef) -> Any:
@@ -146,7 +202,7 @@ class ModuleVisitor(ast.NodeVisitor):
             name=classname,
             tparams=class_tparams,
             bases=[ast.unparse(n) for n in node.bases],
-            comment=rewrite_comments(get_docstring(node)),
+            comment=rewrite_comments(get_def_docstring(node)),
             methods=[],
             properties=[],
         )
@@ -171,6 +227,9 @@ class ModuleVisitor(ast.NodeVisitor):
     # such logging is necessary to check which symbols should be exposed but forgotten in api_spec.py,
     # or vice versa
     def report_found_globals(self):
+        enabled_varnames = set(a.name for a in self.global_vars)
+        print(f'  STAT Found gvs - enabled vars: {psetdiff(self.found_gvs, enabled_varnames)}')
+        print(f'  STAT Enabled gvs - found vars: {psetdiff(enabled_varnames, self.found_gvs)}')
         enabled_classnames = set(c.name for c in self.classes)
         print(f'  STAT Found classes - enabled classes: {psetdiff(self.found_classes, enabled_classnames)}')
         print(f'  STAT Enabled classes - found classes: {psetdiff(enabled_classnames, self.found_classes)}')
@@ -230,8 +289,9 @@ def get_method(fun_def: ast.FunctionDef, class_tparams: list[str]):
         kwonlyparams=kwonlyargs,
         self_type=self_type,
         return_type=ast.unparse(fun_def.returns),
-        comment=rewrite_comments(get_docstring(fun_def)),
+        comment=rewrite_comments(get_def_docstring(fun_def)),
         is_static=is_static,
+        is_abstract=find_decorator(fun_def, 'abstractmethod'),
     )
 
 
@@ -239,17 +299,20 @@ def get_property(fun_def: ast.FunctionDef):
     return MyPropertyDef(
         name=fun_def.name,
         return_type=ast.unparse(fun_def.returns),
-        comment=rewrite_comments(get_docstring(fun_def)),
+        comment=rewrite_comments(get_def_docstring(fun_def)),
     )
 
 
-def get_docstring(any_def: Union[ast.FunctionDef, ast.ClassDef]):
-    docstring = ''
-    if any_def.body and isinstance(any_def.body[0], ast.Expr) and \
-        isinstance(const := any_def.body[0].value, ast.Constant) and \
-        isinstance(const.value, str):
-        docstring = const.value
-    return docstring
+def node_is_constant_str(node: ast.AST):
+    if isinstance(node, ast.Expr) and \
+        isinstance(const := node.value, ast.Constant) and \
+        isinstance(s := const.value, str):
+        return s
+    return ''
+
+
+def get_def_docstring(any_def: Union[ast.FunctionDef, ast.ClassDef, ast.Module]):
+    return node_is_constant_str(any_def.body[0])
 
 
 def find_decorator(any_def: Union[ast.FunctionDef, ast.ClassDef], name: str):
@@ -319,10 +382,22 @@ for module in api_spec.modules:
     with open(module['file_path']) as fin, open(f'api/{sub_folder}/{m_name}.md', 'w') as fout:
         code = fin.read()
         v = ModuleVisitor(module)
-        v.visit(ast.parse(code))
+        v.visit_root(ast.parse(code))
         v.report_found_globals()
 
         fout.write(f'# module ``{m_name}``\n\n')
+
+        if v.module_string:
+            fout.write(f'{v.module_string}\n\n')
+
+        if v.global_vars:
+            fout.write('## Constants\n\n')
+            for i, var in enumerate(v.global_vars):
+                fout.write(var.markdown())
+                if i < len(v.global_vars) - 1:
+                    fout.write('---\n\n')
+            if v.classes:
+                fout.write('---\n\n')
 
         for i, c in enumerate(v.classes):
             fout.write(c.markdown())

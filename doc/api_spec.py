@@ -4,6 +4,7 @@ from typing import TypedDict
 class ModuleSpec(TypedDict):
     file_path: str
     name: str
+    gvs: set[str]
     classes: dict[str, 'ClassSpec']
 
 class ClassSpec(TypedDict):
@@ -23,6 +24,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/cached_enumerable.py',
         'name': f'{_project}.cached_enumerable',
+        'gvs': {*()},
         'classes': {
             'CachedEnumerable': {
                 'methods': {
@@ -35,6 +37,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/enumerable.pyi',
         'name': f'{_project}.enumerable',
+        'gvs': {*()},
         'classes': {
             'Enumerable': {
                 'methods': {
@@ -124,6 +127,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/grouping.py',
         'name': f'{_project}.grouping',
+        'gvs': {*()},
         'classes': {
             'Grouping': {
                 'methods': {*()},
@@ -136,6 +140,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/lookup.py',
         'name': f'{_project}.lookup',
+        'gvs': {*()},
         'classes': {
             'Lookup': {
                 'methods': {
@@ -152,8 +157,56 @@ modules: list[ModuleSpec] = [
         },
     },
     {
+        'file_path': f'{_path}/more_typing.py',
+        'name': f'{_project}.more_typing',
+        'gvs': {
+            'TAccumulate',
+            'TAverage_co',
+            'TCollection',
+            'TDefault',
+            'TInner',
+            'TKey',
+            'TKey2',
+            'TKey_co',
+            'TOther',
+            'TOther2',
+            'TOther3',
+            'TOther4',
+            'TResult',
+            'TSelf',
+            'TSource',
+            'TSource_co',
+            'TValue',
+            'TValue_co',
+            'TSupportsLessThan',
+            'TSupportsAdd',
+        },
+        'classes': {
+            'SupportsAverage': {
+                'methods': {
+                    '__add__',
+                    '__truediv__',
+                },
+                'readonly_properties': {*()},
+            },
+            'SupportsLessThan': {
+                'methods': {
+                    '__lt__',
+                },
+                'readonly_properties': {*()},
+            },
+            'SupportsAdd': {
+                'methods': {
+                    '__add__',
+                },
+                'readonly_properties': {*()},
+            },
+        },
+    },
+    {
         'file_path': f'{_path}/ordered_enumerable.pyi',
         'name': f'{_project}.ordered_enumerable',
+        'gvs': {*()},
         'classes': {
             'OrderedEnumerable': {
                 'methods': {
@@ -168,6 +221,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/types_linq_error.py',
         'name': f'{_project}.types_linq_error',
+        'gvs': {*()},
         'classes': {
             'TypesLinqError': {
                 'methods': {*()},
@@ -186,6 +240,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/more/more_enumerable.pyi',
         'name': f'{_project}.more.more_enumerable',
+        'gvs': {*()},
         'classes': {
             'MoreEnumerable': {
                 'methods': {
@@ -223,6 +278,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/more/extrema_enumerable.pyi',
         'name': f'{_project}.more.extrema_enumerable',
+        'gvs': {*()},
         'classes': {
             'ExtremaEnumerable': {
                 'methods': {
@@ -236,6 +292,7 @@ modules: list[ModuleSpec] = [
     {
         'file_path': f'{_path}/more/more_error.py',
         'name': f'{_project}.more.more_error',
+        'gvs': {*()},
         'classes': {
             'DirectedGraphNotAcyclicError': {
                 'methods': {*()},
