@@ -1,5 +1,6 @@
 # module ``types_linq.more.more_error``
 
+(apiref.DirectedGraphNotAcyclicError)=
 ## class `DirectedGraphNotAcyclicError`
 
 ```py
@@ -13,7 +14,7 @@ Revisions
 
 ### Bases
 
-- `InvalidOperationError`
+- [`InvalidOperationError`](apiref.InvalidOperationError)
 
 ### Members
 

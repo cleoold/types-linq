@@ -352,9 +352,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         Computes the average value of the sequence. Raises `InvalidOperationError` if there
         is no value.
 
-        The returned type is the type of the expression
-        `(elem1 + elem2 + ...) / cast(int, ...)`.
-
         Example
         ```py
         >>> ints = [1, 3, 5, 9, 11]
@@ -368,9 +365,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Computes the average value of the sequence using the selector. Raises
         `InvalidOperationError` if there is no value.
-
-        The returned type is the type of the expression
-        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)`.
 
         Example
         ```py
@@ -386,9 +380,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     ) -> Union[TResult, TDefault]:
         '''
         Computes the average value of the sequence. Returns `default` if there is no value.
-
-        The returned type is the type of the expression
-        `(elem1 + elem2 + ...) / cast(int, ...)` or `TDefault`.
 
         Example
         ```py
@@ -407,9 +398,6 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
         '''
         Computes the average value of the sequence using the selector. Returns `default` if there
         is no value.
-
-        The returned type is the type of the expression
-        `(selector(elem1) + selector(elem2) + ...) / cast(int, ...)` or `TDefault`.
 
         Example
         ```py

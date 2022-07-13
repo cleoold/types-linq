@@ -1,5 +1,6 @@
 # module ``types_linq.ordered_enumerable``
 
+(apiref.OrderedEnumerable)=
 ## class `OrderedEnumerable[TSource_co, TKey]`
 
 ```py
@@ -12,20 +13,20 @@ Users should not construct instances of this class directly. Use `Enumerable.ord
 
 ### Bases
 
-- `Enumerable[TSource_co]`
-- `Generic[TSource_co, TKey]`
+- [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
+- `Generic[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 ### Members
 
 #### instancemethod `create_ordered_enumerable[TKey2](key_selector, comparer, descending)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey2]`)
-  ~ *comparer* (`Optional[Callable[[TKey2, TKey2], int]]`)
-  ~ *descending* (`bool`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey2`](apiref.TKey2)`]`
+  ~ *comparer*: `Optional[Callable[[`[`TKey2`](apiref.TKey2)`, `[`TKey2`](apiref.TKey2)`], int]]`
+  ~ *descending*: `bool`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TKey2]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey2`](apiref.TKey2)`]`
 
 Performs a subsequent ordering on the elements of the sequence according to a key.
 
@@ -40,10 +41,10 @@ Revisions
 #### instancemethod `then_by[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Performs a subsequent ordering of the elements in ascending order according to key.
 
@@ -66,11 +67,11 @@ Example
 #### instancemethod `then_by[TKey2](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey2]`)
-  ~ *__comparer* (`Callable[[TKey2, TKey2], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey2`](apiref.TKey2)`]`
+  ~ *__comparer*: `Callable[[`[`TKey2`](apiref.TKey2)`, `[`TKey2`](apiref.TKey2)`], int]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TKey2]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey2`](apiref.TKey2)`]`
 
 Performs a subsequent ordering of the elements in ascending order by using a specified comparer.
 
@@ -82,10 +83,10 @@ if lhs < rhs, and 0 if they are equal.
 #### instancemethod `then_by_descending[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Performs a subsequent ordering of the elements in descending order according to key.
 
@@ -94,11 +95,11 @@ Performs a subsequent ordering of the elements in descending order according to 
 #### instancemethod `then_by_descending[TKey2](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey2]`)
-  ~ *__comparer* (`Callable[[TKey2, TKey2], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey2`](apiref.TKey2)`]`
+  ~ *__comparer*: `Callable[[`[`TKey2`](apiref.TKey2)`, `[`TKey2`](apiref.TKey2)`], int]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TKey2]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey2`](apiref.TKey2)`]`
 
 Performs a subsequent ordering of the elements in descending order by using a specified comparer.
 

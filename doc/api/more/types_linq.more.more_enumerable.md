@@ -1,5 +1,6 @@
 # module ``types_linq.more.more_enumerable``
 
+(apiref.MoreEnumerable)=
 ## class `MoreEnumerable[TSource_co]`
 
 ```py
@@ -19,19 +20,19 @@ Revisions
 
 ### Bases
 
-- `Enumerable[TSource_co]`
+- [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 ### Members
 
 #### instancemethod `aggregate_right[TAccumulate, TResult](__seed, __func, __result_selector)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__func* (`Callable[[TSource_co, TAccumulate], TAccumulate]`)
-  ~ *__result_selector* (`Callable[[TAccumulate], TResult]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TAccumulate`](apiref.TAccumulate)`], `[`TAccumulate`](apiref.TAccumulate)`]`
+  ~ *__result_selector*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `TResult`
+  ~ [`TResult`](apiref.TResult)
 
 Applies a right-associative accumulator function over the sequence. The seed is used as
 the initial accumulator value, and the result_selector is used to select the result value.
@@ -44,11 +45,11 @@ Revisions
 #### instancemethod `aggregate_right[TAccumulate](__seed, __func)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__func* (`Callable[[TSource_co, TAccumulate], TAccumulate]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TAccumulate`](apiref.TAccumulate)`], `[`TAccumulate`](apiref.TAccumulate)`]`
 
 Returns
-  ~ `TAccumulate`
+  ~ [`TAccumulate`](apiref.TAccumulate)
 
 Applies a right-associative accumulator function over the sequence. The seed is used as the
 initial accumulator value.
@@ -68,12 +69,12 @@ Revisions
 #### instancemethod `aggregate_right(__func)`
 
 Parameters
-  ~ *__func* (`Callable[[TSource_co, TSource_co], TSource_co]`)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], `[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Applies a right-associative accumulator function over the sequence. Raises `InvalidOperationError`
+Applies a right-associative accumulator function over the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError)
 if there is no value in the sequence.
 
 Example
@@ -92,7 +93,7 @@ Revisions
 
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns the original MoreEnumerable reference.
 
@@ -115,14 +116,14 @@ Revisions
 #### instancemethod `cycle(count=None)`
 
 Parameters
-  ~ *count* (`Optional[int]`)
+  ~ *count*: `Optional[int]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Repeats the sequence `count` times.
 
-If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+If `count` is `None`, the sequence is infinite. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if `count`
 is negative.
 
 Example
@@ -139,10 +140,10 @@ Revisions
 #### instancemethod `enumerate(start=0)`
 
 Parameters
-  ~ *start* (`int`)
+  ~ *start*: `int`
 
 Returns
-  ~ `MoreEnumerable[Tuple[int, TSource_co]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Tuple[int, `[`TSource_co`](apiref.TSource_co)`]]`
 
 Returns a sequence of tuples containing the index and the value from the source sequence. `start`
 is used to specify the starting index.
@@ -162,11 +163,11 @@ Revisions
 #### instancemethod `except_by2(second, key_selector)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
-  ~ *key_selector* (`Callable[[TSource_co], object]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set difference of two sequences: self - second, according to a key selector that
 determines "distinctness". Note the second iterable is homogenous to self.
@@ -189,7 +190,7 @@ Revisions
 
 
 Returns
-  ~ `MoreEnumerable[Any]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Any]`
 
 Flattens the sequence containing arbitrarily-nested subsequences.
 
@@ -208,10 +209,10 @@ Example
 #### instancemethod `flatten(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[Iterable[Any]], bool]`)
+  ~ *__predicate*: `Callable[[Iterable[Any]], bool]`
 
 Returns
-  ~ `MoreEnumerable[Any]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Any]`
 
 Flattens the sequence containing arbitrarily-nested subsequences. A predicate function determines
 whether a nested iterable should be flattened or not.
@@ -223,10 +224,10 @@ Note: the nested objects must be Iterable to be flatten.
 #### instancemethod `flatten2(selector)`
 
 Parameters
-  ~ *selector* (`Callable[[Any], Optional[Iterable[object]]]`)
+  ~ *selector*: `Callable[[Any], Optional[Iterable[object]]]`
 
 Returns
-  ~ `MoreEnumerable[Any]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Any]`
 
 Flattens the sequence containing arbitrarily-nested subsequences. A selector is used to select a
 subsequence based on the object's properties. If the selector returns None, then the object is
@@ -237,7 +238,7 @@ considered a leaf.
 #### instancemethod `for_each(action)`
 
 Parameters
-  ~ *action* (`Callable[[TSource_co], object]`)
+  ~ *action*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
   ~ `None`
@@ -259,7 +260,7 @@ Example
 #### instancemethod `for_each2(action)`
 
 Parameters
-  ~ *action* (`Callable[[TSource_co, int], object]`)
+  ~ *action*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], object]`
 
 Returns
   ~ `None`
@@ -272,10 +273,10 @@ the logic of the function. The return values are discarded.
 #### instancemethod `interleave(*iters)`
 
 Parameters
-  ~ **iters* (`Iterable[TSource_co]`)
+  ~ **iters*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Interleaves the elements of two or more sequences into a single sequence, skipping sequences if they
 are consumed.
@@ -291,10 +292,10 @@ Example
 #### instancemethod `maxima_by[TSupportsLessThan](selector)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `ExtremaEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`ExtremaEnumerable`](apiref.ExtremaEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns the maximal elements of the sequence based on the given selector.
 
@@ -312,11 +313,11 @@ Example
 #### instancemethod `maxima_by[TKey](selector, __comparer)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `ExtremaEnumerable[TSource_co, TKey]`
+  ~ [`ExtremaEnumerable`](apiref.ExtremaEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 Returns the maximal elements of the sequence based on the given selector and the comparer.
 
@@ -328,10 +329,10 @@ if lhs < rhs, and 0 if they are equal.
 #### instancemethod `minima_by[TSupportsLessThan](selector)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `ExtremaEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`ExtremaEnumerable`](apiref.ExtremaEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns the minimal elements of the sequence based on the given selector.
 
@@ -340,11 +341,11 @@ Returns the minimal elements of the sequence based on the given selector.
 #### instancemethod `minima_by[TKey](selector, __comparer)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `ExtremaEnumerable[TSource_co, TKey]`
+  ~ [`ExtremaEnumerable`](apiref.ExtremaEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 Returns the minimal elements of the sequence based on the given selector and the comparer.
 
@@ -356,10 +357,10 @@ if lhs < rhs, and 0 if they are equal.
 #### instancemethod `pipe(action)`
 
 Parameters
-  ~ *action* (`Callable[[TSource_co], object]`)
+  ~ *action*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Executes the given action on each element in the sequence and yields it. Return values of
 action are discarded.
@@ -381,11 +382,11 @@ Revisions
 #### instancemethod `pre_scan[TAccumulate](identity, transformation)`
 
 Parameters
-  ~ *identity* (`TAccumulate`)
-  ~ *transformation* (`Callable[[TAccumulate, TSource_co], TAccumulate]`)
+  ~ *identity*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *transformation*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`, `[`TSource_co`](apiref.TSource_co)`], `[`TAccumulate`](apiref.TAccumulate)`]`
 
 Returns
-  ~ `MoreEnumerable[TAccumulate]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TAccumulate`](apiref.TAccumulate)`]`
 
 Performs a pre-scan (exclusive prefix sum) over the sequence. Such scan returns an
 equal-length sequence where the first element is the identity, and i-th element (i>1) is
@@ -408,11 +409,11 @@ Revisions
 #### instancemethod `rank[TSupportsLessThan]()`
 
 Constraint
-  ~ *self*: `MoreEnumerable[TSupportsLessThan]`
+  ~ *self*: [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 
 Returns
-  ~ `MoreEnumerable[int]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
 Ranks each item in the sequence in descending order.
 
@@ -431,10 +432,10 @@ Revisions
 #### instancemethod `rank(__comparer)`
 
 Parameters
-  ~ *__comparer* (`Callable[[TSource_co, TSource_co], int]`)
+  ~ *__comparer*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], int]`
 
 Returns
-  ~ `MoreEnumerable[int]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
 Ranks each item in the sequence in descending order using the given comparer.
 
@@ -449,10 +450,10 @@ Revisions
 #### instancemethod `rank_by[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `MoreEnumerable[int]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
 Ranks each item in the sequence in descending order using the given selector.
 
@@ -480,11 +481,11 @@ Revisions
 #### instancemethod `rank_by[TKey](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `MoreEnumerable[int]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
 Ranks each item in the sequence in descending order using the given selector and comparer.
 
@@ -500,7 +501,7 @@ Revisions
 
 
 Returns
-  ~ `MoreEnumerable[Tuple[TSource_co, int]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, int]]`
 
 Run-length encodes the sequence into a sequence of tuples where each tuple contains an
 (the first) element and its number of contingent occurrences, where equality is based on
@@ -520,10 +521,10 @@ Revisions
 #### instancemethod `run_length_encode(__comparer)`
 
 Parameters
-  ~ *__comparer* (`Callable[[TSource_co, TSource_co], bool]`)
+  ~ *__comparer*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `MoreEnumerable[Tuple[TSource_co, int]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, int]]`
 
 Run-length encodes the sequence into a sequence of tuples where each tuple contains an
 (the first) element and its number of contingent occurrences, where equality is determined by
@@ -544,10 +545,10 @@ Revisions
 #### instancemethod `scan(__transformation)`
 
 Parameters
-  ~ *__transformation* (`Callable[[TSource_co, TSource_co], TSource_co]`)
+  ~ *__transformation*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], `[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Performs a inclusive prefix sum over the sequence. Such scan returns an equal-length sequence
 where the i-th element is the sum of the first i elements in the original sequence.
@@ -577,11 +578,11 @@ Revisions
 #### instancemethod `scan[TAccumulate](__seed, __transformation)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__transformation* (`Callable[[TAccumulate, TSource_co], TAccumulate]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__transformation*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`, `[`TSource_co`](apiref.TSource_co)`], `[`TAccumulate`](apiref.TAccumulate)`]`
 
 Returns
-  ~ `MoreEnumerable[TAccumulate]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TAccumulate`](apiref.TAccumulate)`]`
 
 Like Enumerable.aggregate(seed, transformation) except that the intermediate results are
 included in the result sequence.
@@ -600,10 +601,10 @@ Revisions
 #### instancemethod `scan_right(__func)`
 
 Parameters
-  ~ *__func* (`Callable[[TSource_co, TSource_co], TSource_co]`)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], `[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Performs a right-associative inclusive prefix sum over the sequence. This is the
 right-associative version of MoreEnumerable.scan(func).
@@ -625,11 +626,11 @@ Revisions
 #### instancemethod `scan_right[TAccumulate](__seed, __func)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__func* (`Callable[[TSource_co, TAccumulate], TAccumulate]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TAccumulate`](apiref.TAccumulate)`], `[`TAccumulate`](apiref.TAccumulate)`]`
 
 Returns
-  ~ `MoreEnumerable[TAccumulate]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TAccumulate`](apiref.TAccumulate)`]`
 
 The right-associative version of MoreEnumerable.scan(seed, func).
 
@@ -648,10 +649,10 @@ Revisions
 #### instancemethod `segment(new_segment_predicate)`
 
 Parameters
-  ~ *new_segment_predicate* (`Callable[[TSource_co], bool]`)
+  ~ *new_segment_predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `MoreEnumerable[MoreEnumerable[TSource_co]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Splits the sequence into segments by using a detector function that returns True to signal a
 new segment.
@@ -671,10 +672,10 @@ Revisions
 #### instancemethod `segment2(new_segment_predicate)`
 
 Parameters
-  ~ *new_segment_predicate* (`Callable[[TSource_co, int], bool]`)
+  ~ *new_segment_predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], bool]`
 
 Returns
-  ~ `MoreEnumerable[MoreEnumerable[TSource_co]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Splits the sequence into segments by using a detector function that returns True to signal a
 new segment. The element's index is used in the detector function.
@@ -696,10 +697,10 @@ Revisions
 #### instancemethod `segment3(new_segment_predicate)`
 
 Parameters
-  ~ *new_segment_predicate* (`Callable[[TSource_co, TSource_co, int], bool]`)
+  ~ *new_segment_predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`, int], bool]`
 
 Returns
-  ~ `MoreEnumerable[MoreEnumerable[TSource_co]]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Splits the sequence into segments by using a detector function that returns True to signal a
 new segment. The last element and the current element's index are used in the detector
@@ -722,11 +723,11 @@ Revisions
 #### staticmethod `traverse_breath_first[TSource](root, children_selector)`
 
 Parameters
-  ~ *root* (`TSource`)
-  ~ *children_selector* (`Callable[[TSource], Iterable[TSource]]`)
+  ~ *root*: [`TSource`](apiref.TSource)
+  ~ *children_selector*: `Callable[[`[`TSource`](apiref.TSource)`], Iterable[`[`TSource`](apiref.TSource)`]]`
 
 Returns
-  ~ `MoreEnumerable[TSource]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource`](apiref.TSource)`]`
 
 Traverses the tree (graph) from the root node in a breath-first fashion. A selector is used to
 select children of each node.
@@ -748,11 +749,11 @@ Example
 #### staticmethod `traverse_depth_first[TSource](root, children_selector)`
 
 Parameters
-  ~ *root* (`TSource`)
-  ~ *children_selector* (`Callable[[TSource], Iterable[TSource]]`)
+  ~ *root*: [`TSource`](apiref.TSource)
+  ~ *children_selector*: `Callable[[`[`TSource`](apiref.TSource)`], Iterable[`[`TSource`](apiref.TSource)`]]`
 
 Returns
-  ~ `MoreEnumerable[TSource]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource`](apiref.TSource)`]`
 
 Traverses the tree (graph) from the root node in a depth-first fashion. A selector is used to
 select children of each node.
@@ -774,10 +775,10 @@ Example
 #### instancemethod `traverse_topological(children_selector)`
 
 Parameters
-  ~ *children_selector* (`Callable[[TSource_co], Iterable[TSource_co]]`)
+  ~ *children_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], Iterable[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Traverses the graph in topological order, A selector is used to select children of each
 node. The ordering created from this method is a variant of depth-first traversal and ensures
@@ -786,7 +787,7 @@ duplicate nodes are output once.
 To invoke this method, the self sequence contains nodes with zero in-degrees to start the
 iteration. Passing a list of all nodes is allowed although not required.
 
-Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
+Raises [`DirectedGraphNotAcyclicError`](apiref.DirectedGraphNotAcyclicError) if the directed graph contains a cycle and the
 topological ordering cannot be produced.
 
 Example
@@ -805,11 +806,11 @@ Revisions
 #### instancemethod `traverse_topological(children_selector, __key_selector)`
 
 Parameters
-  ~ *children_selector* (`Callable[[TSource_co], Iterable[TSource_co]]`)
-  ~ *__key_selector* (`Callable[[TSource_co], object]`)
+  ~ *children_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], Iterable[`[`TSource_co`](apiref.TSource_co)`]]`
+  ~ *__key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Traverses the graph in topological order, A selector is used to select children of each
 node. The ordering created from this method is a variant of depth-first traversal and
@@ -819,7 +820,7 @@ between nodes.
 To invoke this method, the self sequence contains nodes with zero in-degrees to start the
 iteration. Passing a list of all nodes is allowed although not required.
 
-Raises `DirectedGraphNotAcyclicError` if the directed graph contains a cycle and the
+Raises [`DirectedGraphNotAcyclicError`](apiref.DirectedGraphNotAcyclicError) if the directed graph contains a cycle and the
 topological ordering cannot be produced.
 
 Revisions

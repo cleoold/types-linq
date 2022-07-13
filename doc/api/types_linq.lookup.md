@@ -1,5 +1,6 @@
 # module ``types_linq.lookup``
 
+(apiref.Lookup)=
 ## class `Lookup[TKey_co, TValue_co]`
 
 ```py
@@ -13,7 +14,7 @@ instead.
 
 ### Bases
 
-- `Enumerable[Grouping[TKey_co, TValue_co]]`
+- [`Enumerable`](apiref.Enumerable)`[`[`Grouping`](apiref.Grouping)`[`[`TKey_co`](apiref.TKey_co)`, `[`TValue_co`](apiref.TValue_co)`]]`
 
 ### Members
 
@@ -29,7 +30,7 @@ Gets the number of key-collection pairs.
 #### instancemethod `__contains__(value)`
 
 Parameters
-  ~ *value* (`object`)
+  ~ *value*: `object`
 
 Returns
   ~ `bool`
@@ -51,10 +52,10 @@ Gets the number of key-collection pairs.
 #### instancemethod `__getitem__(key)`
 
 Parameters
-  ~ *key* (`TKey_co`)
+  ~ *key*: [`TKey_co`](apiref.TKey_co)
 
 Returns
-  ~ `Enumerable[TValue_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TValue_co`](apiref.TValue_co)`]`
 
 Gets the collection of values indexed by the specified key, or empty if no such key
 exists.
@@ -64,10 +65,10 @@ exists.
 #### instancemethod `apply_result_selector[TResult](result_selector)`
 
 Parameters
-  ~ *result_selector* (`Callable[[TKey_co, Enumerable[TValue_co]], TResult]`)
+  ~ *result_selector*: `Callable[[`[`TKey_co`](apiref.TKey_co)`, `[`Enumerable`](apiref.Enumerable)`[`[`TValue_co`](apiref.TValue_co)`]], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Applies a transform function to each key and its associated values, then returns the
 results.
@@ -77,7 +78,7 @@ results.
 #### instancemethod `contains(value)`
 
 Parameters
-  ~ *value* (`object`)
+  ~ *value*: `object`
 
 Returns
   ~ `bool`

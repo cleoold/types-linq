@@ -9,6 +9,9 @@ from typing import Any, Optional, Union
 import api_spec
 
 
+LINK_PREFIX = 'apiref.'
+
+
 @dataclass
 class MyParam:
     name: str
@@ -61,16 +64,16 @@ class MyMethodDef:
 
         if self.self_type:
             builder.append('Constraint\n')
-            builder.append(f'  ~ *self*: `{self.self_type}`\n\n')
+            builder.append(f'  ~ *self*: {rewrite_code_with_links(self.self_type)}\n\n')
 
         if self.params or self.kwonlyparams:
             builder.append('Parameters\n')
         for p in chain(self.params, self.kwonlyparams):
-            builder.append(f'  ~ *{p.name}* (`{p.tp}`)\n')
+            builder.append(f'  ~ *{p.name}*: {rewrite_code_with_links(p.tp)}\n')
         builder.append('\n')
 
         builder.append('Returns\n')
-        builder.append(f'  ~ `{self.return_type}`\n\n')
+        builder.append(f'  ~ {rewrite_code_with_links(self.return_type)}\n\n')
         builder.append(f'{self.comment}\n\n')
         return ''.join(builder)
 
@@ -86,7 +89,7 @@ class MyPropertyDef:
         builder.append(f'#### instanceproperty `{self.name}`\n\n')
 
         builder.append('Returns\n')
-        builder.append(f'  ~ `{self.return_type}`\n\n')
+        builder.append(f'  ~ {rewrite_code_with_links(self.return_type)}\n\n')
         builder.append(f'{self.comment}\n\n')
         return ''.join(builder)
 
@@ -108,13 +111,14 @@ class MyClassDef:
 
     def markdown(self):
         builder = []
+        builder.append(f'({LINK_PREFIX}{self.name})=\n')
         builder.append(f'## class `{self.typename()}`\n\n')
 
         builder.append(f'{self.comment}\n\n')
 
         builder.append('### Bases\n\n')
         for base in self.bases:
-            builder.append(f'- `{base}`\n')
+            builder.append(f'- {rewrite_code_with_links(base)}\n')
         builder.append('\n')
 
         builder.append(title := '### Members\n\n')
@@ -134,9 +138,10 @@ class MyVariableDef:
 
     def markdown(self):
         builder = []
+        builder.append(f'({LINK_PREFIX}{self.name})=\n')
         builder.append(f'### `{self.name}`\n\n')
         builder.append('Equals\n')
-        builder.append(f'  ~ `{self.value}`\n\n')
+        builder.append(f'  ~ {rewrite_code_with_links(self.value)}\n\n')
         builder.append(f'{self.comment}\n\n')
         return ''.join(builder)
 
@@ -347,24 +352,52 @@ def rewrite_comments(s: str):
     s = dedent(s).strip()
     # rewrite the code Example blocks from markdown to myst's deflist
     eight = ' ' * 8
-    return re.sub(
+    s = re.sub(
         r'^Example\s```(.*?)\n(.*?)```$',
         lambda mat: f'Example\n    ~   ```{mat.group(1)}\n{indent(mat.group(2), eight)}{eight}```',
         s,
         flags=re.DOTALL | re.MULTILINE,
     )
+    # rewrite code literals with their links if possible
+    return re.sub(
+        r'`([^\d\W][\w\d]*?)`',
+        lambda mat: f'[`{name}`]({LINK_PREFIX}{name})' \
+            if (name := mat.group(1)) in linkable_items else mat.group(0),
+        s,
+    )
 
+
+def rewrite_code_with_links(code: str):
+    identifier_regex = r'([^\d\W][\w\d]*)'  # not robust but sufficient for now
+    builder = []
+    continueable = False
+    for seg in re.split(identifier_regex, code):
+        if not seg:
+            continue
+        if seg in linkable_items:
+            builder.append(f'[`{seg}`]({LINK_PREFIX}{seg})')
+            continueable = False
+        elif continueable:
+            builder[-1] = f'{builder[-1][:-1]}{seg}`'
+        else:
+            builder.append(f'`{seg}`')
+            continueable = True
+    return ''.join(builder)
+
+
+linkable_items = {*()}
 tparams = {*()}
 
 def is_tparam(s: str):
     return s in tparams
 
 
-# fill in project tparams
+# fill in hyperlinkable items and project tparams
 for module in api_spec.modules:
     if module['file_path'] == api_spec.type_file:
         tparams.update(v for v in module['gvs'] if v.startswith('T'))
-        break
+    linkable_items.update(module['gvs'])
+    linkable_items.update(module['classes'].keys())
 
 # write api markdown for each module
 for module in api_spec.modules:

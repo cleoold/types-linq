@@ -5,6 +5,20 @@ code {
     border: none;
     border-bottom: 1px solid rgba(61, 110, 110, 0.288);
     background: none;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.rst-content a code,
+.rst-content a tt,
+a code {
+    border-bottom: 1px solid rgba(61, 110, 110, 0.938);
+}
+
+.rst-content a code:hover,
+.rst-content a tt:hover,
+a code:hover {
+    border-width: 2px;
 }
 
 span.pre {

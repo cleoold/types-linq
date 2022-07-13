@@ -1,5 +1,6 @@
 # module ``types_linq.cached_enumerable``
 
+(apiref.CachedEnumerable)=
 ## class `CachedEnumerable[TSource_co]`
 
 ```py
@@ -15,19 +16,19 @@ Revisions
 
 ### Bases
 
-- `Enumerable[TSource_co]`
+- [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 ### Members
 
 #### instancemethod `as_cached(*, cache_capacity=None)`
 
 Parameters
-  ~ *cache_capacity* (`Optional[int]`)
+  ~ *cache_capacity*: `Optional[int]`
 
 Returns
-  ~ `CachedEnumerable[TSource_co]`
+  ~ [`CachedEnumerable`](apiref.CachedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Updates settings and returns the original CachedEnumerable reference.
 
-Raises `InvalidOperationError` if cache_capacity is negative.
+Raises [`InvalidOperationError`](apiref.InvalidOperationError) if cache_capacity is negative.
 

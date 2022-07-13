@@ -1,5 +1,6 @@
 # module ``types_linq.more.extrema_enumerable``
 
+(apiref.ExtremaEnumerable)=
 ## class `ExtremaEnumerable[TSource_co, TKey]`
 
 ```py
@@ -16,18 +17,18 @@ Revisions
 
 ### Bases
 
-- `MoreEnumerable[TSource_co]`
-- `Generic[TSource_co, TKey]`
+- [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
+- `Generic[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 ### Members
 
 #### instancemethod `take(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a specified number of contiguous elements from the start of the sequence.
 
@@ -36,14 +37,14 @@ Returns a specified number of contiguous elements from the start of the sequence
 #### instancemethod `take(__index)`
 
 Parameters
-  ~ *__index* (`slice`)
+  ~ *__index*: `slice`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Identical to parent.
 
-Revisions:
+Revisions
     ~ v1.1.0: Fixed incorrect override of `Enumerable.take()` when it takes a slice.
 
 ---
@@ -51,10 +52,10 @@ Revisions:
 #### instancemethod `take_last(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a new sequence that contains the last `count` elements.
 

@@ -41,7 +41,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
         '''
         Identical to parent.
 
-        Revisions:
+        Revisions
             ~ v1.1.0: Fixed incorrect override of `Enumerable.take()` when it takes a slice.
         '''
 

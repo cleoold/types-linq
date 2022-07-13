@@ -18,7 +18,7 @@ TAccumulate = TypeVar('TAccumulate')
 'A generic type parameter.'
 
 TAverage_co = TypeVar('TAverage_co', covariant=True)
-'A generic type parameter.'
+'A generic covariant type parameter.'
 
 TCollection = TypeVar('TCollection')
 'A generic type parameter.'

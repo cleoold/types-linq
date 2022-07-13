@@ -1,5 +1,6 @@
 # module ``types_linq.grouping``
 
+(apiref.Grouping)=
 ## class `Grouping[TValue_co, TKey_co]`
 
 ```py
@@ -12,15 +13,15 @@ Users should not construct instances of this class directly. Use `Enumerable.gro
 
 ### Bases
 
-- `Enumerable[TValue_co]`
-- `Generic[TKey_co, TValue_co]`
+- [`Enumerable`](apiref.Enumerable)`[`[`TValue_co`](apiref.TValue_co)`]`
+- `Generic[`[`TKey_co`](apiref.TKey_co)`, `[`TValue_co`](apiref.TValue_co)`]`
 
 ### Members
 
 #### instanceproperty `key`
 
 Returns
-  ~ `TKey_co`
+  ~ [`TKey_co`](apiref.TKey_co)
 
 Gets the key of the grouping.
 

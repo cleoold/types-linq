@@ -1,5 +1,6 @@
 # module ``types_linq.types_linq_error``
 
+(apiref.TypesLinqError)=
 ## class `TypesLinqError`
 
 ```py
@@ -14,6 +15,7 @@ Types-linq has run into problems.
 
 ---
 
+(apiref.InvalidOperationError)=
 ## class `InvalidOperationError`
 
 ```py
@@ -24,11 +26,12 @@ Exception raised when a call is invalid for the object's current state.
 
 ### Bases
 
-- `TypesLinqError`
+- [`TypesLinqError`](apiref.TypesLinqError)
 - `ValueError`
 
 ---
 
+(apiref.IndexOutOfRangeError)=
 ## class `IndexOutOfRangeError`
 
 ```py
@@ -39,6 +42,6 @@ An `IndexError` with types-linq flavour.
 
 ### Bases
 
-- `TypesLinqError`
+- [`TypesLinqError`](apiref.TypesLinqError)
 - `IndexError`
 

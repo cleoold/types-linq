@@ -1,5 +1,6 @@
 # module ``types_linq.enumerable``
 
+(apiref.Enumerable)=
 ## class `Enumerable[TSource_co]`
 
 ```py
@@ -10,15 +11,15 @@ Provides a set of helper methods for querying iterable objects.
 
 ### Bases
 
-- `Sequence[TSource_co]`
-- `Generic[TSource_co]`
+- `Sequence[`[`TSource_co`](apiref.TSource_co)`]`
+- `Generic[`[`TSource_co`](apiref.TSource_co)`]`
 
 ### Members
 
 #### instancemethod `__init__(__iterable)`
 
 Parameters
-  ~ *__iterable* (`Iterable[TSource_co]`)
+  ~ *__iterable*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
   ~ `None`
@@ -30,7 +31,7 @@ Wraps an iterable.
 #### instancemethod `__init__(__iterable_factory)`
 
 Parameters
-  ~ *__iterable_factory* (`Callable[[], Iterable[TSource_co]]`)
+  ~ *__iterable_factory*: `Callable[[], Iterable[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Returns
   ~ `None`
@@ -43,7 +44,7 @@ an enumerating operation is performed.
 #### instancemethod `__contains__(value)`
 
 Parameters
-  ~ *value* (`object`)
+  ~ *value*: `object`
 
 Returns
   ~ `bool`
@@ -63,10 +64,10 @@ Example
 #### instancemethod `__getitem__(index)`
 
 Parameters
-  ~ *index* (`int`)
+  ~ *index*: `int`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the element at specified index in the sequence. Prefers calling `__getitem__()` on the
 wrapped iterable if available, otherwise, calls `self.element_at()`.
@@ -85,10 +86,10 @@ Example
 #### instancemethod `__getitem__[TDefault](__index_and_default)`
 
 Parameters
-  ~ *__index_and_default* (`Tuple[int, TDefault]`)
+  ~ *__index_and_default*: `Tuple[int, `[`TDefault`](apiref.TDefault)`]`
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the element at specified index in the sequence or returns the default value if it does not
 exist. Prefers calling `__getitem__()` on the wrapped iterable if available, otherwise, calls
@@ -111,10 +112,10 @@ Revisions
 #### instancemethod `__getitem__(index)`
 
 Parameters
-  ~ *index* (`slice`)
+  ~ *index*: `slice`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces a subsequence defined by the given slice notation. Prefers calling `__getitem__()` on the
 wrapped iterable if available, otherwise, calls `self.elements_in()`.
@@ -134,7 +135,7 @@ Example
 
 
 Returns
-  ~ `Iterator[TSource_co]`
+  ~ `Iterator[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns an iterator that enumerates the values in the sequence.
 
@@ -181,7 +182,7 @@ Example
 
 
 Returns
-  ~ `Iterator[TSource_co]`
+  ~ `Iterator[`[`TSource_co`](apiref.TSource_co)`]`
 
 Inverts the order of the elements in the sequence. Prefers calling `__reversed__()` on the wrapped
 iterable if available, otherwise, calls `self.reverse()`.
@@ -202,12 +203,12 @@ Example
 #### instancemethod `aggregate[TAccumulate, TResult](__seed, __func, __result_selector)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__func* (`Callable[[TAccumulate, TSource_co], TAccumulate]`)
-  ~ *__result_selector* (`Callable[[TAccumulate], TResult]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__func*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`, `[`TSource_co`](apiref.TSource_co)`], `[`TAccumulate`](apiref.TAccumulate)`]`
+  ~ *__result_selector*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `TResult`
+  ~ [`TResult`](apiref.TResult)
 
 Applies an accumulator function over the sequence. The seed is used as the initial
 accumulator value, and the result_selector is used to select the result value.
@@ -224,11 +225,11 @@ Example
 #### instancemethod `aggregate[TAccumulate](__seed, __func)`
 
 Parameters
-  ~ *__seed* (`TAccumulate`)
-  ~ *__func* (`Callable[[TAccumulate, TSource_co], TAccumulate]`)
+  ~ *__seed*: [`TAccumulate`](apiref.TAccumulate)
+  ~ *__func*: `Callable[[`[`TAccumulate`](apiref.TAccumulate)`, `[`TSource_co`](apiref.TSource_co)`], `[`TAccumulate`](apiref.TAccumulate)`]`
 
 Returns
-  ~ `TAccumulate`
+  ~ [`TAccumulate`](apiref.TAccumulate)
 
 Applies an accumulator function over the sequence. The seed is used as the initial
 accumulator value.
@@ -245,12 +246,12 @@ Example
 #### instancemethod `aggregate(__func)`
 
 Parameters
-  ~ *__func* (`Callable[[TSource_co, TSource_co], TSource_co]`)
+  ~ *__func*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], `[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Applies an accumulator function over the sequence. Raises `InvalidOperationError` if
+Applies an accumulator function over the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if
 there is no value in the sequence.
 
 Example
@@ -274,7 +275,7 @@ Revisions
 #### instancemethod `all(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
   ~ `bool`
@@ -311,7 +312,7 @@ Example
 #### instancemethod `any(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
   ~ `bool`
@@ -330,10 +331,10 @@ Example
 #### instancemethod `append(element)`
 
 Parameters
-  ~ *element* (`TSource_co`)
+  ~ *element*: [`TSource_co`](apiref.TSource_co)
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Appends a value to the end of the sequence. Again, this does not affect the original wrapped
 object.
@@ -352,15 +353,15 @@ Example
 #### instancemethod `as_cached(*, cache_capacity=None)`
 
 Parameters
-  ~ *cache_capacity* (`Optional[int]`)
+  ~ *cache_capacity*: `Optional[int]`
 
 Returns
-  ~ `CachedEnumerable[TSource_co]`
+  ~ [`CachedEnumerable`](apiref.CachedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a CachedEnumerable to cache the enumerated results in this query so that if the wrapped
 iterable is not repeatable (e.g. generator object), it will be repeatable.
 
-By default, `Enumerable`s constructed from nonrepeatable sources cannot be enumerated multiple
+By default, [`Enumerable`](apiref.Enumerable)s constructed from nonrepeatable sources cannot be enumerated multiple
 times, for example
 
 ```py
@@ -392,13 +393,13 @@ This is an alternative way to deal with non-repeatable sources other than passin
 (`query = Enumerable(gen)`) or solidifying the source in advance
 (`query = Enumerable(list(gen))`).
 This method is useless if you have constructed an Enumerable from a repeatable source such as
-a builtin list, an iterable factory mentioned above, or other `Enumerable`'s query methods.
+a builtin list, an iterable factory mentioned above, or other [`Enumerable`](apiref.Enumerable)'s query methods.
 
 If cache_capacity is None, it is infinite.
 
-Raises `InvalidOperationError` if cache_capacity is negative.
+Raises [`InvalidOperationError`](apiref.InvalidOperationError) if cache_capacity is negative.
 
-The behavior of this method differs from that of `CachedEnumerable`.
+The behavior of this method differs from that of [`CachedEnumerable`](apiref.CachedEnumerable).
 
 Revisions
     ~ v0.1.1: New.
@@ -409,7 +410,7 @@ Revisions
 
 
 Returns
-  ~ `MoreEnumerable[TSource_co]`
+  ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a MoreEnumerable that has more non-standard query methods available.
 
@@ -426,17 +427,14 @@ Revisions
 #### instancemethod `average[TResult]()`
 
 Constraint
-  ~ *self*: `Enumerable[SupportsAverage[TResult]]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`SupportsAverage`](apiref.SupportsAverage)`[`[`TResult`](apiref.TResult)`]]`
 
 
 Returns
-  ~ `TResult`
+  ~ [`TResult`](apiref.TResult)
 
-Computes the average value of the sequence. Raises `InvalidOperationError` if there
+Computes the average value of the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there
 is no value.
-
-The returned type is the type of the expression
-`(elem1 + elem2 + ...) / cast(int, ...)`.
 
 Example
     ~   ```py
@@ -450,16 +448,13 @@ Example
 #### instancemethod `average[TResult](__selector)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co], SupportsAverage[TResult]]`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`SupportsAverage`](apiref.SupportsAverage)`[`[`TResult`](apiref.TResult)`]]`
 
 Returns
-  ~ `TResult`
+  ~ [`TResult`](apiref.TResult)
 
 Computes the average value of the sequence using the selector. Raises
-`InvalidOperationError` if there is no value.
-
-The returned type is the type of the expression
-`(selector(elem1) + selector(elem2) + ...) / cast(int, ...)`.
+[`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Example
     ~   ```py
@@ -473,18 +468,15 @@ Example
 #### instancemethod `average2[TResult, TDefault](__default)`
 
 Constraint
-  ~ *self*: `Enumerable[SupportsAverage[TResult]]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`SupportsAverage`](apiref.SupportsAverage)`[`[`TResult`](apiref.TResult)`]]`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TResult, TDefault]`
+  ~ `Union[`[`TResult`](apiref.TResult)`, `[`TDefault`](apiref.TDefault)`]`
 
 Computes the average value of the sequence. Returns `default` if there is no value.
-
-The returned type is the type of the expression
-`(elem1 + elem2 + ...) / cast(int, ...)` or `TDefault`.
 
 Example
     ~   ```py
@@ -499,17 +491,14 @@ Example
 #### instancemethod `average2[TResult, TDefault](__selector, __default)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co], SupportsAverage[TResult]]`)
-  ~ *__default* (`TDefault`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`SupportsAverage`](apiref.SupportsAverage)`[`[`TResult`](apiref.TResult)`]]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TResult, TDefault]`
+  ~ `Union[`[`TResult`](apiref.TResult)`, `[`TDefault`](apiref.TDefault)`]`
 
 Computes the average value of the sequence using the selector. Returns `default` if there
 is no value.
-
-The returned type is the type of the expression
-`(selector(elem1) + selector(elem2) + ...) / cast(int, ...)` or `TDefault`.
 
 Example
     ~   ```py
@@ -522,10 +511,10 @@ Example
 #### instancemethod `cast[TResult](__t_result)`
 
 Parameters
-  ~ *__t_result* (`Type[TResult]`)
+  ~ *__t_result*: `Type[`[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Casts the elements to the specified type.
 
@@ -542,13 +531,13 @@ Example
 #### instancemethod `chunk(size)`
 
 Parameters
-  ~ *size* (`int`)
+  ~ *size*: `int`
 
 Returns
-  ~ `Enumerable[MutableSequence[TSource_co]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[MutableSequence[`[`TSource_co`](apiref.TSource_co)`]]`
 
 Splits the elements of a sequence into chunks of size at most the provided size. Raises
-`InvalidOperationError` if `size` is less than 1.
+[`InvalidOperationError`](apiref.InvalidOperationError) if `size` is less than 1.
 
 Example
     ~   ```py
@@ -573,10 +562,10 @@ Revisions
 #### instancemethod `concat(second)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Concatenates two sequences.
 
@@ -593,7 +582,7 @@ Example
 #### instancemethod `contains(value)`
 
 Parameters
-  ~ *value* (`object`)
+  ~ *value*: `object`
 
 Returns
   ~ `bool`
@@ -617,8 +606,8 @@ Example
 #### instancemethod `contains[TOther](value, __comparer)`
 
 Parameters
-  ~ *value* (`TOther`)
-  ~ *__comparer* (`Callable[[TSource_co, TOther], bool]`)
+  ~ *value*: [`TOther`](apiref.TOther)
+  ~ *__comparer*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`], bool]`
 
 Returns
   ~ `bool`
@@ -660,7 +649,7 @@ Example
 #### instancemethod `count(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
   ~ `int`
@@ -681,10 +670,10 @@ Example
 #### instancemethod `default_if_empty[TDefault](default)`
 
 Parameters
-  ~ *default* (`TDefault`)
+  ~ *default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[Enumerable[TSource_co], Enumerable[TDefault]]`
+  ~ `Union[`[`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`], `[`Enumerable`](apiref.Enumerable)`[`[`TDefault`](apiref.TDefault)`]]`
 
 Returns the elements of the sequence or the provided value in a singleton collection if
 the sequence is empty.
@@ -703,7 +692,7 @@ Example
 
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns distinct elements from the sequence.
 
@@ -722,10 +711,10 @@ Revisions
 #### instancemethod `distinct_by(key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], object]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns distinct elements from the sequence where "distinctness" is determined by the value
 returned by the selector.
@@ -746,12 +735,12 @@ Revisions
 #### instancemethod `element_at(index)`
 
 Parameters
-  ~ *index* (`int`)
+  ~ *index*: `int`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Returns the element at specified index in the sequence. `IndexOutOfRangeError` is raised if
+Returns the element at specified index in the sequence. [`IndexOutOfRangeError`](apiref.IndexOutOfRangeError) is raised if
 no such element exists.
 
 If the index is negative, it means counting from the end.
@@ -779,11 +768,11 @@ Revisions
 #### instancemethod `element_at[TDefault](index, __default)`
 
 Parameters
-  ~ *index* (`int`)
-  ~ *__default* (`TDefault`)
+  ~ *index*: `int`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the element at specified index in the sequence. Default value is returned if no
 such element exists.
@@ -811,7 +800,7 @@ Revisions
 
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns an empty enumerable.
 
@@ -828,10 +817,10 @@ Example
 #### instancemethod `except1(second)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set difference of two sequences: self - second.
 
@@ -852,11 +841,11 @@ Revisions
 #### instancemethod `except_by[TKey](second, key_selector)`
 
 Parameters
-  ~ *second* (`Iterable[TKey]`)
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
+  ~ *second*: `Iterable[`[`TKey`](apiref.TKey)`]`
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set difference of two sequences: self - second, according to a key selector that
 determines "distinctness".
@@ -879,9 +868,9 @@ Revisions
 
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Returns the first element of the sequence. Raises `InvalidOperationError` if there is no
+Returns the first element of the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no
 first element.
 
 This method always uses a generic method to enumerate the first element regardless the
@@ -901,13 +890,13 @@ Example
 #### instancemethod `first(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the first element of the sequence that satisfies the condition. Raises
-`InvalidOperationError` if no such element exists.
+[`InvalidOperationError`](apiref.InvalidOperationError) if no such element exists.
 
 Example
     ~   ```py
@@ -921,10 +910,10 @@ Example
 #### instancemethod `first2[TDefault](__default)`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the first element of the sequence or a default value if there is no such
 element.
@@ -949,11 +938,11 @@ Example
 #### instancemethod `first2[TDefault](__predicate, __default)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
-  ~ *__default* (`TDefault`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the first element of the sequence that satisfies the condition or a default value if
 no such element exists.
@@ -970,12 +959,12 @@ Example
 #### instancemethod `group_by[TKey, TValue, TResult](key_selector, value_selector, __result_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *value_selector* (`Callable[[TSource_co], TValue]`)
-  ~ *__result_selector* (`Callable[[TKey, Enumerable[TValue]], TResult]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *value_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TValue`](apiref.TValue)`]`
+  ~ *__result_selector*: `Callable[[`[`TKey`](apiref.TKey)`, `[`Enumerable`](apiref.Enumerable)`[`[`TValue`](apiref.TValue)`]], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Groups the elements of the sequence according to specified key selector and value selector. Then
 it returns the result value using each grouping and its key.
@@ -1009,11 +998,11 @@ Revisions
 #### instancemethod `group_by[TKey, TValue](key_selector, value_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *value_selector* (`Callable[[TSource_co], TValue]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *value_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TValue`](apiref.TValue)`]`
 
 Returns
-  ~ `Enumerable[Grouping[TKey, TValue]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`Grouping`](apiref.Grouping)`[`[`TKey`](apiref.TKey)`, `[`TValue`](apiref.TValue)`]]`
 
 Groups the elements of the sequence according to specified key selector and value selector.
 
@@ -1040,11 +1029,11 @@ Revisions
 #### instancemethod `group_by2[TKey, TResult](key_selector, __result_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__result_selector* (`Callable[[TKey, Enumerable[TSource_co]], TResult]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__result_selector*: `Callable[[`[`TKey`](apiref.TKey)`, `[`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Groups the elements of the sequence according to a specified key selector function and creates a
 result value using each grouping and its key.
@@ -1072,10 +1061,10 @@ Revisions
 #### instancemethod `group_by2[TKey](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
 
 Returns
-  ~ `Enumerable[Grouping[TKey, TSource_co]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`Grouping`](apiref.Grouping)`[`[`TKey`](apiref.TKey)`, `[`TSource_co`](apiref.TSource_co)`]]`
 
 Groups the elements of the sequence according to a specified key selector function.
 
@@ -1101,13 +1090,13 @@ Revisions
 #### instancemethod `group_join[TInner, TKey, TResult](inner, outer_key_selector, inner_key_selector, result_selector)`
 
 Parameters
-  ~ *inner* (`Iterable[TInner]`)
-  ~ *outer_key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *inner_key_selector* (`Callable[[TInner], TKey]`)
-  ~ *result_selector* (`Callable[[TSource_co, Enumerable[TInner]], TResult]`)
+  ~ *inner*: `Iterable[`[`TInner`](apiref.TInner)`]`
+  ~ *outer_key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *inner_key_selector*: `Callable[[`[`TInner`](apiref.TInner)`], `[`TKey`](apiref.TKey)`]`
+  ~ *result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`Enumerable`](apiref.Enumerable)`[`[`TInner`](apiref.TInner)`]], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Correlates the elements of two sequences based on equality of keys and groups the results using the
 selector.
@@ -1165,10 +1154,10 @@ Revisions
 #### instancemethod `intersect(second)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set intersection of two sequences: self & second.
 
@@ -1187,11 +1176,11 @@ Revisions
 #### instancemethod `intersect_by[TKey](second, key_selector)`
 
 Parameters
-  ~ *second* (`Iterable[TKey]`)
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
+  ~ *second*: `Iterable[`[`TKey`](apiref.TKey)`]`
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set intersection of two sequences: self & second according to a
 specified key selector.
@@ -1211,13 +1200,13 @@ Revisions
 #### instancemethod `join[TInner, TKey, TResult](inner, outer_key_selector, inner_key_selector, result_selector)`
 
 Parameters
-  ~ *inner* (`Iterable[TInner]`)
-  ~ *outer_key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *inner_key_selector* (`Callable[[TInner], TKey]`)
-  ~ *result_selector* (`Callable[[TSource_co, TInner], TResult]`)
+  ~ *inner*: `Iterable[`[`TInner`](apiref.TInner)`]`
+  ~ *outer_key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *inner_key_selector*: `Callable[[`[`TInner`](apiref.TInner)`], `[`TKey`](apiref.TKey)`]`
+  ~ *result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TInner`](apiref.TInner)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Correlates the elements of two sequences based on matching keys.
 
@@ -1256,9 +1245,9 @@ Revisions
 
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Returns the last element of the sequence. Raises `InvalidOperationError` if there is no first
+Returns the last element of the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no first
 element.
 
 This method always uses a generic method to enumerate the last element (O(n)) regardless the
@@ -1278,13 +1267,13 @@ Example
 #### instancemethod `last(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the last element of the sequence that satisfies the condition. Raises
-`InvalidOperationError` if no such element exists.
+[`InvalidOperationError`](apiref.InvalidOperationError) if no such element exists.
 
 Example
     ~   ```py
@@ -1298,10 +1287,10 @@ Example
 #### instancemethod `last2[TDefault](__default)`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the last element of the sequence or a default value if there is no such
 element.
@@ -1326,11 +1315,11 @@ Example
 #### instancemethod `last2[TDefault](__predicate, __default)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
-  ~ *__default* (`TDefault`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the last element of the sequence that satisfies the condition or a default value if
 no such element exists.
@@ -1347,13 +1336,13 @@ Example
 #### instancemethod `max[TSupportsLessThan]()`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsLessThan]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 
 Returns
-  ~ `TSupportsLessThan`
+  ~ [`TSupportsLessThan`](apiref.TSupportsLessThan)
 
-Returns the maximum value in the sequence. Raises `InvalidOperationError` if there is no value.
+Returns the maximum value in the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Example
     ~   ```py
@@ -1367,13 +1356,13 @@ Example
 #### instancemethod `max[TSupportsLessThan](__result_selector)`
 
 Parameters
-  ~ *__result_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `TSupportsLessThan`
+  ~ [`TSupportsLessThan`](apiref.TSupportsLessThan)
 
 Invokes a transform function on each element of the sequence and returns the maximum of the
-resulting values. Raises `InvalidOperationError` if there is no value.
+resulting values. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Example
     ~   ```py
@@ -1387,13 +1376,13 @@ Example
 #### instancemethod `max2[TSupportsLessThan, TDefault](__default)`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsLessThan]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsLessThan, TDefault]`
+  ~ `Union[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the maximum value in the sequence, or the default one if there is no value.
 
@@ -1408,11 +1397,11 @@ Example
 #### instancemethod `max2[TSupportsLessThan, TDefault](__result_selector, __default)`
 
 Parameters
-  ~ *__result_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
-  ~ *__default* (`TDefault`)
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsLessThan, TDefault]`
+  ~ `Union[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`, `[`TDefault`](apiref.TDefault)`]`
 
 Invokes a transform function on each element of the sequence and returns the maximum of the
 resulting values. Returns the default one if there is no value.
@@ -1430,13 +1419,13 @@ Example
 #### instancemethod `max_by[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the maximal element of the sequence based on the given key selector. Raises
-`InvalidOperationError` if there is no value.
+[`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Example
     ~   ```py
@@ -1453,14 +1442,14 @@ Revisions
 #### instancemethod `max_by[TKey](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the maximal element of the sequence based on the given key selector and the comparer.
-Raises `InvalidOperationError` if there is no value.
+Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
@@ -1473,39 +1462,39 @@ Revisions
 #### instancemethod `min[TSupportsLessThan]()`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsLessThan]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 
 Returns
-  ~ `TSupportsLessThan`
+  ~ [`TSupportsLessThan`](apiref.TSupportsLessThan)
 
-Returns the minimum value in the sequence. Raises `InvalidOperationError` if there is no value.
+Returns the minimum value in the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 ---
 
 #### instancemethod `min[TSupportsLessThan](__result_selector)`
 
 Parameters
-  ~ *__result_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `TSupportsLessThan`
+  ~ [`TSupportsLessThan`](apiref.TSupportsLessThan)
 
 Invokes a transform function on each element of the sequence and returns the minimum of the
-resulting values. Raises `InvalidOperationError` if there is no value.
+resulting values. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 ---
 
 #### instancemethod `min2[TSupportsLessThan, TDefault](__default)`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsLessThan]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsLessThan, TDefault]`
+  ~ `Union[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the minimum value in the sequence, or the default one if there is no value.
 
@@ -1514,11 +1503,11 @@ Returns the minimum value in the sequence, or the default one if there is no val
 #### instancemethod `min2[TSupportsLessThan, TDefault](__result_selector, __default)`
 
 Parameters
-  ~ *__result_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
-  ~ *__default* (`TDefault`)
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsLessThan, TDefault]`
+  ~ `Union[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`, `[`TDefault`](apiref.TDefault)`]`
 
 Invokes a transform function on each element of the sequence and returns the minimum of the
 resulting values. Returns the default one if there is no value.
@@ -1528,13 +1517,13 @@ resulting values. Returns the default one if there is no value.
 #### instancemethod `min_by[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the minimal element of the sequence based on the given key selector. Raises
-`InvalidOperationError` if there is no value.
+[`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Revisions
     ~ v1.0.0: New.
@@ -1544,14 +1533,14 @@ Revisions
 #### instancemethod `min_by[TKey](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
 Returns the minimal element of the sequence based on the given key selector and the comparer.
-Raises `InvalidOperationError` if there is no value.
+Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there is no value.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
@@ -1564,10 +1553,10 @@ Revisions
 #### instancemethod `of_type[TResult](t_result)`
 
 Parameters
-  ~ *t_result* (`Type[TResult]`)
+  ~ *t_result*: `Type[`[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Filters elements based on the specified type.
 
@@ -1585,10 +1574,10 @@ Example
 #### instancemethod `order_by[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Sorts the elements of the sequence in ascending order according to a key.
 
@@ -1612,18 +1601,18 @@ Example
         ['Boots', 'Roman', 'Barley']
         ```
 
-Subsequent ordering is supported. See `OrderedEnumerable`.
+Subsequent ordering is supported. See [`OrderedEnumerable`](apiref.OrderedEnumerable).
 
 ---
 
 #### instancemethod `order_by[TKey](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TKey]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 Sorts the elements of the sequence in ascending order by using a specified comparer.
 
@@ -1644,10 +1633,10 @@ Example
 #### instancemethod `order_by_descending[TSupportsLessThan](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TSupportsLessThan]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TSupportsLessThan]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
 Sorts the elements of the sequence in descending order according to a key.
 
@@ -1663,11 +1652,11 @@ Example
 #### instancemethod `order_by_descending[TKey](key_selector, __comparer)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__comparer* (`Callable[[TKey, TKey], int]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
 
 Returns
-  ~ `OrderedEnumerable[TSource_co, TKey]`
+  ~ [`OrderedEnumerable`](apiref.OrderedEnumerable)`[`[`TSource_co`](apiref.TSource_co)`, `[`TKey`](apiref.TKey)`]`
 
 Sorts the elements of the sequence in descending order by using a specified comparer.
 
@@ -1679,10 +1668,10 @@ if lhs < rhs, and 0 if they are equal.
 #### instancemethod `prepend(element)`
 
 Parameters
-  ~ *element* (`TSource_co`)
+  ~ *element*: [`TSource_co`](apiref.TSource_co)
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Adds a value to the beginning of the sequence. Again, this does not affect the original
 wrapped object.
@@ -1699,15 +1688,15 @@ Example
 #### staticmethod `range(start, count)`
 
 Parameters
-  ~ *start* (`int`)
-  ~ *count* (`Optional[int]`)
+  ~ *start*: `int`
+  ~ *count*: `Optional[int]`
 
 Returns
-  ~ `Enumerable[int]`
+  ~ [`Enumerable`](apiref.Enumerable)`[int]`
 
 Generates a sequence of `count` integral numbers from `start`, incrementing each by one.
 
-If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+If `count` is `None`, the sequence is infinite. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if `count`
 is negative.
 
 Example
@@ -1721,15 +1710,15 @@ Example
 #### staticmethod `repeat[TResult](value, count=None)`
 
 Parameters
-  ~ *value* (`TResult`)
-  ~ *count* (`Optional[int]`)
+  ~ *value*: [`TResult`](apiref.TResult)
+  ~ *count*: `Optional[int]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Generates a sequence that contains one repeated value.
 
-If `count` is `None`, the sequence is infinite. Raises `InvalidOperationError` if `count`
+If `count` is `None`, the sequence is infinite. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if `count`
 is negative.
 
 Example
@@ -1744,7 +1733,7 @@ Example
 
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Inverts the order of the elements in the sequence.
 
@@ -1765,10 +1754,10 @@ Example
 #### instancemethod `select[TResult](selector)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co], TResult]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence into a new form.
 
@@ -1784,10 +1773,10 @@ Example
 #### instancemethod `select2[TResult](selector)`
 
 Parameters
-  ~ *selector* (`Callable[[TSource_co, int], TResult]`)
+  ~ *selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence into a new form by incorporating the indices.
 
@@ -1803,11 +1792,11 @@ Example
 #### instancemethod `select_many[TCollection, TResult](collection_selector, __result_selector)`
 
 Parameters
-  ~ *collection_selector* (`Callable[[TSource_co], Iterable[TCollection]]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TCollection], TResult]`)
+  ~ *collection_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], Iterable[`[`TCollection`](apiref.TCollection)`]]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TCollection`](apiref.TCollection)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence into an iterable, flattens the resulting sequence
 into one sequence, then calls result_selector on each element therein.
@@ -1839,10 +1828,10 @@ Example
 #### instancemethod `select_many[TResult](__selector)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co], Iterable[TResult]]`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], Iterable[`[`TResult`](apiref.TResult)`]]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence to an iterable and flattens the resultant sequences.
 
@@ -1858,11 +1847,11 @@ Example
 #### instancemethod `select_many2[TCollection, TResult](collection_selector, __result_selector)`
 
 Parameters
-  ~ *collection_selector* (`Callable[[TSource_co, int], Iterable[TCollection]]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TCollection], TResult]`)
+  ~ *collection_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], Iterable[`[`TCollection`](apiref.TCollection)`]]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TCollection`](apiref.TCollection)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence into an iterable, flattens the resulting sequence
 into one sequence, then calls result_selector on each element therein. The indices of
@@ -1873,10 +1862,10 @@ source elements are used.
 #### instancemethod `select_many2[TResult](__selector)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co, int], Iterable[TResult]]`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], Iterable[`[`TResult`](apiref.TResult)`]]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Projects each element of the sequence to an iterable and flattens the resultant sequences.
 The indices of source elements are used.
@@ -1904,7 +1893,7 @@ Example
 #### instancemethod `sequence_equal(second)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
   ~ `bool`
@@ -1926,8 +1915,8 @@ Example
 #### instancemethod `sequence_equal[TOther](second, __comparer)`
 
 Parameters
-  ~ *second* (`Iterable[TOther]`)
-  ~ *__comparer* (`Callable[[TSource_co, TOther], bool]`)
+  ~ *second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__comparer*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`], bool]`
 
 Returns
   ~ `bool`
@@ -1952,9 +1941,9 @@ Revisions
 
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Returns the only element in the sequence. Raises `InvalidOperationError` if the sequence does not
+Returns the only element in the sequence. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if the sequence does not
 contain exactly one element.
 
 Example
@@ -1978,12 +1967,12 @@ Example
 #### instancemethod `single(__predicate)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `TSource_co`
+  ~ [`TSource_co`](apiref.TSource_co)
 
-Returns the only element in the sequence that satisfies the condition. Raises `InvalidOperationError`
+Returns the only element in the sequence that satisfies the condition. Raises [`InvalidOperationError`](apiref.InvalidOperationError)
 if no element satisfies the condition, or more than one do.
 
 Example
@@ -2003,13 +1992,13 @@ Example
 #### instancemethod `single2[TDefault](__default)`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the only element in the sequence or the default value if the sequence is empty. Raises
-`InvalidOperationError` if there are more than one elements in the sequence.
+[`InvalidOperationError`](apiref.InvalidOperationError) if there are more than one elements in the sequence.
 
 Example
     ~   ```py
@@ -2022,14 +2011,14 @@ Example
 #### instancemethod `single2[TDefault](__predicate, __default)`
 
 Parameters
-  ~ *__predicate* (`Callable[[TSource_co], bool]`)
-  ~ *__default* (`TDefault`)
+  ~ *__predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSource_co, TDefault]`
+  ~ `Union[`[`TSource_co`](apiref.TSource_co)`, `[`TDefault`](apiref.TDefault)`]`
 
 Returns the only element in the sequence that satisfies the condition, or the default value if there is
-no such element. Raises `InvalidOperationError` if there are more than one elements satisfying the
+no such element. Raises [`InvalidOperationError`](apiref.InvalidOperationError) if there are more than one elements satisfying the
 condition.
 
 Example
@@ -2044,10 +2033,10 @@ Example
 #### instancemethod `skip(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Bypasses a specified number of elements in the sequence and then returns the remaining.
 
@@ -2063,10 +2052,10 @@ Example
 #### instancemethod `skip_last(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a new sequence that contains the elements of the current sequence with last `count` elements
 omitted.
@@ -2083,10 +2072,10 @@ Example
 #### instancemethod `skip_while(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Bypasses elements in the sequence as long as the condition is true and then returns the remaining
 elements.
@@ -2105,10 +2094,10 @@ Example
 #### instancemethod `skip_while2(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co, int], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Bypasses elements in the sequence as long as the condition is true and then returns the remaining
 elements. The element's index is used in the predicate function.
@@ -2125,11 +2114,11 @@ Example
 #### instancemethod `sum[TSupportsAdd]()`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsAdd]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsAdd`](apiref.TSupportsAdd)`]`
 
 
 Returns
-  ~ `Union[TSupportsAdd, int]`
+  ~ `Union[`[`TSupportsAdd`](apiref.TSupportsAdd)`, int]`
 
 Computes the sum of the sequence, or `0` if the sequence is empty.
 
@@ -2145,10 +2134,10 @@ Example
 #### instancemethod `sum[TSupportsAdd](__selector)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co], TSupportsAdd]`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsAdd`](apiref.TSupportsAdd)`]`
 
 Returns
-  ~ `Union[TSupportsAdd, int]`
+  ~ `Union[`[`TSupportsAdd`](apiref.TSupportsAdd)`, int]`
 
 Computes the sum of the sequence using the selector. Returns `0` if the sequence is empty.
 
@@ -2164,13 +2153,13 @@ Example
 #### instancemethod `sum2[TSupportsAdd, TDefault](__default)`
 
 Constraint
-  ~ *self*: `Enumerable[TSupportsAdd]`
+  ~ *self*: [`Enumerable`](apiref.Enumerable)`[`[`TSupportsAdd`](apiref.TSupportsAdd)`]`
 
 Parameters
-  ~ *__default* (`TDefault`)
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsAdd, TDefault]`
+  ~ `Union[`[`TSupportsAdd`](apiref.TSupportsAdd)`, `[`TDefault`](apiref.TDefault)`]`
 
 Computes the sum of the sequence. Returns the default value if it is empty.
 
@@ -2185,11 +2174,11 @@ Example
 #### instancemethod `sum2[TSupportsAdd, TDefault](__selector, __default)`
 
 Parameters
-  ~ *__selector* (`Callable[[TSource_co], TSupportsAdd]`)
-  ~ *__default* (`TDefault`)
+  ~ *__selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsAdd`](apiref.TSupportsAdd)`]`
+  ~ *__default*: [`TDefault`](apiref.TDefault)
 
 Returns
-  ~ `Union[TSupportsAdd, TDefault]`
+  ~ `Union[`[`TSupportsAdd`](apiref.TSupportsAdd)`, `[`TDefault`](apiref.TDefault)`]`
 
 Computes the sum of the sequence using the selector. Returns the default value if it is empty.
 
@@ -2204,10 +2193,10 @@ Example
 #### instancemethod `take(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a specified number of contiguous elements from the start of the sequence.
 
@@ -2223,10 +2212,10 @@ Example
 #### instancemethod `take(__index)`
 
 Parameters
-  ~ *__index* (`slice`)
+  ~ *__index*: `slice`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces a subsequence defined by the given slice notation.
 
@@ -2252,10 +2241,10 @@ Revisions
 #### instancemethod `take_last(count)`
 
 Parameters
-  ~ *count* (`int`)
+  ~ *count*: `int`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns a new sequence that contains the last `count` elements.
 
@@ -2271,10 +2260,10 @@ Example
 #### instancemethod `take_while(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns elements from the sequence as long as the condition is true and skips the remaining.
 
@@ -2290,10 +2279,10 @@ Example
 #### instancemethod `take_while2(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co, int], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns elements from the sequence as long as the condition is true and skips the remaining. The
 element's index is used in the predicate function.
@@ -2303,11 +2292,11 @@ element's index is used in the predicate function.
 #### instancemethod `to_dict[TKey, TValue](key_selector, __value_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__value_selector* (`Callable[[TSource_co], TValue]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__value_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TValue`](apiref.TValue)`]`
 
 Returns
-  ~ `Dict[TKey, TValue]`
+  ~ `Dict[`[`TKey`](apiref.TKey)`, `[`TValue`](apiref.TValue)`]`
 
 Enumerates all values and returns a dict containing them. key_selector and value_selector
 are used to select keys and values.
@@ -2317,10 +2306,10 @@ are used to select keys and values.
 #### instancemethod `to_dict[TKey](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
 
 Returns
-  ~ `Dict[TKey, TSource_co]`
+  ~ `Dict[`[`TKey`](apiref.TKey)`, `[`TSource_co`](apiref.TSource_co)`]`
 
 Enumerates all values and returns a dict containing them. key_selector is used to select
 keys.
@@ -2331,7 +2320,7 @@ keys.
 
 
 Returns
-  ~ `Set[TSource_co]`
+  ~ `Set[`[`TSource_co`](apiref.TSource_co)`]`
 
 Enumerates all values and returns a set containing them.
 
@@ -2341,7 +2330,7 @@ Enumerates all values and returns a set containing them.
 
 
 Returns
-  ~ `List[TSource_co]`
+  ~ `List[`[`TSource_co`](apiref.TSource_co)`]`
 
 Enumerates all values and returns a list containing them.
 
@@ -2350,11 +2339,11 @@ Enumerates all values and returns a list containing them.
 #### instancemethod `to_lookup[TKey, TValue](key_selector, __value_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
-  ~ *__value_selector* (`Callable[[TSource_co], TValue]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
+  ~ *__value_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TValue`](apiref.TValue)`]`
 
 Returns
-  ~ `Lookup[TKey, TValue]`
+  ~ [`Lookup`](apiref.Lookup)`[`[`TKey`](apiref.TKey)`, `[`TValue`](apiref.TValue)`]`
 
 Enumerates all values and returns a lookup containing them according to specified key
 selector and value selector. The values within each group are in the same order as in
@@ -2383,10 +2372,10 @@ Revisions
 #### instancemethod `to_lookup[TKey](key_selector)`
 
 Parameters
-  ~ *key_selector* (`Callable[[TSource_co], TKey]`)
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
 
 Returns
-  ~ `Lookup[TKey, TSource_co]`
+  ~ [`Lookup`](apiref.Lookup)`[`[`TKey`](apiref.TKey)`, `[`TSource_co`](apiref.TSource_co)`]`
 
 Enumerates all values and returns a lookup containing them according to the specified
 key selector. The values within each group are in the same order as in self.
@@ -2399,10 +2388,10 @@ Revisions
 #### instancemethod `union(second)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set union of two sequences: self + second.
 
@@ -2422,11 +2411,11 @@ Revisions
 #### instancemethod `union_by(second, key_selector)`
 
 Parameters
-  ~ *second* (`Iterable[TSource_co]`)
-  ~ *key_selector* (`Callable[[TSource_co], object]`)
+  ~ *second*: `Iterable[`[`TSource_co`](apiref.TSource_co)`]`
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces the set union of two sequences: self + second according to a specified key
 selector.
@@ -2446,10 +2435,10 @@ Revisions
 #### instancemethod `where(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Filters the sequence of values based on a predicate.
 
@@ -2465,10 +2454,10 @@ Example
 #### instancemethod `where2(predicate)`
 
 Parameters
-  ~ *predicate* (`Callable[[TSource_co, int], bool]`)
+  ~ *predicate*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, int], bool]`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Filters the sequence of values based on a predicate. Each element's index is used in the
 predicate logic.
@@ -2485,10 +2474,10 @@ Example
 #### instancemethod `zip[TOther](__second)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
 
 Returns
-  ~ `Enumerable[Tuple[TSource_co, TOther]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`]]`
 
 Produces a sequence of 2-element tuples from the two sequences.
 
@@ -2505,11 +2494,11 @@ Example
 #### instancemethod `zip[TOther, TOther2](__second, __third)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
 
 Returns
-  ~ `Enumerable[Tuple[TSource_co, TOther, TOther2]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`]]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2519,12 +2508,12 @@ Revisions
 #### instancemethod `zip[TOther, TOther2, TOther3](__second, __third, __fourth)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
-  ~ *__fourth* (`Iterable[TOther3]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
+  ~ *__fourth*: `Iterable[`[`TOther3`](apiref.TOther3)`]`
 
 Returns
-  ~ `Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`, `[`TOther3`](apiref.TOther3)`]]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2534,13 +2523,13 @@ Revisions
 #### instancemethod `zip[TOther, TOther2, TOther3, TOther4](__second, __third, __fourth, __fifth)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
-  ~ *__fourth* (`Iterable[TOther3]`)
-  ~ *__fifth* (`Iterable[TOther4]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
+  ~ *__fourth*: `Iterable[`[`TOther3`](apiref.TOther3)`]`
+  ~ *__fifth*: `Iterable[`[`TOther4`](apiref.TOther4)`]`
 
 Returns
-  ~ `Enumerable[Tuple[TSource_co, TOther, TOther2, TOther3, TOther4]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Tuple[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`, `[`TOther3`](apiref.TOther3)`, `[`TOther4`](apiref.TOther4)`]]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2550,15 +2539,15 @@ Revisions
 #### instancemethod `zip(__second, __third, __fourth, __fifth, __sixth, *iters)`
 
 Parameters
-  ~ *__second* (`Iterable[Any]`)
-  ~ *__third* (`Iterable[Any]`)
-  ~ *__fourth* (`Iterable[Any]`)
-  ~ *__fifth* (`Iterable[Any]`)
-  ~ *__sixth* (`Iterable[Any]`)
-  ~ **iters* (`Iterable[Any]`)
+  ~ *__second*: `Iterable[Any]`
+  ~ *__third*: `Iterable[Any]`
+  ~ *__fourth*: `Iterable[Any]`
+  ~ *__fifth*: `Iterable[Any]`
+  ~ *__sixth*: `Iterable[Any]`
+  ~ **iters*: `Iterable[Any]`
 
 Returns
-  ~ `Enumerable[Tuple[Any, ...]]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Tuple[Any, ...]]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2568,11 +2557,11 @@ Revisions
 #### instancemethod `zip2[TOther, TResult](__second, __result_selector)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TOther], TResult]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Applies a specified function to the corresponding elements of two sequences, producing a
 sequence of the results.
@@ -2590,12 +2579,12 @@ Example
 #### instancemethod `zip2[TOther, TOther2, TResult](__second, __third, __result_selector)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TOther, TOther2], TResult]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2605,13 +2594,13 @@ Revisions
 #### instancemethod `zip2[TOther, TOther2, TOther3, TResult](__second, __third, __fourth, __result_selector)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
-  ~ *__fourth* (`Iterable[TOther3]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TOther, TOther2, TOther3], TResult]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
+  ~ *__fourth*: `Iterable[`[`TOther3`](apiref.TOther3)`]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`, `[`TOther3`](apiref.TOther3)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2621,14 +2610,14 @@ Revisions
 #### instancemethod `zip2[TOther, TOther2, TOther3, TOther4, TResult](__second, __third, __fourth, __fifth, __result_selector)`
 
 Parameters
-  ~ *__second* (`Iterable[TOther]`)
-  ~ *__third* (`Iterable[TOther2]`)
-  ~ *__fourth* (`Iterable[TOther3]`)
-  ~ *__fifth* (`Iterable[TOther4]`)
-  ~ *__result_selector* (`Callable[[TSource_co, TOther, TOther2, TOther3, TOther4], TResult]`)
+  ~ *__second*: `Iterable[`[`TOther`](apiref.TOther)`]`
+  ~ *__third*: `Iterable[`[`TOther2`](apiref.TOther2)`]`
+  ~ *__fourth*: `Iterable[`[`TOther3`](apiref.TOther3)`]`
+  ~ *__fifth*: `Iterable[`[`TOther4`](apiref.TOther4)`]`
+  ~ *__result_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TOther`](apiref.TOther)`, `[`TOther2`](apiref.TOther2)`, `[`TOther3`](apiref.TOther3)`, `[`TOther4`](apiref.TOther4)`], `[`TResult`](apiref.TResult)`]`
 
 Returns
-  ~ `Enumerable[TResult]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TResult`](apiref.TResult)`]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2638,15 +2627,15 @@ Revisions
 #### instancemethod `zip2(__second, __third, __fourth, __fifth, __sixth, *iters_and_result_selector)`
 
 Parameters
-  ~ *__second* (`Iterable[Any]`)
-  ~ *__third* (`Iterable[Any]`)
-  ~ *__fourth* (`Iterable[Any]`)
-  ~ *__fifth* (`Iterable[Any]`)
-  ~ *__sixth* (`Iterable[Any]`)
-  ~ **iters_and_result_selector* (`Union[Iterable[Any], Callable[..., Any]]`)
+  ~ *__second*: `Iterable[Any]`
+  ~ *__third*: `Iterable[Any]`
+  ~ *__fourth*: `Iterable[Any]`
+  ~ *__fifth*: `Iterable[Any]`
+  ~ *__sixth*: `Iterable[Any]`
+  ~ **iters_and_result_selector*: `Union[Iterable[Any], Callable[..., Any]]`
 
 Returns
-  ~ `Enumerable[Any]`
+  ~ [`Enumerable`](apiref.Enumerable)`[Any]`
 
 Revisions
     ~ v0.1.1: New.
@@ -2656,10 +2645,10 @@ Revisions
 #### instancemethod `elements_in(__index)`
 
 Parameters
-  ~ *__index* (`slice`)
+  ~ *__index*: `slice`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces a subsequence defined by the given slice notation.
 
@@ -2682,12 +2671,12 @@ Example
 #### instancemethod `elements_in(__start, __stop, __step=1)`
 
 Parameters
-  ~ *__start* (`int`)
-  ~ *__stop* (`int`)
-  ~ *__step* (`int`)
+  ~ *__start*: `int`
+  ~ *__stop*: `int`
+  ~ *__step*: `int`
 
 Returns
-  ~ `Enumerable[TSource_co]`
+  ~ [`Enumerable`](apiref.Enumerable)`[`[`TSource_co`](apiref.TSource_co)`]`
 
 Produces a subsequence with indices that define a slice.
 
@@ -2709,7 +2698,7 @@ Example
 
 
 Returns
-  ~ `Tuple[TSource_co, ...]`
+  ~ `Tuple[`[`TSource_co`](apiref.TSource_co)`, ...]`
 
 Enumerates all values and returns a tuple containing them.
 
