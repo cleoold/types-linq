@@ -2,6 +2,7 @@ from typing import Any, Callable, Iterable, Optional, Tuple, overload
 
 from ..enumerable import Enumerable
 from .extrema_enumerable import ExtremaEnumerable
+from .more_enums import RankMethods
 from ..more_typing import (
     TAccumulate,
     TKey,
@@ -307,37 +308,59 @@ class MoreEnumerable(Enumerable[TSource_co]):
         '''
 
     @overload
-    def rank(self: MoreEnumerable[TSupportsLessThan]) -> MoreEnumerable[int]:
+    def rank(self: MoreEnumerable[TSupportsLessThan],
+        *,
+        method: RankMethods = RankMethods.dense,
+    ) -> MoreEnumerable[int]:
         '''
-        Ranks each item in the sequence in descending order.
+        Ranks each item in the sequence in descending order using the method provided.
 
         Example
         ```py
         >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
         >>> MoreEnumerable(scores).rank().to_list()
         [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+
+        >>> MoreEnumerable(scores).rank(method=RankMethods.competitive).to_list()
+        [9, 7, 2, 3, 3, 7, 6, 10, 11, 1, 3]  # there are no 4th or 5th since there
+                                             # are three 3rd's
+
+        >>> MoreEnumerable(scores).rank(method=RankMethods.ordinal).to_list()
+        [9, 7, 2, 3, 4, 8, 6, 10, 11, 1, 5]  # as in sorting
         ```
 
         Revisions
+            ~ main: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
     @overload
-    def rank(self, __comparer: Callable[[TSource_co, TSource_co], int]) -> MoreEnumerable[int]:
+    def rank(self,
+        __comparer: Callable[[TSource_co, TSource_co], int],
+        *,
+        method: RankMethods = RankMethods.dense,
+    ) -> MoreEnumerable[int]:
         '''
-        Ranks each item in the sequence in descending order using the given comparer.
+        Ranks each item in the sequence in descending order using the given comparer and the
+        method.
 
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
 
         Revisions
+            ~ main: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
     @overload
-    def rank_by(self, key_selector: Callable[[TSource_co], TSupportsLessThan]) -> MoreEnumerable[int]:
+    def rank_by(self,
+        key_selector: Callable[[TSource_co], TSupportsLessThan],
+        *,
+        method: RankMethods = RankMethods.dense,
+    ) -> MoreEnumerable[int]:
         '''
-        Ranks each item in the sequence in descending order using the given selector.
+        Ranks each item in the sequence in descending order using the given selector and the
+        method.
 
         Example
         ```py
@@ -356,6 +379,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         ```
 
         Revisions
+            ~ main: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
@@ -363,14 +387,18 @@ class MoreEnumerable(Enumerable[TSource_co]):
     def rank_by(self,
         key_selector: Callable[[TSource_co], TKey],
         __comparer: Callable[[TKey, TKey], int],
+        *,
+        method: RankMethods = RankMethods.dense,
     ) -> MoreEnumerable[int]:
         '''
-        Ranks each item in the sequence in descending order using the given selector and comparer.
+        Ranks each item in the sequence in descending order using the given selector, comparer
+        and the method.
 
         Such comparer takes two values and return positive ints when lhs > rhs, negative ints
         if lhs < rhs, and 0 if they are equal.
 
         Revisions
+            ~ main: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 

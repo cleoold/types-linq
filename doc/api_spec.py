@@ -304,6 +304,22 @@ modules: list[ModuleSpec] = [
         },
     },
     {
+        'file_path': f'{_path}/more/more_enums.py',
+        'name': f'{_project}.more.more_enums',
+        'gvs': {*()},
+        'classes': {
+            'RankMethods': {
+                'fields': {
+                    'dense',
+                    'competitive',
+                    'ordinal',
+                },
+                'methods': {*()},
+                'readonly_properties': {*()},
+            },
+        },
+    },
+    {
         'file_path': f'{_path}/more/more_error.py',
         'name': f'{_project}.more.more_error',
         'gvs': {*()},

@@ -5,6 +5,7 @@ from typing import Any, Callable, Deque, Iterable, Iterator, List, Optional, TYP
 if TYPE_CHECKING:
     from .extrema_enumerable import ExtremaEnumerable
 
+from .more_enums import RankMethods
 from .more_error import DirectedGraphNotAcyclicError
 from ..enumerable import Enumerable
 from ..util import (
@@ -181,12 +182,17 @@ class MoreEnumerable(Enumerable[TSource_co]):
                 past = elem
         return MoreEnumerable(inner)
 
-    def rank(self, *args: Callable[[TSource_co, TSource_co], int]) -> MoreEnumerable[int]:
-        return self.rank_by(identity, *args)
+    def rank(self,
+        *args: Callable[[TSource_co, TSource_co], int],
+        method: RankMethods = RankMethods.dense,
+    ) -> MoreEnumerable[int]:
+        return self.rank_by(identity, *args, method=method)
 
     def rank_by(self,
         key_selector: Callable[[TSource_co], TKey],
-        *args: Callable[[TKey, TKey], int]) -> MoreEnumerable[int]:
+        *args: Callable[[TKey, TKey], int],
+        method: RankMethods = RankMethods.dense,
+     ) -> MoreEnumerable[int]:
         if len(args) == 0:
             # it is sufficient to have only equality
             comparer = lambda l, r: 0 if l == r else 1
@@ -195,20 +201,28 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
         def inner():
             # avoid enumerating twice
-            copy = MoreEnumerable(self.select(key_selector).to_list())
-            # this is different from morelinq
-            ordered = copy.order_by_descending(identity, *args).to_list()
-            if not ordered:
+            copy = self.select(key_selector).to_list()
+            if not copy:
                 return
-            rank_map = ComposeMap()
+            l = len(copy)
+            ordered = MoreEnumerable(range(l)) \
+                .order_by_descending(lambda i: copy[i], *args).to_list()
+            rank_map = [0] * l
             rank_map[ordered[0]] = 1
             rank = 1
-            for i in range(1, len(ordered)):
-                if comparer(ordered[i - 1], ordered[i]) != 0:
+            consec = 1
+            for i in range(1, l):
+                if method == RankMethods.ordinal:
                     rank += 1
+                elif comparer(copy[ordered[i - 1]], copy[ordered[i]]) != 0:
+                    rank += consec
+                    consec = 1
+                elif method == RankMethods.competitive:
+                    consec += 1
                 rank_map[ordered[i]] = rank
-            for key in copy:
-                yield rank_map[key]
+            del ordered
+            for i in rank_map:
+                yield i
         return MoreEnumerable(inner)
 
     def run_length_encode(self,

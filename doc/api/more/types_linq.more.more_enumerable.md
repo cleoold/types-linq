@@ -406,56 +406,71 @@ Revisions
 
 ---
 
-#### instancemethod `rank[TSupportsLessThan]()`
+#### instancemethod `rank[TSupportsLessThan](*, method=RankMethods.dense)`
 
 Constraint
   ~ *self*: [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
 
+Parameters
+  ~ *method*: [`RankMethods`](apiref.RankMethods)
 
 Returns
   ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
-Ranks each item in the sequence in descending order.
+Ranks each item in the sequence in descending order using the method provided.
 
 Example
     ~   ```py
         >>> scores = [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
         >>> MoreEnumerable(scores).rank().to_list()
         [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]  # 101 is largest, so has rank of 1
+
+        >>> MoreEnumerable(scores).rank(method=RankMethods.competitive).to_list()
+        [9, 7, 2, 3, 3, 7, 6, 10, 11, 1, 3]  # there are no 4th or 5th since there
+                                             # are three 3rd's
+
+        >>> MoreEnumerable(scores).rank(method=RankMethods.ordinal).to_list()
+        [9, 7, 2, 3, 4, 8, 6, 10, 11, 1, 5]  # as in sorting
         ```
 
 Revisions
+    ~ main: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
 
-#### instancemethod `rank(__comparer)`
+#### instancemethod `rank(__comparer, *, method=RankMethods.dense)`
 
 Parameters
   ~ *__comparer*: `Callable[[`[`TSource_co`](apiref.TSource_co)`, `[`TSource_co`](apiref.TSource_co)`], int]`
+  ~ *method*: [`RankMethods`](apiref.RankMethods)
 
 Returns
   ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
-Ranks each item in the sequence in descending order using the given comparer.
+Ranks each item in the sequence in descending order using the given comparer and the
+method.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
 
 Revisions
+    ~ main: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
 
-#### instancemethod `rank_by[TSupportsLessThan](key_selector)`
+#### instancemethod `rank_by[TSupportsLessThan](key_selector, *, method=RankMethods.dense)`
 
 Parameters
   ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TSupportsLessThan`](apiref.TSupportsLessThan)`]`
+  ~ *method*: [`RankMethods`](apiref.RankMethods)
 
 Returns
   ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
-Ranks each item in the sequence in descending order using the given selector.
+Ranks each item in the sequence in descending order using the given selector and the
+method.
 
 Example
     ~   ```py
@@ -474,25 +489,29 @@ Example
         ```
 
 Revisions
+    ~ main: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
 
-#### instancemethod `rank_by[TKey](key_selector, __comparer)`
+#### instancemethod `rank_by[TKey](key_selector, __comparer, *, method=RankMethods.dense)`
 
 Parameters
   ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], `[`TKey`](apiref.TKey)`]`
   ~ *__comparer*: `Callable[[`[`TKey`](apiref.TKey)`, `[`TKey`](apiref.TKey)`], int]`
+  ~ *method*: [`RankMethods`](apiref.RankMethods)
 
 Returns
   ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[int]`
 
-Ranks each item in the sequence in descending order using the given selector and comparer.
+Ranks each item in the sequence in descending order using the given selector, comparer
+and the method.
 
 Such comparer takes two values and return positive ints when lhs > rhs, negative ints
 if lhs < rhs, and 0 if they are equal.
 
 Revisions
+    ~ main: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---

@@ -4,7 +4,7 @@ from typing import Any, Callable, List, Optional, cast
 import pytest
 
 from types_linq import Enumerable, InvalidOperationError
-from types_linq.more import MoreEnumerable, DirectedGraphNotAcyclicError
+from types_linq.more import MoreEnumerable, DirectedGraphNotAcyclicError, RankMethods
 
 
 class Node:
@@ -410,10 +410,11 @@ class TestPreScanMethod:
 
 
 class TestRankMethod:
+    def gen(self):
+        yield from [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
+
     def test_overload1(self):
-        def gen():
-            yield from [1, 4, 77, 23, 23, 4, 9, 0, -7, 101, 23]
-        en = MoreEnumerable(gen())
+        en = MoreEnumerable(self.gen())
         assert en.rank().to_list() == [6, 5, 2, 3, 3, 5, 4, 7, 8, 1, 3]
 
     def test_overload1_empty(self):
@@ -428,6 +429,16 @@ class TestRankMethod:
         en = MoreEnumerable([8, 8, 8])
         assert en.rank().to_list() == [1, 1, 1]
 
+    def test_overload1_competitive(self):
+        en = MoreEnumerable(self.gen())
+        assert en.rank(method=RankMethods.competitive).to_list() \
+            == [9, 7, 2, 3, 3, 7, 6, 10, 11, 1, 3]
+
+    def test_overload1_ordinal(self):
+        en = MoreEnumerable(self.gen())
+        assert en.rank(method=RankMethods.ordinal).to_list() \
+            == [9, 7, 2, 3, 4, 8, 6, 10, 11, 1, 5]
+
     def test_overload2(self):
         en = MoreEnumerable([(1, ''), (1, ''), (4, ''), (4, ''), (3, '')])
         assert en.rank(lambda lhs, rhs: lhs[0] - rhs[0]).to_list() == [3, 3, 1, 1, 2]
@@ -437,6 +448,13 @@ class TestRankMethod:
         assert en.rank(lambda lhs, rhs: lhs.val - rhs.val).to_list() \
             == [3, 3, 1, 1, 2, 1]
 
+    def test_overload2_competitive_first_is_dup(self):
+        en = MoreEnumerable([Node(1), Node(1), Node(4), Node(3), Node(0)])
+        assert en.rank(
+            lambda lhs, rhs: lhs.val - rhs.val,
+            method=RankMethods.competitive,
+        ).to_list() == [3, 3, 1, 2, 5]
+
 
 # majority is already tested by rank test
 class TestRankByMethod:
@@ -444,7 +462,13 @@ class TestRankByMethod:
         def gen():
             yield from ['aaa', 'xyz', 'carbon', 'emission', 'statistics', 'somany']
         en = MoreEnumerable(gen())
-        assert en.rank_by(len).to_list() == [4, 4, 3, 2, 1, 3]
+        assert en.rank_by(len, method=RankMethods.dense).to_list() \
+             == [4, 4, 3, 2, 1, 3]
+
+    def test_overload1_competitive_no_tie(self):
+        strs = ['aaa', 'emission', 'carbon']
+        en = MoreEnumerable(strs)
+        assert en.rank_by(len, method=RankMethods.competitive).to_list() == [3, 1, 2]
 
     def test_overload2(self):
         en = MoreEnumerable([
