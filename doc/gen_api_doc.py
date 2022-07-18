@@ -100,6 +100,7 @@ class MyClassDef:
     tparams: list[str]
     bases: list[str]
     comment: str
+    fields: list['MyVariableDef']
     methods: list[MyMethodDef]
     properties: list[MyPropertyDef]
 
@@ -121,6 +122,13 @@ class MyClassDef:
             builder.append(f'- {rewrite_code_with_links(base)}\n')
         builder.append('\n')
 
+        builder.append(title := '### Fields\n\n')
+        for field in self.fields:
+            builder.append(field.markdown(tlevel=4, link=False))
+            builder.append('---\n\n')
+        if builder[-1] == '---\n\n' or builder[-1] == title:
+            builder.pop()
+
         builder.append(title := '### Members\n\n')
         for method in chain(self.properties, self.methods):
             builder.append(method.markdown())
@@ -134,12 +142,14 @@ class MyClassDef:
 class MyVariableDef:
     name: str
     comment: str
-    value: str  # currently module constants are only used as type variables... so value is fine
+    value: str  # currently module constants are only used as type or enum variables...
+                # so value is fine
 
-    def markdown(self):
+    def markdown(self, tlevel: int, link: bool):
         builder = []
-        builder.append(f'({LINK_PREFIX}{self.name})=\n')
-        builder.append(f'### `{self.name}`\n\n')
+        if link:
+            builder.append(f'({LINK_PREFIX}{self.name})=\n')
+        builder.append(f'{"#" * tlevel} `{self.name}`\n\n')
         builder.append('Equals\n')
         builder.append(f'  ~ {rewrite_code_with_links(self.value)}\n\n')
         builder.append(f'{self.comment}\n\n')
@@ -164,32 +174,24 @@ class ModuleVisitor(ast.NodeVisitor):
 
         # report assignments (with trailing docstring)
         for i in range(len(root.body)):
-            if isinstance(assign := root.body[i], ast.Assign):
-                doc = ''
-                if i + 1 < len(root.body) and (s := node_is_constant_str(root.body[i + 1])):
-                    doc = s
-                self.visit_Assign_with_doc_non_override(assign, doc)
+            if not isinstance(assign := root.body[i], ast.Assign):
+                continue
+            maybe_doc = None
+            if i + 1 < len(root.body):
+                maybe_doc = root.body[i + 1]
+
+            assert isinstance(target := assign.targets[0], ast.Name)
+            name = target.id
+            print(f'  Found assignment {name}')
+            self.found_gvs.add(name)
+            if name not in self.mspec['gvs']:
+                continue
+            self.global_vars.append(get_variable(assign, maybe_doc))
 
         # report classes
         classdefs = (c for c in root.body if isinstance(c, ast.ClassDef))
         for classdef in classdefs:
             self.visit_ClassDef(classdef)
-
-    def visit_Assign_with_doc_non_override(self, assign: ast.Assign, doc: str):
-        assert len(assign.targets) == 1
-        target = assign.targets[0]
-        assert isinstance(target, ast.Name)
-        name = target.id
-        print(f'  Found assignment {name}')
-        self.found_gvs.add(name)
-        if name not in self.mspec['gvs']:
-            return
-        
-        self.global_vars.append(MyVariableDef(
-            name=name,
-            comment=rewrite_comments(doc),
-            value=ast.unparse(assign.value),
-        ))
 
 
     # top level class definition
@@ -208,13 +210,15 @@ class ModuleVisitor(ast.NodeVisitor):
             tparams=class_tparams,
             bases=[ast.unparse(n) for n in node.bases],
             comment=rewrite_comments(get_def_docstring(node)),
+            fields=[],
             methods=[],
             properties=[],
         )
 
+        found_varnames = {*()}
         found_funnames = {*()}
 
-        for stmt in node.body:
+        for i, stmt in enumerate(node.body):
             if isinstance(stmt, ast.FunctionDef):
                 defname = stmt.name
                 print(f'    Found def {defname}()')
@@ -223,26 +227,53 @@ class ModuleVisitor(ast.NodeVisitor):
                     classdef.methods.append(get_method(stmt, class_tparams))
                 if defname in classspec['readonly_properties']:
                     classdef.properties.append(get_property(stmt))
+            elif isinstance(stmt, ast.Assign):
+                maybe_doc = None
+                if i + 1 < len(node.body):
+                    maybe_doc = node.body[i + 1]
 
+                assert isinstance(target := stmt.targets[0], ast.Name)
+                varname = target.id
+                print(f'    Found assignment {varname}')
+                found_varnames.add(varname)
+                if varname in classspec['fields']:
+                    classdef.fields.append(get_variable(stmt, maybe_doc))
+
+        enabled_varnames = set(v.name for v in classdef.fields)
         enabled_funnames = set(m.name for m in chain(classdef.methods, classdef.properties))
-        print(f'    STAT Found defs - enabled defs: {psetdiff(found_funnames, enabled_funnames)}')
-        print(f'    STAT Enabled defs - found defs: {psetdiff(enabled_funnames,found_funnames)}')
+        expected_funnames = classspec["methods"] | classspec["readonly_properties"]
+        print(f'    STAT Found vars - enabled vars : {psetdiff(found_varnames, enabled_varnames)}')
+        print(f'    STAT Expected vars - found vars: {psetdiff(classspec["fields"], found_varnames)}')
+        print(f'    STAT Found defs - enabled defs : {psetdiff(found_funnames, enabled_funnames)}')
+        print(f'    STAT Expected defs - found defs: {psetdiff(expected_funnames ,found_funnames)}')
         self.classes.append(classdef)
 
     # such logging is necessary to check which symbols should be exposed but forgotten in api_spec.py,
     # or vice versa
     def report_found_globals(self):
         enabled_varnames = set(a.name for a in self.global_vars)
-        print(f'  STAT Found gvs - enabled vars: {psetdiff(self.found_gvs, enabled_varnames)}')
-        print(f'  STAT Enabled gvs - found vars: {psetdiff(enabled_varnames, self.found_gvs)}')
+        print(f'  STAT Found gvs - enabled vars : {psetdiff(self.found_gvs, enabled_varnames)}')
+        print(f'  STAT Expected gvs - found vars: {psetdiff(self.mspec["gvs"], self.found_gvs)}')
         enabled_classnames = set(c.name for c in self.classes)
-        print(f'  STAT Found classes - enabled classes: {psetdiff(self.found_classes, enabled_classnames)}')
-        print(f'  STAT Enabled classes - found classes: {psetdiff(enabled_classnames, self.found_classes)}')
+        print(f'  STAT Found classes - enabled classes : {psetdiff(self.found_classes, enabled_classnames)}')
+        print(f'  STAT Expected classes - found classes: {psetdiff(set(self.mspec["classes"].keys()), self.found_classes)}')
 
 
 def psetdiff(a: set[str], b: set[str]):
     s = ', '.join(a - b)
     return f'{{{s}}}'
+
+
+def get_variable(assign: ast.Assign, maybe_doc: Optional[ast.AST]):
+    assert len(assign.targets) == 1
+    target = assign.targets[0]
+    assert isinstance(target, ast.Name)
+    doc = node_is_constant_str(maybe_doc) if maybe_doc is not None else ''
+    return MyVariableDef(
+        name=target.id,
+        comment=rewrite_comments(doc),
+        value=ast.unparse(assign.value),
+    )
 
 
 def get_method(fun_def: ast.FunctionDef, class_tparams: list[str]):
@@ -423,7 +454,7 @@ for module in api_spec.modules:
         if v.global_vars:
             fout.write('## Constants\n\n')
             for i, var in enumerate(v.global_vars):
-                fout.write(var.markdown())
+                fout.write(var.markdown(tlevel=3, link=True))
                 if i < len(v.global_vars) - 1:
                     fout.write('---\n\n')
             if v.classes:

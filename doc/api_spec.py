@@ -8,6 +8,7 @@ class ModuleSpec(TypedDict):
     classes: dict[str, 'ClassSpec']
 
 class ClassSpec(TypedDict):
+    fields: set[str]
     methods: set[str]
     readonly_properties: set[str]
 
@@ -27,6 +28,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'CachedEnumerable': {
+                'fields': {*()},
                 'methods': {
                     'as_cached',
                 },
@@ -40,6 +42,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'Enumerable': {
+                'fields': {*()},
                 'methods': {
                     '__init__',
                     '__contains__',
@@ -130,6 +133,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'Grouping': {
+                'fields': {*()},
                 'methods': {*()},
                 'readonly_properties': {
                     'key',
@@ -143,6 +147,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'Lookup': {
+                'fields': {*()},
                 'methods': {
                     '__contains__',
                     '__len__',
@@ -183,6 +188,7 @@ modules: list[ModuleSpec] = [
         },
         'classes': {
             'SupportsAverage': {
+                'fields': {*()},
                 'methods': {
                     '__add__',
                     '__truediv__',
@@ -190,12 +196,14 @@ modules: list[ModuleSpec] = [
                 'readonly_properties': {*()},
             },
             'SupportsLessThan': {
+                'fields': {*()},
                 'methods': {
                     '__lt__',
                 },
                 'readonly_properties': {*()},
             },
             'SupportsAdd': {
+                'fields': {*()},
                 'methods': {
                     '__add__',
                 },
@@ -209,6 +217,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'OrderedEnumerable': {
+                'fields': {*()},
                 'methods': {
                     'create_ordered_enumerable',
                     'then_by',
@@ -224,14 +233,17 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'TypesLinqError': {
+                'fields': {*()},
                 'methods': {*()},
                 'readonly_properties': {*()},
             },
             'InvalidOperationError': {
+                'fields': {*()},
                 'methods': {*()},
                 'readonly_properties': {*()},
             },
             'IndexOutOfRangeError': {
+                'fields': {*()},
                 'methods': {*()},
                 'readonly_properties': {*()},
             },
@@ -243,6 +255,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'MoreEnumerable': {
+                'fields': {*()},
                 'methods': {
                     'aggregate_right',
                     'as_more',
@@ -281,6 +294,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'ExtremaEnumerable': {
+                'fields': {*()},
                 'methods': {
                     'take',
                     'take_last',
@@ -295,6 +309,7 @@ modules: list[ModuleSpec] = [
         'gvs': {*()},
         'classes': {
             'DirectedGraphNotAcyclicError': {
+                'fields': {*()},
                 'methods': {*()},
                 'readonly_properties': {
                     'cycle',
