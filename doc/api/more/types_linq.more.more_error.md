@@ -10,7 +10,7 @@ from types_linq.more import DirectedGraphNotAcyclicError
 Exception raised when a cycle exists in a graph.
 
 Revisions
-    ~ main: New.
+    ~ v1.2.1: New.
 
 ### Bases
 

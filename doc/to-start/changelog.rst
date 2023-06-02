@@ -3,6 +3,14 @@ Changelog
 
 `GitHub Releases <https://github.com/cleoold/types-linq/releases>`_
 
+v1.2.1
+********
+
+- Fix CachedEnumerable buffering bug when capacity is zero
+- Add traverse_topological() to MoreEnumerable class
+- Add ranking methods MoreEnumerable.rank() and rank_by() methods
+- The documentation page now has hyperlinks for some terminologies in this release
+
 v1.2.0
 ********
 

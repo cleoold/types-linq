@@ -330,7 +330,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         ```
 
         Revisions
-            ~ main: Added method parameter to support more ranking methods.
+            ~ v1.2.1: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
@@ -348,7 +348,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions
-            ~ main: Added method parameter to support more ranking methods.
+            ~ v1.2.1: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
@@ -379,7 +379,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         ```
 
         Revisions
-            ~ main: Added method parameter to support more ranking methods.
+            ~ v1.2.1: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
@@ -398,7 +398,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         if lhs < rhs, and 0 if they are equal.
 
         Revisions
-            ~ main: Added method parameter to support more ranking methods.
+            ~ v1.2.1: Added method parameter to support more ranking methods.
             ~ v1.0.0: New.
         '''
 
@@ -655,7 +655,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
         ```
 
         Revisions
-            ~ main: New.
+            ~ v1.2.1: New.
         '''
 
     def traverse_topological2(self,
@@ -675,5 +675,5 @@ class MoreEnumerable(Enumerable[TSource_co]):
         topological ordering cannot be produced.
 
         Revisions
-            ~ main: New.
+            ~ v1.2.1: New.
         '''

@@ -14,7 +14,7 @@ class DirectedGraphNotAcyclicError(InvalidOperationError):
     Exception raised when a cycle exists in a graph.
 
     Revisions
-        ~ main: New.
+        ~ v1.2.1: New.
     '''
 
     def __init__(self, cycle: Tuple[object, object]) -> None:

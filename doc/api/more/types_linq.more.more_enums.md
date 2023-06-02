@@ -11,7 +11,7 @@ Enumeration to select different methods of assigning rankings when breaking
 [ties](https://en.wikipedia.org/wiki/Ranking#Strategies_for_assigning_rankings).
 
 Revisions
-    ~ main: New.
+    ~ v1.2.1: New.
 
 ### Bases
 

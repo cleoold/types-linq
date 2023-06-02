@@ -434,7 +434,7 @@ Example
         ```
 
 Revisions
-    ~ main: Added method parameter to support more ranking methods.
+    ~ v1.2.1: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
@@ -455,7 +455,7 @@ Such comparer takes two values and return positive ints when lhs > rhs, negative
 if lhs < rhs, and 0 if they are equal.
 
 Revisions
-    ~ main: Added method parameter to support more ranking methods.
+    ~ v1.2.1: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
@@ -489,7 +489,7 @@ Example
         ```
 
 Revisions
-    ~ main: Added method parameter to support more ranking methods.
+    ~ v1.2.1: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
@@ -511,7 +511,7 @@ Such comparer takes two values and return positive ints when lhs > rhs, negative
 if lhs < rhs, and 0 if they are equal.
 
 Revisions
-    ~ main: Added method parameter to support more ranking methods.
+    ~ v1.2.1: Added method parameter to support more ranking methods.
     ~ v1.0.0: New.
 
 ---
@@ -818,7 +818,7 @@ Example
         ```
 
 Revisions
-    ~ main: New.
+    ~ v1.2.1: New.
 
 ---
 
@@ -843,5 +843,5 @@ Raises [`DirectedGraphNotAcyclicError`](apiref.DirectedGraphNotAcyclicError) if 
 topological ordering cannot be produced.
 
 Revisions
-    ~ main: New.
+    ~ v1.2.1: New.
 

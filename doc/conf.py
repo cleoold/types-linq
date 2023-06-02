@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'types-linq'
-copyright = '2022, cleoold'
+copyright = '2023, cleoold'
 author = 'cleoold'
 
 
