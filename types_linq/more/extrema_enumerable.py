@@ -35,7 +35,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
         return _extrema_by(it, getter, self._selector, self._comparer, self._for_min)
 
     # please maintain same overloads
-    def first(self, *args):  # pyright: reportIncompatibleMethodOverride=false
+    def first(self, *args):  # pyright: ignore[reportIncompatibleMethodOverride]
         if len(args) == 0:
             return MoreEnumerable.first(self.take(1))
         else:  # len(args) == 1

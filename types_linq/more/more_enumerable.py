@@ -42,7 +42,7 @@ class MoreEnumerable(Enumerable[TSource_co]):
             seed = func(elem, seed)
         return result_selector(seed)
 
-    def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: reportIncompatibleMethodOverride=false
+    def as_more(self) -> MoreEnumerable[TSource_co]:  # pyright: ignore[reportIncompatibleMethodOverride]
         return self
 
     def consume(self) -> None:
