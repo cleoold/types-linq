@@ -43,10 +43,10 @@ the following should do:
 
 .. code-block:: bash
 
-    $ npx install pyright -g
+    $ npm install pyright -g
     $ npx pyright
 
-Instead, opening vscode should also hightlight red striggles (?)
+Instead, opening vscode should also highlight red striggles (?)
 
 However, the `GitHub action settings <https://github.com/cleoold/types-linq/tree/main/.github/workflows>`_
 are most up-to-date and can be consulted.
