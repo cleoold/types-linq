@@ -725,7 +725,7 @@ class TestTraverseDepthFirstMethod:
 
 
 class TestTraverseTopologicalMethod:
-    def test_overload1_simple(self):
+    def test_traverse1_simple(self):
         adj = {
             5: [2, 0],
             4: [0, 1],
@@ -735,12 +735,12 @@ class TestTraverseTopologicalMethod:
         en = MoreEnumerable([5, 4]).traverse_topological(lambda x: adj.get(x, ()))
         assert en.to_list() == [5, 2, 3, 4, 0, 1]
 
-    def test_overload1_linear_dfs(self):
+    def test_traverse1_linear_dfs(self):
         en = MoreEnumerable([TestTraverseBreathFirstMethod.tree]) \
             .traverse_topological(TestTraverseBreathFirstMethod.selector)
         assert en.select(lambda n: n.val).to_list() == [3, 1, 0, 2, 4, 5]
 
-    def test_overload1_all_nodes(self):
+    def test_traverse1_all_nodes(self):
         adj = [
             [1, 2, 3],
             [3],
@@ -750,11 +750,11 @@ class TestTraverseTopologicalMethod:
         en = MoreEnumerable(range(4)).traverse_topological(adj.__getitem__)
         assert en.to_list() == [0, 2, 1, 3]
 
-    def test_overload1_single(self):
+    def test_traverse1_single(self):
         en = MoreEnumerable([0]).traverse_topological(lambda _: ())
         assert en.to_list() == [0]
 
-    def test_overload1_cycle(self):
+    def test_traverse1_cycle(self):
         adj = {
             5: [2, 0],
             4: [0, 1],
@@ -766,7 +766,7 @@ class TestTraverseTopologicalMethod:
             en.to_list()
         assert excinfo.value.cycle == (3, 5)
 
-    def test_overload1_self_loop(self):
+    def test_traverse1_self_loop(self):
         adj = {
             1: [2, 3],
             3: [4],
@@ -777,7 +777,7 @@ class TestTraverseTopologicalMethod:
             en.to_list()
         assert excinfo.value.cycle == (4, 4)
 
-    def test_overload2_big(self):
+    def test_traverse2_big(self):
         adj = {
             0: [1, 2],
             3: [2],
@@ -792,14 +792,14 @@ class TestTraverseTopologicalMethod:
             6: [7, 8, 9],
         }
         roots = map(Node, [0, 3, 4, 10, 11])
-        en = MoreEnumerable(roots).traverse_topological(
+        en = MoreEnumerable(roots).traverse_topological2(
             lambda x: map(Node, adj.get(x.val, ())),
             lambda x: x.val,
         )
         assert en.select(lambda x: x.val).to_list() \
             == [0, 1, 5, 6, 7, 8, 3, 2, 10, 11, 12, 13, 4, 9]
 
-    def test_overload2_diamond(self):
+    def test_traverse2_diamond(self):
         adj = {
             0: [2],
             1: [2, 3, 8],
@@ -812,14 +812,14 @@ class TestTraverseTopologicalMethod:
             8: [],
         }
         roots = map(Node, [0, 1])
-        en = MoreEnumerable(roots).traverse_topological(
+        en = MoreEnumerable(roots).traverse_topological2(
             lambda x: map(Node, adj[x.val]),
             lambda x: x.val,
         )
         assert en.select(lambda x: x.val).to_list() \
             == [0, 1, 2, 4, 5, 6, 3, 7, 8]
 
-    def test_overload2_two_cycles_get_first(self):
+    def test_traverse2_two_cycles_get_first(self):
         adj = {
             0: [1, 2],
             3: [2],
@@ -835,7 +835,7 @@ class TestTraverseTopologicalMethod:
             9: [3],
         }
         roots = map(Node, [0, 3, 4, 10, 11])
-        en = MoreEnumerable(roots).traverse_topological(
+        en = MoreEnumerable(roots).traverse_topological2(
             lambda x: map(Node, adj.get(x.val, ())),
             lambda x: x.val,
         )

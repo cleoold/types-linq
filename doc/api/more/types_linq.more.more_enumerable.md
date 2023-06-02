@@ -822,11 +822,11 @@ Revisions
 
 ---
 
-#### instancemethod `traverse_topological(children_selector, __key_selector)`
+#### instancemethod `traverse_topological2(children_selector, key_selector)`
 
 Parameters
   ~ *children_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], Iterable[`[`TSource_co`](apiref.TSource_co)`]]`
-  ~ *__key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
+  ~ *key_selector*: `Callable[[`[`TSource_co`](apiref.TSource_co)`], object]`
 
 Returns
   ~ [`MoreEnumerable`](apiref.MoreEnumerable)`[`[`TSource_co`](apiref.TSource_co)`]`

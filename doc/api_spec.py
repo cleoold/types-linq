@@ -283,6 +283,7 @@ modules: list[ModuleSpec] = [
                     'traverse_breath_first',
                     'traverse_depth_first',
                     'traverse_topological',
+                    'traverse_topological2',
                 },
                 'readonly_properties': {*()},
             },

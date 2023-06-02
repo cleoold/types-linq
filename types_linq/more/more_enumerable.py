@@ -355,13 +355,13 @@ class MoreEnumerable(Enumerable[TSource_co]):
 
     def traverse_topological(self,
         children_selector: Callable[[TSource_co], Iterable[TSource_co]],
-        *args: Callable[[TSource_co], object],
     ) -> MoreEnumerable[TSource_co]:
-        if len(args) == 0:
-            key_selector = identity
-        else:  # len(args) == 1
-            key_selector = args[0]
+        return self.traverse_topological2(children_selector, identity)
 
+    def traverse_topological2(self,
+        children_selector: Callable[[TSource_co], Iterable[TSource_co]],
+        key_selector: Callable[[TSource_co], object],
+    ) -> MoreEnumerable[TSource_co]:
         def inner():
             stack: List[Tuple[TSource_co, bool]] = []
             visited = ComposeMap()

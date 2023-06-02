@@ -630,7 +630,8 @@ class MoreEnumerable(Enumerable[TSource_co]):
         ```
         '''
 
-    @overload
+    # NOTE: leave room for comparer overloads
+    # TODO: when hasher support is done
     def traverse_topological(self,
         children_selector: Callable[[TSource_co], Iterable[TSource_co]],
     ) -> MoreEnumerable[TSource_co]:
@@ -657,10 +658,9 @@ class MoreEnumerable(Enumerable[TSource_co]):
             ~ main: New.
         '''
 
-    @overload
-    def traverse_topological(self,
+    def traverse_topological2(self,
         children_selector: Callable[[TSource_co], Iterable[TSource_co]],
-        __key_selector: Callable[[TSource_co], object],
+        key_selector: Callable[[TSource_co], object],
     ) -> MoreEnumerable[TSource_co]:
         '''
         Traverses the graph in topological order, A selector is used to select children of each
