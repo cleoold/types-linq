@@ -49,7 +49,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
             return super().first2(*args)
 
     # please maintain same overloads
-    def last(self, *args):
+    def last(self, *args):  # pyright: ignore[reportIncompatibleMethodOverride]
         if len(args) == 0:
             return MoreEnumerable.last(self.take_last(1))
         else:  # len(args) == 1
@@ -63,7 +63,7 @@ class ExtremaEnumerable(MoreEnumerable[TSource_co], Generic[TSource_co, TKey]):
             return super().last2(*args)
 
     # please maintain same overloads
-    def single(self, *args):
+    def single(self, *args):  # pyright: ignore[reportIncompatibleMethodOverride]
         if len(args) == 0:
             return MoreEnumerable.single(self.take(2))
         else:  # len(args) == 1

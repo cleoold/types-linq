@@ -53,7 +53,7 @@ class Enumerable(Sequence[TSource_co], Generic[TSource_co]):
     def _contains_impl(self, value: object, fallback: bool) -> bool:
         iterable = self._get_iterable()
         if not fallback and isinstance(iterable, Container):
-            return value in iterable  # type: ignore
+            return value in iterable
         for elem in iterable:
             if elem == value:
                 return True

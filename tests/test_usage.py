@@ -1,5 +1,5 @@
 import math
-from typing import Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
+from typing import Any, Generic, Iterable, List, NamedTuple, Sequence, Tuple, TypeVar, cast
 
 import pytest
 
@@ -434,7 +434,7 @@ class TestElementAtMethod:
         # since its __iter__ method would be chosen over that of BasicIterable
         def __len__(self):
             return 0
-        def __getitem__(self, _):
+        def __getitem__(self, _) -> Any:
             return 'haha'
 
 
